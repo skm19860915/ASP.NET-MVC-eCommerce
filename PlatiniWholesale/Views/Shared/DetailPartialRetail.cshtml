@@ -1,0 +1,332 @@
+﻿@using Platini.Models
+@model DetailViewClass
+@{
+    bool showFit = Model.FitList.Any();
+    var colors = new string[] { "Blue", "Red", "GoldenRod" };
+    int colorIndex = 0;
+
+}
+@if (Platini.Models.SiteConfiguration.Mode.ToLower() == Platini.Models.ModeEnum.Order.ToString().ToLower())
+{
+    using (Html.BeginForm("Detail", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "ord1Form" }))
+    {
+        if (string.IsNullOrEmpty(ViewBag.LoadPart))
+        {
+            <div class="popinner">
+                <ul class="popCatBox">
+                    <li>
+                        <div class="catLable" style="color: #666666;">Style</div>
+                        <div class="filBix">@Model.StyleNumber</div>
+                        @Html.HiddenFor(m => m.ClothesId)
+                        @Html.HiddenFor(m => m.Clearance)
+                    </li>
+
+                    <li>
+@if (Model.DiscountedMSRP != null && (Model.DiscountedMSRP > 0 && Model.DiscountedMSRP < Model.MSRP))
+                    {
+                        <div class="catLable">MSRP $</div>
+                        <div class="filBix prtpriceUse" title="@Model.DiscountedMSRP">$@String.Format("{0:0.00}", Model.DiscountedMSRP)</div>
+                    }
+else
+{ <div class="catLable">MSRP $</div>
+    <div class="filBix prtpriceUse" title="@Model.MSRP">$@String.Format("{0:0.00}", Model.MSRP)</div>}
+
+                    </li>
+                    @if (showFit)
+                    {
+                        <li>
+                            <div class="catLable">Fit</div>
+                            <div class="filBix">
+                                <select id="prtfitDdl" style="width: 100%; word-wrap: normal;">
+                                    @foreach (var fit in Model.FitList)
+                                    {
+                                        <option value="@fit.Value.Replace(" ", "")">@fit.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </li>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Color))
+                    {
+                        <li>
+                            <div class="catLable">Color</div>
+                            <div class="filBix">
+                                <button type="button">@Model.Color</button>
+                            </div>
+                        </li>
+                    }
+                </ul>
+                @if (Model.AvailableOpenSizes.Count > 0)
+                {
+                    <div class="itemOS" style="width: 55%; display: inline-block;">
+                        @for (int i = 0; i < Model.AvailableOpenSizes.Count; i++)
+                        {
+                            <div class="prtpopsize@(Model.AvailableOpenSizes[i].FitId.HasValue ? " " + Model.AvailableOpenSizes[i].FitName.Replace(" ", "") : "")">
+                                @if (!string.IsNullOrEmpty(Model.AvailableOpenSizes[i].InseamName))
+                                {
+                                    <div class="redl ic">@Model.AvailableOpenSizes[i].InseamName</div>
+                                }
+                                <ul class="sizeul">
+                                    @for (int j = 0; j < Model.AvailableOpenSizes[i].ClothesScaleSizeClass.Count; j++)
+                                    {
+                                        <li>
+                                            <span>@Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].SizeName</span>
+                                            <span class="inpoubox">
+
+                                                @if (Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].RtlAvlbl)
+                                                {
+                                                    <input type="text" data-val="@Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity.Value" value="" maxlength="3" class="effect numOnly prtopcal" onfocus="this.select();" , onmouseup="return false;">
+                                                    @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity, new { @class = "prthidOSClass" })
+                                                    @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleSizeId)
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("oS" + Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleSizeId, "X", new { @class = "disabledbutton", disabled = "disabled" })
+                                                }
+                                                @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleSizeId)
+                                            </span>
+                                        </li>
+
+                                    }
+                                    @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleId)
+                                </ul>
+                            </div>
+
+                        }
+                    </div>
+                }
+                @if (Model.Images.Any())
+                {
+                    <div style="display: inline-block; width: 10%;vertical-align:top">
+                        <img src="/Library/Uploads/mobilethumb/@Model.Images.FirstOrDefault().ImagePath" style="width: 64px;">
+                    </div>
+                }
+            </div>
+
+            <div class="totalBox">
+                <ul class="ttl">
+                    <li>Total Order Qty:<span id="prtttlQty">0</span></li>
+                    <li>Total $ <span id="prtttlPrc">0.00</span></li>
+                </ul>
+                <div class="adtoorder">
+                    @Html.Hidden("userId", SiteIdentity.UserId)
+                    <input id="prtbtnSubmit" class="btnOrder" type="button" value="Add To Order" />
+                </div>
+            </div>
+        }
+        else
+        {
+            if (Model.DiscountedMSRP != null && (Model.DiscountedMSRP > 0 && Model.DiscountedMSRP < Model.MSRP))
+            {
+                <div class="filBix prtdispriceUse" title="@Model.DiscountedMSRP" style="display: none">$@String.Format("{0:0.00}", Model.DiscountedMSRP)</div>
+                <div style="display:none;" class="filBix prtpriceUse" title="@Model.MSRP">@Html.HiddenFor(m => m.ClothesId)</div>
+            }
+            else
+            { <div style="display:none;" class="filBix prtpriceUse" title="@Model.MSRP">@Html.HiddenFor(m => m.ClothesId)</div>}
+            //if(@Model.DiscountedMSRP )
+
+
+            if (showFit)
+            {
+                <div class="description">
+                    <label>Fit</label>
+                    <select id="prtfitDdl" style="margin-left:2%; word-wrap: normal;">
+                        @foreach (var fit in Model.FitList)
+                        {
+                            <option value="@fit.Value.Replace(" ", "")">@fit.Value</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            if (Model.AvailableOpenSizes.Count > 0)
+            {
+                <div class="itemOS" style="">
+                    @for (int i = 0; i < Model.AvailableOpenSizes.Count; i++)
+                    {
+                        <div class="prtpopsize@(Model.AvailableOpenSizes[i].FitId.HasValue ? " " + Model.AvailableOpenSizes[i].FitName.Replace(" ", "") : "")">
+
+                            <ul class="sizeul">
+                                @if (!string.IsNullOrEmpty(Model.AvailableOpenSizes[i].InseamName))
+                                {
+                                    <li class="redl">@Model.AvailableOpenSizes[i].InseamName</li>
+                                }
+                                @for (int j = 0; j < Model.AvailableOpenSizes[i].ClothesScaleSizeClass.Count; j++)
+                                {
+                                    <li>
+                                        <span>@Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].SizeName</span>
+                                        <span class="inpoubox">
+
+                                            @if (Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].RtlAvlbl)
+                                            {
+                                                <input type="text" data-val="@Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity.Value" value="" maxlength="3" class="effect numOnly prtopcal" onfocus="this.select();" , onmouseup="return false;">
+                                                @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity, new { @class = "prthidOSClass" })
+                                                @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleSizeId)
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBox("oS" + Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleSizeId, "X", new { @class = "disabledbutton", disabled = "disabled" })
+                                            }
+                                            @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleSizeId)
+                                        </span>
+                                    </li>
+
+                                }
+                                @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleId)
+                            </ul>
+                        </div>
+
+                    }
+                </div>
+            }
+
+
+            <div class="totalBox" style="padding:0;">
+                <ul class="ttl">
+                    <li>Total Order Qty:<span id="prtttlQty">0</span></li>
+                    <li>Total $ <span id="prtttlPrc">0.00</span></li>
+                </ul>
+                <div class="adtoorder" style=" float: none; position: relative; top: -8px;">
+                    @Html.Hidden("userId", SiteIdentity.UserId)
+                    <input id="prtbtnSubmit" class="btnOrder" type="button" value="Add To Order" />
+                </div>
+            </div>
+        }
+    }
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+    });
+
+
+    $(function () {
+        if ($("#prtfitDdl").length > 0) {
+            $(".prtpopsize").each(function () {
+                if (!$(this).hasClass($("#prtfitDdl").val())) {
+                    $(this).hide();
+                }
+            });
+        }
+        $("#imgTip[title]").tooltip();
+        $(".prtopcal").change(function () {
+            prtdoCalc();
+        });
+
+        $("#prtfitDdl").change(function () {
+            $(".prtpopsize").each(function () {
+                if ($(this).hasClass($("#prtfitDdl").val())) {
+                    $(this).show();
+                }
+                else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        $(".numOnly").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                // Allow: Ctrl+A
+                (e.keyCode == 65 && e.ctrlKey === true) ||
+                // Allow: home, end, left, right, down, up
+                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+        $("#prtbtnSubmit").click(function () {
+            //if ($("#userId").val() == "") {
+            if (1 == 2) {
+                // window.location.href = "/Home/Login?ReturnUrl=" + window.location.href;
+            }
+            else {
+                var total = 0;
+                $(".prtopcal").each(function () {
+                    if ($(this).is(":visible")) {
+                        $(this).siblings(".prthidOSClass").val("0");
+                        var quant = $(this).val();
+                        if (!isNaN(quant)) {
+                            total += quant;
+                            $(this).siblings(".prthidOSClass").val(quant);
+                        }
+                    }
+                    else {
+                        $(this).siblings(".prthidOSClass").val(quant);
+                    }
+                });
+
+                if (total == 0) {
+                    var dialog = $('<p>Please enter quantity for any size.</p>').dialog({
+                        resizable: false,
+                        modal: true,
+                        buttons: {
+                            "OK": function () { dialog.dialog('close'); }
+                        }
+                    });
+                    //alert("Please enter quantity for any size.");
+                }
+                else {
+                    $("#prtbtnSubmit").parent().addClass("bgClass5");
+                    $.post('@Url.Action("ClothPresent", "Home")', { ClothesId: $("#ClothesId").val(), isPre: false, isOpen: true }).done(function (data) {
+                        $("#prtbtnSubmit").parent().removeClass("bgClass5");
+                        if (data == "") {
+                            $("#ord1Form").submit();
+                        }
+                        else {
+                            $("#confirmMsg").text("This item is already in your cart for " + data + ". Would you like to add more qty of this style?");
+                            $("#openCart").show();
+                            $("#packBreak").hide();
+                            $(".closeBox ").click();
+                            $("#confirmmessage").click();
+                        }
+                    });
+                }
+            }
+        });
+    });
+    function prtdoCalc() {
+        var price = 0;
+        if ($(".prtdispriceUse").length > 0)
+            price = parseFloat($(".prtdispriceUse:first").attr("title")).toFixed(2);
+        else if ($(".prtpriceUse").length > 0)
+            price = parseFloat($(".prtpriceUse:first").attr("title")).toFixed(2);
+        else
+            price = 0;
+        var total = 0;
+        $(".prtopcal").each(function () {
+            if ($(this).is(":visible")) {
+                var quant = parseInt($(this).val());
+                if (!isNaN(quant)) {
+                    total = total + quant;
+                }
+            }
+        });
+
+        $("#prtttlQty").empty().text(total);
+        $("#prtttlPrc").empty().text(price * total);
+    }
+
+    function prtcheckMe(Total, elm) {
+
+        var currentVal = parseInt($(elm).val());
+        if (Total < currentVal) {
+            $(elm).val("");
+            var dialog = $('<p>You cannot order more than ' + Total + ' quantity for this pack</p>').dialog({
+                resizable: false,
+                modal: true,
+                buttons: {
+                    "OK": function () { dialog.dialog('close'); }
+                }
+            });
+            //alert("You cannot order more than " + Total + " quantity for this pack");
+        }
+        prtdoCalc();
+    }
+
+</script>

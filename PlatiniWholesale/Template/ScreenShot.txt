@@ -1,0 +1,1 @@
+﻿[PlatiniJeans] - Products For Category:<%Category%> And Type:<%Type%>

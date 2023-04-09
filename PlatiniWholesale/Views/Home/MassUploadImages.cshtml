@@ -1,0 +1,201 @@
+﻿@using Platini.Models
+<style>
+    .marginBot {
+        margin-bottom: 30px;
+    }
+
+    .list-inline1 > li > img {
+        margin-top: 10px;
+    }
+
+    li.selected img {
+        border: 1px dashed blue !important;
+        background: red;
+    }
+
+    li.selected > img {
+        border: 1px solid black;
+    }
+
+    .list-inline1 > li > img {
+        border: 1px solid black;
+    }
+
+    #bigGallery li {
+        list-style: none;
+        display: inline;
+        padding: 5px;
+    }
+</style>
+@{
+    ViewBag.Title = "Upload Images";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+@if (ViewBag.Ids != null)
+{
+    <script src="@Url.Content("~/Scripts/jquery.filedrop.js")"></script>
+    <div class="col-md-12 col-lg-12 col-sm-12">
+        <div class="marginBot" style="text-align: right;position: relative;top: 15px;margin : 0px 14px 30px 1px;">
+
+            <a href="javascript:void(0);" id="saveOrder" onclick="saveSortAll();" class="btn-Popup" style="text-decoration: none; color: #fff; padding: 10px;">Save</a>
+            <a href="@Url.Action("Linesheet", new { TypeId = ViewBag.TypeId })" id="backButton" class="btn-Popup" style="text-decoration: none;color:#fff;padding:10px;">Back</a>
+        </div>
+        <div class="col-md-12 col-lg-12 col-sm-12" style="border: 2px solid black">
+            <div class="text-center marginBot">
+                DROP UPTO 50 IMAGES AT ONCE BELOW
+            </div>
+            <div class="marginBot" id="massdropZone" style="min-height: 5em; border: 1px dashed black;">
+                <label class="text-center" id="mDropLabel"></label>
+            </div>
+            <div id="mupProgressHolder" style="height: 1em;">
+                <div class="mupProgress"></div>
+            </div>
+            <div class="marginBot">
+                <ul id="bigGallery" class="list-inline1">
+                    @if (Session["ImageList"] != null)
+                    {
+                        var list = (List<imgList>)Session["ImageList"];
+                        foreach (var li in list)
+                        {
+                            <li>
+                                <img src="/Library/Uploads/WebThumb/@(li.Path)" width="64" title="@(li.Name)" data-id="@(li.Id)" data-so="@(li.SO)" />
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+
+        </div>
+        <div class="text-center" style="margin: 1em;">
+            AFTER UPLOAD SELECT MULTIPLE IMAGES BY PRESSING CTRL+CLICK AND DRAG TO RELEVANT STYLES
+        </div>
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            @{
+                    int count = 0;
+                    int total = ViewBag.Ids.Count;
+            }
+            @foreach (int Id in ViewBag.Ids)
+            {
+                ++count;
+                <div class="col-lg-3 col-md-3 col-xs-3 marginBot">
+                    @Html.Action("MassCloth", new { @Id = Id, @isLast = (count == total) })
+                </div>
+            }
+        </div>
+        <div class="col-md-12 col-lg-12 col-sm-12" style="min-height: 10em;"></div>
+    </div>
+
+    <script type="text/javascript">
+        $("#mupProgressHolder").progressbar({
+            value: false, complete: function () {
+                $(".mupProgress").addClass("upDone");
+                $("#mupProgressHolder").progressbar("value", 0);
+            }
+        });
+
+        function appendLi(resp) {
+            $("ul#bigGallery").append(
+                $('<li>').append(
+                    $('<img>').attr('src', '/Library/Uploads/WebThumb/' + resp.Path).attr('title', resp.Name).attr('data-id', resp.Id).attr('data-so', resp.SO).attr('width', '64')));
+        }
+
+        function saveSortAll() {
+            $(".sortButton").each(function () {
+
+                $(this).click();
+            });
+
+        }
+
+        $('#massdropZone').filedrop({
+            url: '@Url.Action("mFileUpload")',
+            paramname: 'files',
+            error: function (err, file) {
+                switch (err) {
+                    case 'BrowserNotSupported':
+                        alert('browser does not support HTML5 drag and drop');
+                        break;
+                    case 'TooManyFiles':
+                        alert('file limit exceeded');
+                        $(".mupProgress").addClass("upDone");
+                        break;
+                    case 'FileTooLarge':
+                        alert(file.name + ", file size too large");
+                        $(".mupProgress").addClass("upDone");
+                        break;
+                    case 'FileTypeNotAllowed':
+                        alert("upload image files only");
+                        $(".mupProgress").addClass("upDone");
+                        break;
+                    case 'FileExtensionNotAllowed':
+                        alert("upload image files only");
+                        $(".mupProgress").addClass("upDone");
+                        break;
+                    default:
+                        alert("Error");
+                        $(".mupProgress").addClass("upDone");
+                        break;
+                }
+            },
+            maxfiles: 50,
+            maxfilesize: 20,
+            queuewait: 10000,
+            allowedfiletypes: ['image/jpeg', 'image/png', 'image/gif'],
+            allowedfileextensions: ['.jpg', '.jpeg', '.png', '.gif'],
+            dragOver: function () {
+                $('#massdropZone').addClass("ui-state-hover");
+                $('#mDropLabel').empty().append('Drop Here');
+            },
+            dragLeave: function () {
+                $('#massdropZone').removeClass("ui-state-hover");
+                $('#mDropLabel').empty();
+            },
+            afterAll: function () {
+                $('#mDropLabel').empty().append('All files uploaded successfully...');
+            },
+            uploadStarted: function (i, file, len) {
+                $('#massdropZone').removeClass("ui-state-hover");
+                $("#mupProgressHolder").progressbar("value", 0);
+            },
+            progressUpdated: function (i, file, progress) {
+                $("#mupProgressHolder").progressbar("value", progress);
+            },
+            uploadFinished: function (i, file, response) {
+                if (response != 'error')
+                    appendLi(response);
+                $('#mDropLabel').empty().append('Uploading next file...');
+            }
+        });
+        var arr = [];
+        $("ul#bigGallery").on('click', 'li', function (e) {
+            if (e.ctrlKey || e.metaKey) {
+                $(this).toggleClass("selected");
+            } else {
+                $(this).addClass("selected").siblings().removeClass('selected');
+            }
+        }).sortable({
+            connectWith: '.prodList',
+            delay: 150, //Needed to prevent accidental drag when trying to select
+            revert: 0,
+            dropOnEmpty: true,
+            helper: function (e, item) {
+                var helper = $('<li/>');
+                if (!item.hasClass('selected')) {
+                    item.addClass('selected').siblings().removeClass('selected');
+                }
+                var elements = item.parent().children('.selected').clone();
+                arr.pop();
+                elements.each(function () {
+                    arr.push($(this).children('img').attr('data-id'));
+                });
+                item.data('multidrag', elements).siblings('.selected').remove();
+                return helper.append(elements);
+            },
+            stop: function (e, info) {
+                info.item.after(info.item.data('multidrag')).remove();
+            }
+        });
+
+    </script>
+}
+

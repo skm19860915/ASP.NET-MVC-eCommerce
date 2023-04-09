@@ -1,0 +1,180 @@
+﻿@using MvcPaging;
+@using Platini.Models
+@model IPagedList<Platini.Models.UserClass>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-12 col-lg-12 col-sm-12"><h4 style="text-align:center;"> Users for @ViewBag.CompanyName</h4></div>
+<div class="col-md-7 col-lg-7 col-sm-7">
+    @using (Html.BeginForm("Index", "User", new { area = "Admin" }, FormMethod.Post))
+    {         
+        <div class="filter-block">
+            <div class="formblock">
+                <div class="block">
+                    <div class="formrow">
+                        Search by Name
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            @Html.TextBox("searchString")
+                        </div>
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            <input id="searchBtn" class="cobtn" value="GO" type="submit" style="height: 22px;" onclick="@Url.Action("Index", "Customer", new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, @searchString = ViewBag.searchStringParam ,@customerId = ViewBag.CustomerId})" />
+                            @Html.Hidden("UserId")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+    }
+</div>
+<div class="col-md-5 col-lg-5 col-sm-5">
+    <div class="navigationlist">
+        <ul>
+            <li>
+                <a href="@Url.Action("Export", "User", new { @customerId = ViewBag.CustomerId })">Export all</a>
+            </li>
+            <li>
+                <a ID="Addbtn" href="@Url.Action("Create", "User", new { @customerId = ViewBag.CustomerId })" class="addlisting">
+                    <img id="addIcon" src="@Url.Content("~/Styles/images/addlistIcon.png")" />Add New User</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "User", new { @customerId = ViewBag.CustomerId })" id="resetsearch">
+                    <img src="@Url.Content("~/Styles/images/listIcon.png")" alt="">Refresh</a>
+            </li>
+        </ul>
+    </div>
+</div>
+@*<div class="col-md-12 col-lg-12 col-sm-12">
+    <div class="navigationlist" style="float:left;">
+        <ul>
+            <li>
+                @{ List<SelectedListValues> associatesalespersonlist = new List<SelectedListValues>();
+                   associatesalespersonlist.Add(new SelectedListValues { Id = 0, Value = "Default" });
+                   if (Model.Count() > 0)
+                   {
+                       foreach (var item in Model[0].SalesPersonList)
+                       {
+                           associatesalespersonlist.Add(item);
+                       }
+                   }
+                }
+                @Html.DropDownList("selectedAssociateSalesPersonId", new SelectList(associatesalespersonlist, "Id", "Value"), new { style = "width:120px;height:30px;" })
+            </li>
+            <li>
+                <a onclick="javascript:associateToSelectedSalesPerson();")">Associate Selected</a>
+            </li>
+        </ul>
+    </div>
+</div>*@
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="minContainer">
+        <div class="listmanager">
+            <div class="head">
+                User List
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        <td>#</td>
+                        <td>@Html.ActionLink("User Name", "Index", "User", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "UserName", searchString = ViewBag.searchStringParam, @customerId = ViewBag.CustomerId }, null)</td>
+                        <td>@Html.ActionLink("First Name", "Index", "User", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "FirstName", searchString = ViewBag.searchStringParam, @customerId = ViewBag.CustomerId }, null)</td>
+                        <td>@Html.ActionLink("Last Name", "Index", "User", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "LastName", searchString = ViewBag.searchStringParam, @customerId = ViewBag.CustomerId}, null)</td>
+                        <td>@Html.ActionLink("E-Mail", "Index", "User", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "Email", searchString = ViewBag.searchStringParam, @customerId = ViewBag.CustomerId }, null)</td>
+                        <td style="text-align: center;">@Html.ActionLink("Phone", "Index", "User", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "PhoneNo", searchString = ViewBag.searchStringParam, @customerId = ViewBag.CustomerId }, null)</td>
+                        <td style="text-align: center;">@Html.ActionLink("Last Visited", "Index", "User", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "LastVisitedDate", searchString = ViewBag.searchStringParam, @customerId = ViewBag.CustomerId }, null)</td>
+                        <td style="text-align: center;">@Html.ActionLink("Visits", "Index", "User", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "Visits", searchString = ViewBag.searchStringParam, @customerId = ViewBag.CustomerId }, null)</td>
+                        <td style="text-align: center;">Actions</td>
+                    </tr>
+
+                    @if (Model.Count() > 0)
+                    {
+
+                        foreach (var item in Model)
+                        {                       
+                        <tr>
+                            <td>
+                                @*@Html.CheckBox("customerCheckBox", new { id = item.Id })*@
+                                @Html.HiddenFor(x => item.AccountId)
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Edit", "User", new { Id = item.AccountId , @customerId = ViewBag.CustomerId})">@Html.DisplayFor(x => item.Username)</a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.Email)
+                            </td>
+                            <td style="text-align: center;">
+                                @Html.DisplayFor(x => item.PhoneNo)
+                            </td>
+                            <td>
+                                @*@Html.DisplayFor(x=>item.Email)*@
+                            </td>
+                            <td>
+                                @*@Html.DisplayFor(x=>item.Email)*@
+                            </td>
+                            <td style="text-align: center;">
+                                @Ajax.ActionLink("Send Password", "SendPassword", new { id = item.AccountId }, new AjaxOptions { HttpMethod = "GET", OnSuccess = "alert('Successfully sent email.')" }) |                              
+                                <a href="@Url.Action("Delete", "user", new { Id = item.AccountId , @customerId = ViewBag.CustomerId})" onclick = "return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                            </td>
+                        </tr>
+                        }
+                    }
+
+                    @if (Model.Count() == 0)
+                    {
+                        
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align:center;">No user found.</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+
+                </table>
+                <div class="pagingContainer"></div>
+
+                @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, searchString = ViewBag.searchStringParam, @customerId = ViewBag.CustomerId })
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script type="text/javascript">
+    var associateToSelectedSalesPerson = function () { 
+        var selectedAssociateSalesPersonId = $("#selectedAssociateSalesPersonId").val();
+        var selectedCustomerIds = new Array();
+
+        $("input:checkbox[name=customerCheckBox]:checked").each(function () {
+            var id = $(this).attr('id');
+            selectedCustomerIds.push(id);
+        });
+        $.ajax({
+            type: "POST",
+            traditional: true,
+            url: "@(Url.Action("AssociateSelectedSalesPerson","Customer"))",
+            data: { "selectedAssociateSalesPersonId": selectedAssociateSalesPersonId, "selectedCustomerIds": selectedCustomerIds },
+            success: function () {
+                $("input:checkbox[name=customerCheckBox]:checked").each(function () {
+                    $(this).prop('checked', false);
+                });
+                alert('Successfully Saved');
+            },
+            error: function () { alert('Some error occured while saving.') }
+        });        
+    }
+</script>*@

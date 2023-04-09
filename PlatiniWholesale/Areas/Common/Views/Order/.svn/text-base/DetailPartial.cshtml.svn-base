@@ -1,0 +1,69 @@
+﻿@using Platini.Models
+@model BBDetails
+@if (Model.Boxes.Any())
+{
+    <span>Box Details</span>
+    <table style="background-color: #e8e8e8; border-collapse: collapse; border-color: #012233; border-style: solid; border-width: 1px; width: 100%; text-align: center;" id="boxTable">
+        <tr>
+            <td style="background-color: #012233; color: White;">L</td>
+            <td style="background-color: #012233; color: White;">W</td>
+            <td style="background-color: #012233; color: White;">H</td>
+            <td style="background-color: #012233; color: White;">Weight</td>
+            <td style="background-color: #012233; color: White;">Action</td>
+        </tr>
+        @for (int i = 0; i < Model.Boxes.Count; i++)
+        {
+            <tr class="itemBox">
+                <td>@Html.TextBox("BoxL_" + i, Model.Boxes[i].Dimension.Split(':')[0], new { @style = "width: 3em;", @datarow = i, @onchange = "updateDimension(this);" })</td>
+                <td>@Html.TextBox("BoxW_" + i, Model.Boxes[i].Dimension.Split(':')[1], new { @style = "width: 3em;", @datarow = i, @onchange = "updateDimension(this);" })</td>
+                <td>@Html.TextBox("BoxH_" + i, Model.Boxes[i].Dimension.Split(':')[2], new { @style = "width: 3em;", @datarow = i, @onchange = "updateDimension(this);" })</td>
+                <td>@Html.TextBoxFor(m => Model.Boxes[i].Weight, new { @style = "width: 3em;" })
+                    @Html.HiddenFor(m => Model.Boxes[i].Dimension, new { @class = "hidD_" + i })
+                </td>
+                <td>
+                    @if (Model.Boxes[i].Id != 0)
+                    {
+                        <img src="@Url.Content("~/Styles/image/dustbin.png")" style="cursor:pointer" data-id="@Model.Boxes[i].Id" data-type="box" onclick="binMe(this);"/>
+                    }
+                    @Html.HiddenFor(m => Model.Boxes[i].OrderId)
+                    @Html.HiddenFor(m => Model.Boxes[i].Id, new { @class = (Model.Boxes[i].Id > 0 ? "nc" : "c") })
+                </td>
+            </tr>
+        }
+    </table>
+}
+@if (Model.Bags.Any())
+{
+    <span style="margin: 1em 0;">Bag Details</span>
+    <table style="background-color: #e8e8e8; border-collapse: collapse; border-color: #012233; border-style: solid; border-width: 1px; width: 50%; text-align: center;" id="bagTable">
+        <tr>
+            <td style="background-color: #012233; color: White;">Weight</td>
+            <td style="background-color: #012233; color: White;">Action</td>
+        </tr>
+        @for (int i = 0; i < Model.Bags.Count; i++)
+        {
+            <tr>
+                <td>@Html.TextBoxFor(m => Model.Bags[i].Weight, new { @style = "width: 3em;" })</td>
+                <td>
+                    @if (Model.Bags[i].Id != 0)
+                    {
+                        <img src="@Url.Content("~/Styles/image/dustbin.png")" style="cursor:pointer" data-id="@Model.Bags[i].Id" data-type="bag" onclick="binMe(this);" />
+                    }
+                    @Html.HiddenFor(m => Model.Bags[i].Id, new { @class = (Model.Bags[i].Id > 0 ? "nc" : "c") })
+                    @Html.HiddenFor(m => Model.Bags[i].OrderId)
+                </td>
+            </tr>
+        }
+    </table>
+}
+<script>
+    function updateDimension(elm) {
+        var Id = $(elm).attr('datarow');
+        var valL = parseInt($("input[name='BoxL_" + Id + "']").val());
+        var valW = parseInt($("input[name='BoxW_" + Id + "']").val());
+        var valH = parseInt($("input[name='BoxH_" + Id + "']").val());
+        var dim = valL + ":" + valW + ":" + valH;
+        $(".hidD_" + Id).val(dim);
+    }
+    
+</script>

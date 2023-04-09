@@ -1,0 +1,597 @@
+﻿@using Platini.Models
+@model Platini.Models.CustomerClass
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src="~/Scripts/intlTelInput.min.js"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/utils.js")"></script>
+<link href="~/Styles/intlTelInput.css" rel="stylesheet">
+
+<style>
+    .lText {
+        display: inline-block;
+        width: 48%;
+        padding: 10px 2px;
+    }
+
+        .lText input {
+            /*width: 120px!important;
+            float: right;*/
+            width: 150px !important;
+            float: left;
+        }
+
+            .lText input:-webkit-input-placeholder {
+                color: #ccc;
+            }
+
+            .lText input:-moz-placeholder {
+                color: #ccc;
+            }
+
+            .lText input:-moz-placeholder {
+                color: #ccc;
+            }
+
+            .lText input:-ms-input-placeholder {
+                color: #ccc;
+            }
+
+            .lText input:focus::-webkit-input-placeholder {
+                color: transparent;
+            }
+
+            .lText input:focus:-moz-placeholder {
+                color: transparent;
+            }
+
+            .lText input:focus::-moz-placeholder {
+                color: transparent;
+            }
+
+            .lText input:focus:-ms-input-placeholder {
+                color: transparent;
+            }
+</style>
+<style>
+    .hide {
+  display: none; }
+
+    pre {
+  margin: 0 !important;
+  display: inline-block; }
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+  background: none; }
+
+    ::-webkit-input-placeholder {
+  color: #BBB; }
+
+::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #BBB;
+  opacity: 1; }
+
+:-ms-input-placeholder {
+  color: #BBB; }
+</style>
+@using (Html.BeginForm(null, "Customer", FormMethod.Post, new { @enctype = "multipart/form-data", @id="customerForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div id="errorMsgName" class="box_error" style="display: none;">
+        <label id="errormsg"></label>
+    </div>
+    <div class="deshboardpanalNew">
+        <div class="adminright_panal">
+            <div class="nameheadingbg">
+                <h1>Customer Registration</h1>
+            </div>
+            <div class="row">
+                <div class="registration">
+                    @Html.ValidationSummary(true)
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                            <div class="formRow">
+                                @{
+    if (SiteIdentity.IsAdmin == "FALSE" && SiteIdentity.Roles == "SalesPerson")
+    { }
+    else
+    {
+        <label for="contact_name" class="fieldLabel forwidth" style="display:inline-block;float:none">
+            Sales Person
+        </label>
+                                    <div class="field" style="display:inline-block;float:none;">
+                                        @Html.DropDownList("SelectedSalesPerson", new SelectList(Model.SalesPersonList, "Id", "Value", 0), "Default", new { @class = "dropDown" })
+                                    </div>
+    }
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            @*<div class="formRow">
+                                    <label for="contact_name" class="fieldLabel forwidth">
+                                        Display Name
+                                    </label>
+                                    <div class="field">
+                                        @Html.TextBoxFor(model => model.DisplayName)
+                                    </div>
+                                </div>*@
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Business Name<span style="font-weight: 100">(Store Name)</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.BusinessName)
+                                    <span style="color: red;">@Html.ValidationMessageFor(model => model.BusinessName)</span>
+                                    @*@if (string.IsNullOrEmpty(Model.BusinessName))
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(model => model.BusinessName, new { @disabled = "disabled" })
+                                            @Html.HiddenFor(m => m.BusinessName)
+                                        }*@
+                                </div>
+                            </div>
+
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    First Name <span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.FirstName)
+                                    <br />
+                                    <span style="color: red;">@Html.ValidationMessageFor(model => model.FirstName)</span>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Last Name <span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.LastName)
+                                    <br />
+                                    <span style="color: red;">@Html.ValidationMessageFor(model => model.LastName)</span>
+                                </div>
+                            </div>
+                            <div class="formRow country">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Phone <span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.PhoneNo, new { @id = "phone", @style = "padding-left: 48px;" })
+                                    @Html.HiddenFor(model => model.CountryCode, new { @id = "ccode" })
+                                    <br />
+                                    <span style="color: red;">@Html.ValidationMessageFor(model => model.PhoneNo)</span>
+                                    <span style="color: green;" id="valid-msg" class="hide">✓ Valid</span>
+                                    <span style="color: red;" id="error-msg" class="hide">Invalid number</span>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    E-Mail @*<span class="forStar">*</span>*@
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.Email)
+                                    <br />
+                                    @*<span style="color: red;">@Html.ValidationMessageFor(model => model.Email)</span>*@
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    User Name <span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @if (Model.AccountId > 0)
+                                    {
+                                        @:@Html.TextBoxFor(model => model.Username, new { @id = "txtUserName", @dataacc= "1" })
+                                    }
+                                    else
+                                    {
+                                        @:@Html.TextBoxFor(model => model.Username, new { @id = "txtUserName", @dataacc="0" })
+                                    }
+
+                                    @*@if (Model.AccountId == 0)
+                                        {*@
+                                    <br />
+                                    <span style="color: red;">@Html.ValidationMessageFor(model => model.Username)</span>
+                                    <br />
+                                    <a onclick="javascript:checkUsernameAvailablity();" style="color: blue; background: none!important; border: none; padding: 0!important; cursor: pointer;">Check Availability</a>
+                                    @*}*@
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Password <span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.Password)
+                                    <br />
+                                    <span style="color: red;">@Html.ValidationMessageFor(model => model.Password)</span>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Business Reseller<span style="font-weight: 100">(Optional)</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.BusinessReseller)
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Discount<span style="font-weight: 100">(Optional)</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.Discount)
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Business License
+                                </label>
+                                <div class="field">
+                                    <input type="file" name="bFileUp" style="display:inline-block" />
+                                    @if (Model != null && !string.IsNullOrEmpty(Model.BusinessLicense))
+                                    {
+                                        <a href="@Url.Content("~/Library/Uploads/" + Model.BusinessLicense)" style="display:inline-block" target="_blank">View Current License</a>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Note:
+                                </label>
+                                <div class="field">
+                                    @Html.TextAreaFor(x => Model.Note, new { cols = "55", rows = "3" })
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                </label>
+                                <div class="field">
+                                    Billing Address<span style="font-weight: 100">(Optional)</span>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Street:
+                                </label>
+                                <div class="field">
+                                    @Html.TextAreaFor(x => Model.BillingAddress.Street, new { cols = "55", rows = "3" })
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                </label>
+                                <div class="field" style="width: 60%;">
+                                    <span class="lText">
+                                        @*City*@
+                                        @Html.TextBoxFor(x => Model.BillingAddress.City, new { @placeholder = "City" })
+                                    </span>
+                                    <span class="lText">
+                                        @*State*@
+                                        @Html.TextBoxFor(x => Model.BillingAddress.State, new { @placeholder = "State" })
+                                    </span>
+                                    <span class="lText">
+                                        @*Zip*@
+                                        @Html.TextBoxFor(x => Model.BillingAddress.Pincode, new { @placeholder = "Zip" })
+                                    </span>
+                                    <span class="lText">
+                                        @*Country*@
+                                        @Html.TextBoxFor(x => Model.BillingAddress.Country, new { @placeholder = "Country" })
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                </label>
+                                <div class="field">
+                                    Shipping Address<span style="font-weight: 100">(Optional)</span>
+                                    @{ bool isChecked = Convert.ToBoolean(ViewBag.SameAsBillingValue);}
+                                    <br />
+                                    <label>@Html.CheckBox("SameAsBillingCheckBox", isChecked, new { onchange = "javascript:showHideShippingAddress();" })<i style="font-weight: 100">Same as Billing</i></label>
+                                </div>
+                            </div>
+                            <div id="ShippingAddressDiv" style="display: none;">
+                                <div class="formRow">
+                                    <label for="contact_name" class="fieldLabel forwidth">
+                                        Street
+                                    </label>
+                                    <div class="field">
+                                        @Html.TextAreaFor(x => Model.ShippingAddress.Street, new { cols = "55", rows = "3" })
+                                    </div>
+                                </div>
+                                <div class="formRow">
+                                    <label for="contact_name" class="fieldLabel forwidth">
+                                    </label>
+                                    <div class="field" style="width: 60%;">
+                                        <span class="lText">
+                                            @*City*@
+                                            @Html.TextBoxFor(x => Model.ShippingAddress.City, new { @placeholder = "City" })
+                                        </span>
+                                        <span class="lText">
+                                            @*State*@
+                                            @Html.TextBoxFor(x => Model.ShippingAddress.State, new { @placeholder = "State" })
+                                        </span>
+                                        <span class="lText">
+                                            @*Zip*@
+                                            @Html.TextBoxFor(x => Model.ShippingAddress.Pincode, new { @placeholder = "Zip" })
+                                        </span>
+                                        <span class="lText">
+                                            @*Country*@
+                                            @Html.TextBoxFor(x => Model.ShippingAddress.Country, new { @placeholder = "Country" })
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Term Name
+                                </label>
+                                <div class="field">
+                                    @Html.DropDownListFor(model => model.SelectedTerm, new SelectList(Model.TermList, "Id", "Value"), new { @class = "dropDown" })
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label class="fieldLabel" for="contact_name">
+                                    Active:
+                                </label>
+
+                                <div class="comn">
+                                    @if (Model == null)
+                                    {
+                                        <div class="comn2" style="width: 90px">
+                                            <label>@Html.RadioButtonFor(model => model.IsActive, "true", new { @checked = "checked" }) Yes</label>
+                                        </div>
+                                        <div class="comn2" style="width: 90px">
+                                            <label>@Html.RadioButtonFor(model => model.IsActive, "false") No</label>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="comn2" style="width: 90px">
+                                            <label>@Html.RadioButtonFor(model => model.IsActive, "true") Yes</label>
+                                        </div>
+                                        <div class="comn2" style="width: 90px">
+                                            <label>@Html.RadioButtonFor(model => model.IsActive, "false") No</label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label class="fieldLabel" for="contact_name">
+                                    Customer Type
+                                </label>
+
+                                <div class="comn">
+                                    @if (Model == null)
+                                    {
+                                        <div class="comn2" style="width: 90px">
+                                            <label>@Html.RadioButtonFor(model => model.Wholesale, "true", new { @checked = "checked" }) Wholesale</label>
+                                        </div>
+                                        <div class="comn2" style="width: 90px">
+                                            <label>@Html.RadioButtonFor(model => model.Wholesale, "false") Retail</label>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="comn2" style="width: 90px">
+                                            <label>@Html.RadioButtonFor(model => model.Wholesale, "true") Wholesale</label>
+                                        </div>
+                                        <div class="comn2" style="width: 90px">
+                                            <label>@Html.RadioButtonFor(model => model.Wholesale, "false") Retail</label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    &nbsp;
+                                </label>
+                                <div class="field">
+                                    @Html.HiddenFor(model => model.AccountId)
+                                    <button id="updbtn" type="submit" class="save-btn" value="Save">Save</button>
+                                    <button id="cncbtn" type="button" class="save-btn" value="Cancel" onclick="cancelButtonattr();">Cancel</button>
+                                    @if (Model != null && Model.AccountId > 0)
+                                    {
+                                        @Html.ActionLink("Manage Store Images", "ShowRoomImages", new { @Id = Model.AccountId, @from = "1" }, new { @class = "save-btn" })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            @Html.HiddenFor(x => Model.BillingAddress.AddressTypeId)
+                            @Html.HiddenFor(x => Model.ShippingAddress.AddressTypeId)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<br />
+<br />
+
+<script type="text/javascript">
+    $(function () {
+        $("#Email").blur(function () {
+            if ($("#AccountId").val() == '0') {
+                $("#txtUserName").val($('#Email').val());
+                $("#txtUserName").blur();
+            }
+        });
+
+
+        var telInput = $("#phone"),
+        errorMsg = $("#error-msg"),
+        validMsg = $("#valid-msg");
+
+        // initialise plugin
+        //telInput.intlTelInput({
+        //    initialCountry: "auto",
+        //    geoIpLookup: function (callback) {
+        //        $.get('http://ipinfo.io', function () { }, "jsonp").always(function (resp) {
+        //            var countryCode = (resp && resp.country) ? resp.country : "";
+        //            callback(countryCode);
+        //            $('#ccode').val(countryCode);
+        //        });                
+        //    },
+        //    utilsScript: "../Scripts/utils.js"
+        //});
+
+
+        telInput.intlTelInput({ utilsScript: "../Scripts/utils.js?3" });
+
+        // on blur: validate
+        telInput.blur(function () {
+            if ($.trim(telInput.val())) {
+                if (telInput.intlTelInput("isValidNumber")) {
+                    validMsg.removeClass("hide");
+                } else {
+                    telInput.addClass("error");
+                    errorMsg.removeClass("hide");
+                    validMsg.addClass("hide");
+                }            
+            }
+        });
+
+        $("#customerForm").submit(function () {
+            $("#ccode").val($("#phone").intlTelInput("getNumber"));
+            var va=$('#ccode').val();           
+        });
+
+        $("#mobile-number").intlTelInput("setNumber", "+44 7733 123 456");
+
+        // on keydown: reset
+        telInput.keydown(function () {
+            telInput.removeClass("error");
+            errorMsg.addClass("hide");
+            validMsg.addClass("hide");
+        });
+
+        $("#txtUserName").on('change', function () {           
+               var username = $("#txtUserName").val();
+               var account = $('#txtUserName').attr('dataacc');
+                $.ajax({
+                    type: "GET",
+                    url: "@(Url.Action("checkUsernameAvailablity", "User"))",
+                    data: { "username": username },
+                success: function (data) {
+                    if (data == "User Name is available.") {
+                        $('span[data-valmsg-for="Username"]').html();
+                        var ht = '<span style="color:green;">' + data + '</span>';
+                        $('span[data-valmsg-for="Username"]').html(ht);
+                    }
+                    else {
+                        if (account == "0") {
+                            $('span[data-valmsg-for="Username"]').html();
+                            $('span[data-valmsg-for="Username"]').html(data);
+                        }
+                        else
+                        {
+                            $('span[data-valmsg-for="Username"]').html();
+                            $('span[data-valmsg-for="Username"]').html("");
+                        }
+                    }
+                },
+                error: function () { }
+            });        
+        });
+
+        $("#txtUserName").blur(function () {
+            var username = $("#txtUserName").val();
+            var account = $('#txtUserName').attr('dataacc');
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("checkUsernameAvailablity", "User"))",
+                data: { "username": username },
+                success: function (data) {
+                    if (data == "User Name is available.") {
+                        //$('span[data-valmsg-for="Username"]').html();
+                        //var ht = '<span style="color:green;">' + data + '</span>';
+                        //$('span[data-valmsg-for="Username"]').html(ht);
+                    }
+                    else {
+                        if (account == "0") {
+                            $('span[data-valmsg-for="Username"]').html();
+                            $('span[data-valmsg-for="Username"]').html(data);
+                        }
+                    }
+                },
+                error: function () { }
+            });
+        });
+    });
+
+    $(function firstCall() {
+        showHideShippingAddress();
+    });
+    var showHideShippingAddress = function () {
+        var checked = $("#SameAsBillingCheckBox").is(':checked');
+        if (checked == true) {
+            $("#ShippingAddressDiv").hide();
+        }
+        else if (checked == false) {
+            $("#ShippingAddressDiv").show();
+        }
+    }
+
+    var cancelButtonattr = function () {
+        var attrbt = '@ViewBag.fromInactive';
+        if (attrbt == "true") {
+            $(location).attr('href', '@Url.Action("InactiveCustomer", "Customer")');
+        }
+        else if (attrbt == "false" || attrbt == "") {
+            $(location).attr('href', '@Url.Action("Index", "Customer")');
+        }
+    }
+
+    var checkUsernameAvailablity = function () {
+        debugger;
+        var username = $("#txtUserName").val();
+
+        $.ajax({
+            type: "GET",
+            url: "@(Url.Action("checkUsernameAvailablity", "User"))",
+            data: { "username": username },
+            success: function (data) {
+                if (data == "User Name is available.") {
+                    $('span[data-valmsg-for="Username"]').html();
+                    var ht = '<span style="color:green;">' + data + '</span>';
+                    $('span[data-valmsg-for="Username"]').html(ht);
+                }
+                else {
+                    if (account == "0") {
+                        $('span[data-valmsg-for="Username"]').html();
+                        $('span[data-valmsg-for="Username"]').html(data);
+                    }
+                    else {
+                        $('span[data-valmsg-for="Username"]').html();
+                        $('span[data-valmsg-for="Username"]').html("");
+                    }
+                }
+            },
+            error: function () { }
+        });
+    }
+
+</script>

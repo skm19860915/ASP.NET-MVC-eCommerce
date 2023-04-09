@@ -1,0 +1,63 @@
+﻿@using Platini.Models;
+@using MvcPaging;
+@model IPagedList<SiteVisitors>
+@{
+    ViewBag.Title = "Visitors";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="minContainer">
+        <div class="listmanager">
+            <div class="head">
+
+                Vistor List
+
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        @if (SiteConfiguration.Mode.ToLower() == ModeEnum.Order.ToString().ToLower())
+                        {
+                            <td style="width: 40px;">&nbsp;</td>
+                        }
+                        <td>Name</td>
+                        <td>City</td>
+                        <td>State</td>
+                        <td>Country</td>
+                        <td>Last Activity</td>
+
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            @if (SiteConfiguration.Mode.ToLower() == ModeEnum.Order.ToString().ToLower())
+                            {
+                                <td style="width: 40px;">&nbsp;</td>
+                            }
+                            <td>
+                                @item.Name
+                            </td>
+                            <td>
+                                @item.City
+                            </td>
+                            <td>
+                                @item.State
+                            </td>
+                            <td>
+                                @item.Country
+                            </td>
+                            <td>
+                                @item.Date
+                            </td>
+                        </tr>
+                    }
+                </table>
+                <div class="pagingContainer"></div>
+
+                @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount)
+            </div>
+        </div>
+    </div>
+</div>

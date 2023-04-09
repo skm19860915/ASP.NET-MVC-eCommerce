@@ -1,0 +1,301 @@
+﻿@using Platini.Models
+@using System.Web.Mvc
+@model BillInfo
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+@using (Html.BeginForm("Billing", "Home", FormMethod.Post, new { @name = "Billform", id = "BillForm" }))
+{
+    <section class="billingAdress">
+        <div class="container">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <h2>Billing Address</h2>
+
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Address1 <span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextAreaFor(model => model.BillingAddress.Address1)
+                        @Html.ValidationMessageFor(model => model.BillingAddress.Address1, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Address2</div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextAreaFor(model => model.BillingAddress.Address2)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">City<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.BillingAddress.City, new { @placeholder = "City" })
+                        @Html.ValidationMessageFor(model => model.BillingAddress.City, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">State/Province<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.BillingAddress.State, new { @placeholder = "State" })
+                        @Html.ValidationMessageFor(model => model.BillingAddress.State, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">ZIP<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.BillingAddress.Zip, new { @placeholder = "Zip Code" })
+                        @Html.ValidationMessageFor(model => model.BillingAddress.Zip, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Country <span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.BillingAddress.Country, new { @placeholder = "Country" })
+                        @Html.ValidationMessageFor(model => model.BillingAddress.Country, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <h2>
+                    Shipping Address <label>(<input id="sameAsBilling" type="checkbox" /> Same as billing)</label>
+
+                </h2>
+
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Address1 <span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextAreaFor(model => model.ShippingAddress.Address1)
+                        @Html.ValidationMessageFor(model => model.ShippingAddress.Address1, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Address2</div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextAreaFor(model => model.ShippingAddress.Address2)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">City<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.ShippingAddress.City, new { @placeholder = "City" })
+                        @Html.ValidationMessageFor(model => model.ShippingAddress.City, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">State/Province<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.ShippingAddress.State, new { @placeholder = "State" })
+                        @Html.ValidationMessageFor(model => model.ShippingAddress.State, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">ZIP<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.ShippingAddress.Zip, new { @placeholder = "Zip Code" })
+                        @Html.ValidationMessageFor(model => model.ShippingAddress.Zip, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Country <span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.ShippingAddress.Country, new { @placeholder = "Country" })
+                        @Html.ValidationMessageFor(model => model.ShippingAddress.Country, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h2>Payment Information</h2>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+
+                <div class="imagesBoxp">
+                    <span id="siteseal">
+                        <script type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=BcwWYJbTwTwWYbGZGG4syMfZHLhDlo9VJH9WK1T2wsDhFU2kNz8ZGmt45OvU"></script></span>
+                <img src="https://www.paypalobjects.com/webstatic/en_IN/mktg/logos/bdg_secured_by_pp_2line.png" border="0" alt="Secured by PayPal"></div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Choose A Card<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.DropDownListFor(model => model.SavedCard, new SelectList(Model.SavedCards, "Id", "Value"), "New Card")
+                        <a href="javascript:void(0)" id="DeleteMe">X Delete this card</a>
+                    </div>
+                </div>
+                <div class="row newCard">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Name on Card<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8" style="padding:0;">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            @Html.TextBoxFor(model => model.CardFName, new { @placeholder = "First Name" })
+                            @Html.ValidationMessageFor(model => model.CardFName, null, new { @class = "redMsg" })
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            @Html.TextBoxFor(model => model.CardLName, new { @placeholder = "Last Name" })
+                            @Html.ValidationMessageFor(model => model.CardLName, null, new { @class = "redMsg" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row newCard">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Card Type<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.DropDownListFor(model => model.CardType, new SelectList(Model.Cards, "Id", "Value"), "Select A Card")
+                        @Html.ValidationMessageFor(model => model.CardType, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row newCard">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Card Number<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.CardNumber, new { @maxlength = "16", @class = "numOnly" })
+                        @Html.ValidationMessageFor(model => model.CardNumber, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+                <div class="row newCard">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">CVV Code<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        @Html.TextBoxFor(model => model.CVV, new { @maxlength = "3", @class = "numOnly" })
+                        @Html.ValidationMessageFor(model => model.CVV, null, new { @class = "redMsg" })
+                    </div>
+                </div>
+
+                <div class="row newCard">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">Expiration Date<span class="rd">*</span></div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="padding-left:0">
+                            @Html.DropDownListFor(model => model.ExpMonth, new SelectList(Model.Months, "Id", "Value"), "Select")
+                            @Html.ValidationMessageFor(model => model.ExpMonth, null, new { @class = "redMsg" })
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="padding-right:0;">
+                            @Html.DropDownListFor(model => model.ExpYear, new SelectList(Model.Years, "Id", "Value"), "Select")
+                            @Html.ValidationMessageFor(model => model.ExpYear, null, new { @class = "redMsg" })
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style=" margin-top: -10px;">
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">&nbsp;</div>
+                    <div class="col-lg-10 col-md-8 col-sm-8 col-xs-8">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right:0;">
+                            <div style="float:right; text-align:right;padding-bottom: 10px;">
+                                <span style="display:block;">Qty: @Model.QT</span>
+                                <span style="display:block;">Sub Total: @Model.ST</span>
+                                <span style="display:block;border-bottom:1px dashed">Ground Shipping: @Model.GS</span>
+                                <span>Grand Total: @Model.GT</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" style="padding-left:0;">
+                            <input type="button" value="Continue Shopping" id="contShop" class="canc"/>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" >
+                            <input type="button" class="canb" value="CANCEL" onclick="window.location = '/Home/Index';">
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" style="padding-right:0">
+                            <input type="submit" name="paymentSubmit" class="applyb" value="SUBMIT">
+                            @Html.HiddenFor(model => model.OrderId)
+                            @Html.HiddenFor(model => model.UserId)
+                            @Html.HiddenFor(model => model.BillingAddress.AddressId)
+                            @Html.HiddenFor(model => model.ShippingAddress.AddressId)
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 orbor" style="min-height:500px;">
+                <span class="or">OR</span>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                <div>
+                    <button id="expressPay" style="background:transparent;border:0;">
+                        <img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" align="left" style="margin-right:7px;">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<script>
+    $(function () {
+        if (parseInt($("#SavedCard").val()) > 0) {
+            $(".newCard").hide(1000);
+            $("#DeleteMe").show(1000).css({ "display": "block" });
+        }
+        else {
+            $(".newCard").show(1000);
+            $("#DeleteMe").hide(1000);
+        }
+        var text = $("#CardType").val();
+        if (text == "amex") {
+            $("#CVV").attr("maxlength", 4);
+        }
+    });
+    $("#SavedCard").change(function () {
+        if (parseInt($(this).val()) > 0) {
+            $(".newCard").hide(1000);
+            $("#DeleteMe").show(1000).css({ "display": "block" });
+        }
+        else {
+            $(".newCard").show(1000);
+            $("#DeleteMe").hide(1000);
+        }
+    });
+    $("#CardType").change(function () {
+        var text = $("#CardType").val();
+        if (text != "amex") {
+            $("#CVV").attr("maxlength", 3);
+            if ($("#CVV").val().length > 3)
+                $("#CVV").val($("#CVV").val().substring(0, 3));
+        }
+        else
+            $("#CVV").attr("maxlength", 4);
+    });
+
+    $("#DeleteMe").click(function () {
+        if (confirm("Are you sure?") && parseInt($("#SavedCard").val()) > 0) {
+            $("#DeleteMe").addClass("bgClass3");
+            $.post('@Url.Action("DeleteCard", "Home")', { Id: parseInt($("#SavedCard").val()) }).done(function (data) {
+                if (data == "success") {
+                    $("#SavedCard option[value=" + $("#SavedCard").val() + "]").remove();
+                    $("#SavedCard").val('');
+                    $(".newCard").show(1000);
+                    $("#DeleteMe").removeClass("bgClass3");
+                }
+            });
+        }
+    });
+
+    $("#expressPay").click(function () {
+        $("#BillForm").attr("action", "/Home/Express");
+    });
+
+    $("#contShop").click(function () {
+        $("#BillForm").attr("action", "/Home/SaveAddress");
+    });
+
+    $(".numOnly").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+            // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) ||
+            // Allow: home, end, left, right, down, up
+            (e.keyCode >= 35 && e.keyCode <= 40)) {
+            // let it happen, don't do anything
+            return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+    $("#sameAsBilling").change(function () {
+        if ($(this).is(":checked")) {
+            $("#ShippingAddress_Address1").val($("#BillingAddress_Address1").val());
+            $("#ShippingAddress_Address2").val($("#BillingAddress_Address2").val());
+            $("#ShippingAddress_City").val($("#BillingAddress_City").val());
+            $("#ShippingAddress_State").val($("#BillingAddress_State").val());
+            $("#ShippingAddress_Zip").val($("#BillingAddress_Zip").val());
+            $("#ShippingAddress_Country").val($("#BillingAddress_Country").val());
+        }
+    });
+</script>

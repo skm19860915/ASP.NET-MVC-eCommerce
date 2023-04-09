@@ -1,0 +1,34 @@
+﻿@using Platini.Models
+@model OrderTotals
+<style>
+    div {
+        font-size:12px;
+    }
+</style>
+<div style="margin: 0 auto; border: 1px solid black;">
+    @Html.HiddenFor(m => m.OrderId)
+    @Html.HiddenFor(m => m.UserId)
+    <div style="padding: .5em;">
+        <span style="display: inline-block; width: 50%; text-align: right;">Grand Total:</span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left;">@Model.GT.ToString("C")</span>
+    </div>
+    <div style="padding: .5em;">
+        <span style="display: inline-block; width: 50%; text-align: right;">Shipping Cost:</span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left;">@Model.SC.ToString("C")</span>
+    </div>
+    <div style="padding: .5em;">
+        <span style="display: inline-block; width: 50%; text-align: right;">Discount:</span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left;">@Model.DT.ToString("F2")%</span>
+    </div>
+    <div style="padding: .5em;">
+        <span style="display: inline-block; width: 50%; text-align: right;">Final Total:</span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left;">@Model.FA.ToString("C")</span>
+    </div>
+</div>
+<div style="text-align: center;">
+    Are you sure you want to send this Invoice to QB? 
+    <div>
+        <a href="@Url.Action("QBOrder", "Order", new { Id = Model.OrderId })" style="display: inline-block; background: #000; color: #fff; padding: .5em;border-radius: 5px;text-decoration:none">Yes</a>
+        <a href="javascript:void(0);" onclick="closeConfirm();" style="display: inline-block; background: #000; color: #fff; padding: .5em;border-radius: 5px;text-decoration:none;margin-left: 1em;">No</a>
+    </div>
+</div>

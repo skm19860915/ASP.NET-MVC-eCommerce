@@ -1,0 +1,257 @@
+﻿@using Platini.Models
+@model BagsBoxes
+@if (Model.UserId > 0)
+{
+
+    <div style="margin: 1em auto; font-size: 12px;">
+        <div style="width: 100%; border: 1px solid black">
+            <div style="padding: .2em 0;">
+                <div style="display: inline-block; text-align: right; width: 40%;">Customer Name: </div>
+                <div style="display: inline-block; text-align: left;">@Model.UserName</div>
+            </div>
+            <div style="padding: .2em 0;">
+                <div style="display: inline-block; text-align: right; width: 40%;">Shipping Address: </div>
+                <div style="display: inline-block; text-align: left;">@Model.Shipping</div>
+            </div>
+            <div style="padding: .2em 0;">
+                <div style="display: inline-block; text-align: right; width: 40%;">Ship Via: </div>
+                <div style="display: inline-block; text-align: left; width: 20%;">@Html.DropDownListFor(m => m.ShipId, new SelectList(Model.ShipVias, "Id", "Value", Model.ShipId), "Select", new { @onchange = "return changeCheck(this);", dataid = Model.ShipId, @id = "ShipDDL" })</div>
+            </div>
+            <div style="padding: .2em 0;" class="hidDiv" id="bagDiv">
+                <div style="display: inline-block; text-align: right; width: 40%;">Enter No. Of Bags: </div>
+                <div style="display: inline-block; text-align: left;">@Html.TextBox("bagNo", Model.BagCount, new { @id = "bagNo", @style = "width: 2em;", @class = "changeText" })</div>
+            </div>
+            <div style="padding: .2em 0;" class="hidDiv">
+                <div style="display: inline-block; text-align: right; width: 40%;">Enter No. Of Boxes: </div>
+                <div style="display: inline-block; text-align: left;">@Html.TextBox("boxNo", Model.BoxCount, new { @id = "boxNo", @style = "width: 2em;", @class = "changeText" })</div>
+            </div>
+            <div style="padding: .2em 0;" class="hidDiv">
+                <div style="display: inline-block; text-align: right; width: 40%;">
+                    <span id="boxSpan">No. Of Boxes: @Model.BoxCount</span>
+                    <span id="bagSpan">No. Of Bags: @Model.BagCount</span>
+                    @Html.HiddenFor(m => m.BoxCount, new { @id = "eboxNo" })
+                    @Html.HiddenFor(m => m.BagCount, new { @id = "ebagNo" })
+                </div>
+                <div style="display: inline-block; text-align: left; width: 13%;">
+                    <a href="javascript:void(0);" id="hrefAdd" style="background-color: #012233; border: medium none; color: white; margin-left: 0; padding: 5px 10px;">Add</a>
+                </div>
+            </div>
+            <div style="padding: .2em 0;" class="hidDiv"></div>
+            @*<div style="padding: .2em 0;" class="hidDiv">
+                    <div style="display: inline-block; text-align: right; width: 40%;">Style: </div>
+                    <div style="display: inline-block; text-align: left;">@Html.TextBox("boxNo", Model.BoxCount, new { @id = "boxNo", @style = "width: 2em;", @class = "changeText" })</div>
+                </div>*@
+        </div>
+        @using (Html.BeginForm("SaveBagBox", "Order", new { @area = "Common" }, FormMethod.Post, new { @id = "bbForm" }))
+        {
+            <div style="margin: 1em 0;" id="detDiv">
+                @if (Model.BagCount > 0 || Model.BoxCount > 0)
+                {
+                    @Html.Action("DetailTable", "Order", new { @id = Model.OrderId })
+                }
+            </div>
+            <div style="margin: 1em auto; width: 30%;" id="submitDiv">
+                <div style="display: inline-block; text-align: center;">
+                    <input type="button" style="background-color: #012233; border: medium none; color: white; margin-left: 0; padding: 5px 10px;" value="Submit" id="btnPackSubmit" />
+                </div>
+                <div style="display: inline-block; text-align: center;">
+                    @Html.Hidden("OrderId", Model.OrderId)
+                    @Html.Hidden("IsShip", "")
+                    @if (Model.Status == (int)OrderMode.Packed)
+                    {
+                        <input type="button" style="background-color: #012233; border: medium none; color: white; margin-left: 0; padding: 5px 10px;" value="Ship" id="btnShip" />
+                        @Html.Hidden("IsPacked", (Model.Status == (int)OrderMode.Packed ? "1" : ""))
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+<script type="text/javascript">
+    $(function () {
+        if ($("#ShipDDL").val() == '0') {
+            $(".hidDiv").hide();
+        }
+        if ($("#ShipDDL").find("option:selected").text().toLowerCase().indexOf("ups") >= 0) {
+            $("#bagDiv").hide();
+            $("#bagSpan").hide();
+            $("#btnShip").hide();
+        }
+    });
+    $("#btnPackSubmit").click(function () {
+        if ($("#ShipDDL").find("option:selected").text().toLowerCase().indexOf("ups") >= 0) {
+            var bxc = parseInt($('#eboxNo').val());
+            if (bxc <= 0 && $("#detDiv input").length <= 0) {
+                var dialog = $('<p>Not enough box details entered to get shipping rates</p>').dialog({
+                    buttons: {
+                        "Ok": function () { dialog.dialog('close'); }
+                    }
+                });
+                //alert("You have to add boxes for shipping!")
+                return;
+            }
+        }
+        $("#bbForm").submit();
+    });
+    $("#btnShip").click(function () {
+        $("#IsShip").val("1");
+        $("#bbForm").submit();
+    });
+
+    $(".changeText").change(function () {
+        $("#boxSpan").text("No. Of Boxes: " + $('#boxNo').val());
+        $("#bagSpan").text("No. Of Bags: " + $('#bagNo').val());
+    });
+    $("#hrefAdd").click(function () {
+        $("#hrefAdd").parent().addClass("bgclass3");
+        var bgc = parseInt($('#bagNo').val());
+        var bxc = parseInt($('#boxNo').val());
+        var ebag = parseInt($('#ebagNo').val());
+        var ebox = parseInt($('#eboxNo').val());
+        bgc = bgc - ebag;
+        bxc = bxc - ebox;
+        if (ebag > 0 && bgc <= 0)
+            bgc = 0;
+        if (ebox > 0 && bxc <= 0)
+            bxc = 0;
+        if (parseInt($('#bagNo').val()) != 0 || parseInt($('#boxNo').val()) != 0) {
+            if (bgc >= 0 || bxc >= 0) {
+                if ($('#bagNo').is(":visible") == false) {
+                    bgc = 0;
+                }
+                $.get("@Url.Action("DetailTable")", { Id: '@Model.OrderId', BagCount: bgc, BoxCount: bxc }).done(function (data) {
+                    $("#detDiv").empty().append(data);
+                    $("#hrefAdd").parent().removeClass("bgclass3");
+                });
+            }
+            else {
+                //alert("Enter the number of boxes or bags");
+                var dialog = $('<p>Not enough box details entered to get shipping rates</p>').dialog({
+                    buttons: {
+                        "Ok": function () { dialog.dialog('close'); }
+                    }
+                });
+                $("#hrefAdd").parent().removeClass("bgclass3");
+            }
+        }
+        else {
+            var dialog = $('<p>Not enough box details entered to get shipping rates</p>').dialog({
+                buttons: {
+                    "Ok": function () { dialog.dialog('close'); }
+                }
+            });
+            //alert("Enter the number of boxes or bags");
+            $("#hrefAdd").parent().removeClass("bgclass3");
+        }
+    });
+    function changeCheck(elm) {
+        $(elm).parent().addClass("bgClass3");
+        var bgc = parseInt($('#ebagNo').val());
+        var bxc = parseInt($('#eboxNo').val());
+        var val = $(elm).val();
+        if (bgc > 0 || bxc > 0) {
+
+            if (confirm("Ship via changes also changes the existing  records with this status.  Are you sure you want to make this change?")) {
+                $.post('@Url.Action("DeleteBB", "Order")', { Id: '@Model.OrderId' }).done(function () {
+                    $("#detDiv").empty();
+                    $("#bagNo").val('0');
+                    $("#boxNo").val('0');
+                    $("#boxSpan").text("No. Of Boxes: 0");
+                    $("#bagSpan").text("No. Of Bags: 0");
+                });
+            }
+            else {
+                $(elm).val($(elm).attr('dataid'));
+            }
+
+        }
+        if (val == '') {
+            $(".hidDiv").hide();
+            $(elm).parent().removeClass("bgClass3");
+        }
+        else {
+            $(".hidDiv").show();
+            $("#bagSpan").show();
+            $("#btnShip").show();
+            var shipText = $(elm).find("option:selected").text().toLowerCase();
+            if (shipText.indexOf("ups") >= 0) {
+                $("#bagDiv").hide();
+                $("#bagSpan").hide();
+                $("#btnShip").hide();
+            }
+            $.post('@Url.Action("SaveShipVia", "Order")', { UserId: '@Model.UserId', ShipVia: val, OrderId: '@Model.OrderId' }).done(function () {
+                $(elm).parent().removeClass("bgClass3");
+            });
+        }
+    }
+    function binMe(elm) {
+        var Id = $(elm).attr('data-id');
+        var Type = $(elm).attr('data-type');
+        var $this = $(this);
+        var dialog = $('<p>Are you sure you want to delete this ' + Type + '?</P>').dialog({
+            title: "Warning!",
+            resizable: false,
+            modal: true,
+            buttons: {
+                "Yes": function () {
+                    $(elm).parent().addClass("bgClass3");
+                    $.post('@Url.Action("DeleteBagBox")', { Id: Id, Type: Type }).done(function (data) {
+                        if (data == "success") {
+                            var bgc = parseInt($('#bagNo').val());
+                            var bxc = parseInt($('#boxNo').val());
+                            if (Type == 'box' && bxc > 0) {
+                                bxc = bxc - 1;
+                                $('#boxNo').val(bxc);
+                                $("#boxSpan").text("No. Of Boxes: " + bxc);
+                            }
+                            else if (Type == 'bag' && bgc > 0) {
+                                bgc = bgc - 1;
+                                $('#bagNo').val(bgc);
+                                $("#bagSpan").text("No. Of Bags: 0" + bgc);
+                            }
+                            $(elm).parent().removeClass("bgClass3");
+                            $("#hrefAdd").parent().addClass("bgclass3");
+                            $.get("@Url.Action("DetailTable")", { Id: '@Model.OrderId' }).done(function (data) {
+                                $("#detDiv").empty().append(data);
+                                $("#hrefAdd").parent().removeClass("bgclass3");
+                            });
+                        }
+                    });
+                    dialog.dialog('close');
+                },
+                "No": function () {
+                    dialog.dialog('close');
+                }
+            }
+        });
+    }
+    @*function binMe(elm) {
+        var Id = $(elm).attr('data-id');
+        var Type = $(elm).attr('data-type');
+        if (confirm('Are you sure you want to delete this ' + Type + '?')) {
+            $(elm).parent().addClass("bgClass3");
+            $.post('@Url.Action("DeleteBagBox")', { Id: Id, Type: Type }).done(function (data) {
+                if (data == "success") {
+                    var bgc = parseInt($('#bagNo').val());
+                    var bxc = parseInt($('#boxNo').val());
+                    if (Type == 'box' && bxc > 0) {
+                        bxc = bxc - 1;
+                        $('#boxNo').val(bxc);
+                        $("#boxSpan").text("No. Of Boxes: " + bxc);
+                    }
+                    else if (Type == 'bag' && bgc > 0) {
+                        bgc = bgc - 1;
+                        $('#bagNo').val(bgc);
+                        $("#bagSpan").text("No. Of Bags: 0" + bgc);
+                    }
+                    $(elm).parent().removeClass("bgClass3");
+                    $("#hrefAdd").parent().addClass("bgclass3");
+                    $.get("@Url.Action("DetailTable")", { Id: '@Model.OrderId' }).done(function (data) {
+                        $("#detDiv").empty().append(data);
+                        $("#hrefAdd").parent().removeClass("bgclass3");
+                    });
+                }
+            });
+        }
+    }*@
+</script>

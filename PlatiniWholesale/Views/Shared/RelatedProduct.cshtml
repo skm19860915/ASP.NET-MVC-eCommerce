@@ -1,0 +1,130 @@
+﻿@model Platini.Models.RelatedProductClass
+
+@Html.HiddenFor(x => Model.ClothesId)
+<div><strong>StyleNumber : </strong>@Html.DisplayFor(x => Model.StyleNumber)</div>
+<br />
+<div id="RelatedProductList">
+    <table class="relatedP">
+        @foreach (var relatedProduct in Model.RelatedProducts)
+        {
+            <tr>
+                <td>@Html.DisplayFor(x => relatedProduct.StyleNumber)  </td>
+                <td>@Html.DisplayFor(x => relatedProduct.CategoryName)  </td>
+                <td>@Html.DisplayFor(x => relatedProduct.SubCategoryName)  </td>
+                <td>@Html.DisplayFor(x => relatedProduct.SubCategoryTypeName)</td>
+            </tr>
+        }
+    </table>
+</div>
+<div class="rHead">
+    <h3>Add Related Product</h3>
+</div>
+<table class="dds">
+    <tr>
+        <th style="padding-left: 0px;">Category</th>
+        <th>@Html.DropDownListFor(m => Model.CategoryId, new SelectList(Model.Categories, "CategoryId", "Name", 0), "Select", new { id = "DialogCategoryId" })</th>
+
+        <th>SubCategory</th>
+        <th>@Html.DropDownListFor(m => Model.SubCategoryId, new SelectList(Model.SubCategories, "CategoryId", "Name", 0), "Select", new { id = "DialogSubCategoryId" })</th>
+
+        <th>Type</th>
+        <th>@Html.DropDownListFor(m => Model.SubCategoryTypeId, new SelectList(Model.Types, "CategoryId", "Name", 0), "Select", new { id = "DialogSubCategoryTypeId" })</th>
+    </tr>
+</table>
+<div id="AllProductList"></div>
+<br />
+<button id="SaveRelatedProducts" class="btnOrder">Save/Update</button>
+
+
+<script type="text/javascript">
+
+    $("#DialogCategoryId").change(function () {
+        var selectedItem = $("#DialogCategoryId").val();
+        var updateHolder = $("#DialogSubCategoryId");
+        $("#AllProductList").html('');
+        $.ajax({
+            type: "GET",
+            url: "@(Url.Action("GetSubCategoryByCategoryId", "Home", new { area = "Common" }))",
+                data: { "categoryId": selectedItem },
+                success: function (data) {
+                    updateHolder.html('');
+                    $("#DialogSubCategoryTypeId").html('');
+                    $("#DialogSubCategoryTypeId").append($('<option>Select</option>'));
+                    updateHolder.append($('<option>Select</option>'));
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                    });
+                },
+                error: function () { }
+            });
+        });
+
+        $("#DialogSubCategoryId").change(function () {
+            var selectedItem = $(this).val();
+            var updateHolder = $("#DialogSubCategoryTypeId");
+            $("#AllProductList").html('');
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetSubCategoryTypeBySubCategoryId", "Home", new { area = "Common" }))",
+                data: { "subCategoryId": selectedItem },
+                success: function (data) {
+                    updateHolder.html('');
+                    updateHolder.append($('<option>Select</option>'));
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                    });
+                },
+                error: function () { }
+            });
+        });
+
+
+
+        $("#DialogSubCategoryTypeId").change(function () {
+            var clothId = $("#ClothesId").val();
+            var selectedSubCategoryTypeId = $("#DialogSubCategoryTypeId").val();
+            var updateHolder = $("#AllProductList");
+            updateHolder.html('');
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetAllProducts", "Clothes", new { area = "Common" }))",
+                data: { "categoryId": selectedSubCategoryTypeId, "clothId": clothId },
+                success: function (result) {
+                    updateHolder.html(result);
+                },
+                error: function () { }
+            });
+        });
+
+
+        $("#SaveRelatedProducts").on("click", function () {
+            var clothId = $("#ClothesId").val();
+            var relatedProductListIds = new Array();
+            var selectedSubCategoryTypeId = $("#DialogSubCategoryTypeId").val();
+            $("#relCheck input[type='checkbox']:checked").each(function () {
+                var id = $(this).attr('id');
+                relatedProductListIds.push(id);
+            });
+            $.ajax({
+                type: "POST",
+                traditional: true,
+                url: "@(Url.Action("SaveRelatedProducts", "Clothes", new { area = "Common" }))",
+            data: { "RelatedProductIds": relatedProductListIds, "clothId": clothId, "categoryId": selectedSubCategoryTypeId },
+            success: function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@(Url.Action("GetRelatedProducts", "Clothes", new { area = "Common" }))",
+                    data: { "clothId": clothId },
+                    success: function (result) {
+                        $("#RelatedProductDialog").html('');
+                        $("#RelatedProductDialog").append(result);
+                    },
+                    error: function () { }
+                });
+            },
+            error: function () { }
+        });
+        alert('Successfully Saved');
+    });
+</script>
+

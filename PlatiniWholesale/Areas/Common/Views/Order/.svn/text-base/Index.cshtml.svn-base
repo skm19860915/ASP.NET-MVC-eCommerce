@@ -1,0 +1,1052 @@
+﻿@using Platini.Models
+@using MvcPaging
+@using Platini.DB
+@model IPagedList<Order>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .ui-dialog > .ui-widget-header {
+        background: none repeat scroll 0 0 #012233;
+        text-align: center;
+    }
+
+    .ui-dialog {
+        -webkit-box-shadow: 0 0 5px 3px #999;
+        -moz-box-shadow: 0 0 5px 3px #999;
+        box-shadow: 0 0 5px 3px #999;
+    }
+
+    .ui-widget-content {
+        background: #eeeeee;
+        border: 1px solid #aaaaaa;
+        color: #222222;
+    }
+
+    .ui-front {
+        z-index: 99999!important;
+    }
+</style>
+
+@if (ViewBag.StatusId >= 0)
+{
+    bool EditMode = SiteConfiguration.Mode.ToLower() == ModeEnum.Edit.ToString().ToLower();
+    bool OrderMode = SiteConfiguration.Mode.ToLower() == ModeEnum.Order.ToString().ToLower();
+    bool showBtn = !ViewBag.isCustomer;
+    bool showPrice = !ViewBag.isWareHouse;
+    <div class="row">
+        @if (EditMode && !OrderMode)
+        {
+
+        }
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "orderHeaderForm" }))
+        {
+            @Html.Action("OrderHeader", new { @area = "Common", id = ViewBag.StatusId, selectedSalesPerson = ViewBag.selectedSalesPerson, searchText = ViewBag.searchText,TagId= ViewBag.selectedTag })
+            @Html.Hidden("Id", (int)ViewBag.StatusId)
+        }
+        @if (!EditMode && !OrderMode)
+        {
+            <table id="ordVTable" style="margin: 0 auto; text-align: center; width: 89.3%;">
+                <tr style="background: #000; color: #fff">
+                    @if (ViewBag.StatusId > 0)
+                    {
+                        <td>&nbsp;</td>
+                    }
+                    <td>OrderID</td>
+                    <td>Address</td>
+                    @if (ViewBag.StatusId != 0 && ViewBag.StatusId != 7)
+                    {
+                        <td>Date</td>
+                    }
+                    <td>Company</td>
+                    <td>Name</td>
+                    <td>E-Mail</td>
+                    <td>Phone</td>
+                    <td>Original Qty</td>
+                    <td>Packed Qty</td>
+                    @if (showPrice)
+                    {
+                        <td>Grand Total</td>
+                        <td>Discount(%)</td>
+                        if (showBtn)
+                        {
+                        <td>Shipping Cost</td>
+                        }
+                        <td>Final Amount</td>
+                    }
+                    <td>Tag
+                    </td>
+                </tr>
+                @if (Model != null)
+                {
+                    for (int i = 0; i < Model.Count; i++)
+                    {
+                    <tr style="border-bottom: 1px solid black; background-color: #e8e8e8; cursor: pointer;">
+                        @if (ViewBag.StatusId > 0)
+                        {
+                            <td>
+                                <a href="@Url.Action("Print", "Order", new { @area = "common", @id = Model[i].OrderId, @pType = "print" })" class="ordEButton" target="_blank">
+                                    @if (ViewBag.StatusId != 3 && ViewBag.StatusId != 6)
+                                    {
+                                        @:Print/View
+                                    }
+                                    else
+                                    {
+                                        @:Final Invoice
+                                    }
+                                </a>
+                            </td>
+                        }
+                        <td>
+                            @Model[i].OrderNumber
+                        </td>
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                var billAddress = Model[i].Account.Addresses.FirstOrDefault(x => x.AddressTypeId == (int)AddressTypeEnum.BillingAddress && x.IsActive == true && x.IsDelete == false);
+                                <img src="@Url.Content("~/Styles/image/icon-billaddress.png")" title="@("Billing Address:" + (billAddress != null ? billAddress.Street + ", " + billAddress.City + ", " + billAddress.State + ", " + billAddress.Pincode : ""))" />
+                                var shipAddress = Model[i].Account.Addresses.FirstOrDefault(x => x.AddressTypeId == (int)AddressTypeEnum.ShippingAddress && x.IsActive == true && x.IsDelete == false);
+                                <img src="@Url.Content("~/Styles/image/icon-address.png")" title="@("Shipping Address:" + (shipAddress != null ? shipAddress.Street + ", " + shipAddress.City + ", " + shipAddress.State + ", " + shipAddress.Pincode : ""))" />
+                            }
+                        </td>
+                        @if (ViewBag.StatusId != 0 && ViewBag.StatusId != 7)
+                        {
+                            <td>
+                                @if (ViewBag.StatusId == 1 || ViewBag.StatusId == 4 || ViewBag.StatusId == 2)
+                                {
+                                    @(Model[i].SubmittedOn.HasValue ? Model[i].SubmittedOn.Value.ToString("MM/dd/yyyy") : "")
+                                }
+                                else if (ViewBag.StatusId == 6)
+                                {
+                                    @(Model[i].PackedOn.HasValue ? Model[i].PackedOn.Value.ToString("MM/dd/yyyy") : "")
+                                }
+                                else if (ViewBag.StatusId == 3)
+                                {
+                                    @(Model[i].ShippedOn.HasValue ? Model[i].ShippedOn.Value.ToString("MM/dd/yyyy") : "")
+                                }
+                            </td>
+                        }
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @(Model[i].Account.Companies.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false) != null ? Model[i].Account.Companies.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false).Name : "")
+                            }
+                        </td>
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @(Model[i].Account.FirstName + " " + Model[i].Account.LastName)
+                            }
+                        </td>
+
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @Model[i].Account.Email
+                            }
+                        </td>
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @(Model[i].Account.Communications.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false) != null ? Model[i].Account.Communications.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false).Phone : "")
+                            }
+                        </td>
+                        <td>
+                            @(Model[i].OriginalQty.HasValue ? Model[i].OriginalQty.Value : 0)
+                        </td>
+                        <td>
+                            @(Model[i].PackedQty.HasValue ? Model[i].PackedQty.Value : 0)
+                        </td>
+                        @if (showPrice)
+                        {
+                            <td>
+
+                                @((Model[i].GrandTotal.HasValue ? Model[i].GrandTotal.Value : 0.0m).ToString("C"))
+                            </td>
+                            <td>
+                                @((Model[i].Discount.HasValue ? Model[i].Discount.Value : 0.0m).ToString("F2"))
+                            </td>
+                            if (showBtn)
+                            {
+                            <td>@((Model[i].ShippingCost.HasValue ? Model[i].ShippingCost.Value : 0.0m).ToString("C"))</td>
+                            }
+                            <td>
+                                @((Model[i].FinalAmount.HasValue ? Model[i].FinalAmount.Value : 0.0m).ToString("C"))
+                            </td>
+                        }
+                        <td>
+                            @(Model[i].OrderTag != null ? Model[i].OrderTag.Name : "")
+                        </td>
+                    </tr>
+                    }
+                }
+            </table>
+        }
+        else if (EditMode && !OrderMode)
+        {
+            <div style="float: right;">
+                @if (ViewBag.StatusId != 0 && ViewBag.StatusId != 3 && showBtn)
+                {
+                    using (Html.BeginForm("DeleteOrders", "Order", FormMethod.Post, new { @style = "display:inline-block;" }))
+                    {
+                    @Html.Hidden("Ids", "", new { @id = "deleteAll" })
+                    <input type="submit" onclick="return deleteAllOrders();" value="Delete" style="background: none repeat scroll 0 0 #424240; border-radius: 4px; color: #fff; font-weight: bold; margin: 2px; padding: 5px; border: 0 none; text-align: center;" />
+                    }
+                    <input type="button" value="Send Email" id="mailButton" style="background: none repeat scroll 0 0 #424240; border-radius: 4px; color: #fff; font-weight: bold; margin: 2px; padding: 5px; border: 0 none; text-align: center;" />
+                    if (ViewBag.StatusId == 1 || ViewBag.StatusId == 4)
+                    {
+                        using (Html.BeginForm("MoveToWareHouse", "Order", FormMethod.Post, new { @style = "display:inline-block;" }))
+                        {
+                    @Html.Hidden("Ids", "", new { @id = "moveAll" })
+                    <input type="submit" onclick="return moveAllOrders();" value="Move To Warehouse" style="background: none repeat scroll 0 0 #424240; border-radius: 4px; color: #fff; font-weight: bold; margin: 2px; padding: 5px; border: 0 none; text-align: center;" />
+                        }
+                    }
+                    if (ViewBag.StatusId == 2)
+                    {
+                    <input type="button" onclick="qshipAllOrders();" value="Quick Ship" style="background: none repeat scroll 0 0 #424240; border-radius: 4px; color: #fff; font-weight: bold; margin: 2px; padding: 5px; border: 0 none; text-align: center;" />
+                    }
+                    if (ViewBag.StatusId == 6)
+                    {
+                        using (Html.BeginForm("Ship", "Order", FormMethod.Post, new { @style = "display:inline-block;" }))
+                        {
+                    @Html.Hidden("Ids", "", new { @id = "shipAll" })
+                    <input type="submit" onclick="return shipAllOrders();" value="Ship" style="background: none repeat scroll 0 0 #424240; border-radius: 4px; color: #fff; font-weight: bold; margin: 2px; padding: 5px; border: 0 none; text-align: center;" />
+                        }
+                    }
+                }
+            </div>
+            <table id="ordETable" style="margin: 0 6em; text-align: center; width: 85.3%;">
+                <tr style="background: #000; color: #fff">
+                    @if (ViewBag.StatusId != 3)
+                    {
+                        <td>
+                            <input id="checkAll" type="checkbox" /></td>
+                    }
+                    @if (ViewBag.StatusId > 0)
+                    {
+                        <td>&nbsp;</td>
+                    }
+                    <td>OrderID</td>
+                    <td>Address</td>
+                    @if (ViewBag.StatusId != 0 && ViewBag.StatusId != 7)
+                    {
+                        <td>Date</td>
+                    }
+                    <td>Company</td>
+                    <td>Name</td>
+                    <td>E-Mail</td>
+                    <td>Phone</td>
+                    <td>Original Qty</td>
+                    <td>Packed Qty</td>
+                    @if (showPrice)
+                    {
+                        <td>Grand Total</td>
+                        <td>Discount(%)</td>
+                        if (showBtn)
+                        {
+                        <td>Shipping Cost</td>
+                        }
+                        <td>Final Amount</td>
+                    }
+                    <td>
+                        Tag
+                    </td>
+                    @if (showBtn)
+                    {
+                        <td></td>
+                    }
+                </tr>
+                @if (Model != null)
+                {
+                    for (int i = 0; i < Model.Count; i++)
+                    {
+                    <tr class="item" data-rowId="@(Model[i].OrderId)" style="border-bottom: 1px solid black; background-color: #e8e8e8; cursor: pointer;">
+                        @if (ViewBag.StatusId != 3)
+                        {
+                            <td>
+
+                                <input class="checkMe" id="@(Model[i].OrderId)" type="checkbox" value="@(Model[i].OrderId)" />
+
+                            </td>
+                        }
+                        @if (ViewBag.StatusId > 0)
+                        {
+                            <td>
+                                @if (ViewBag.StatusId != 3 && ViewBag.StatusId != 6)
+                                {
+                                    <a href="@Url.Action("Print", "Order", new { @area = "common", @id = Model[i].OrderId, @pType = "print" })" class="ordEButton" target="_blank">Print/View</a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Print", "Order", new { @area = "common", @id = Model[i].OrderId, @pType = "print" })" class="ordEButton" target="_blank">Final Invoice</a>
+                                    if (ViewBag.StatusId == 6)
+                                    {
+                                    <a href="@Url.Action("Print", "Order", new { @area = "common", @id = (Model[i].ParentOrderId.HasValue ? Model[i].ParentOrderId : Model[i].OrderId), @pType = "printpo" })" class="ordEButton" style="background: none repeat scroll 0 0 #000;" target="_blank">OG Purchase Order</a>
+                                    }
+                                    <a href="@Url.Action("Print", "Order", new { @area = "common", @id = Model[i].OrderId, @pType = "packlist" })" class="ordEButton" target="_blank">Packing list print/view</a>
+                                }
+                                @if (ViewBag.StatusId == 4 || ViewBag.StatusId == 7 || ViewBag.StatusId == 1)
+                                {
+                                    <a href="@Url.Action("Edit", "Order", new { @Id = Model[i].OrderId })" class="ordEButton">Edit</a>
+                                }
+                                @if (ViewBag.StatusId == 4 || ViewBag.StatusId == 2)
+                                {
+                                    <a href="@Url.Action("ProcessOrder", "Order", new { @id = Model[i].OrderId })" style="background: none repeat scroll 0 0 red;border-radius: 4px;color: #fff;display: block;font-weight: bold;margin: 2px;padding: 2px;text-align: center;text-decoration: none;">Pack</a>
+                                }
+                            </td>
+                        }
+                        <td>
+                            @Model[i].OrderNumber
+                        </td>
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                var billAddress = Model[i].Account.Addresses.FirstOrDefault(x => x.AddressTypeId == (int)AddressTypeEnum.BillingAddress && x.IsActive == true && x.IsDelete == false);
+                                <img src="@Url.Content("~/Styles/image/icon-billaddress.png")" title="@("Billing Address:" + (billAddress != null ? billAddress.Street + ", " + billAddress.City + ", " + billAddress.State + ", " + billAddress.Pincode : ""))" />
+                                var shipAddress = Model[i].Account.Addresses.FirstOrDefault(x => x.AddressTypeId == (int)AddressTypeEnum.ShippingAddress && x.IsActive == true && x.IsDelete == false);
+                                <img src="@Url.Content("~/Styles/image/icon-address.png")" title="@("Shipping Address:" + (shipAddress != null ? shipAddress.Street + ", " + shipAddress.City + ", " + shipAddress.State + ", " + shipAddress.Pincode : ""))" />
+                            }
+                        </td>
+                        @if (ViewBag.StatusId != 0 && ViewBag.StatusId != 7)
+                        {
+                            <td>
+                                @if (ViewBag.StatusId == 1 || ViewBag.StatusId == 4 || ViewBag.StatusId == 2)
+                                {
+                                    @(Model[i].SubmittedOn.HasValue ? Model[i].SubmittedOn.Value.ToString("MM/dd/yyyy") : "")
+                                }
+                                else if (ViewBag.StatusId == 6)
+                                {
+                                    @(Model[i].PackedOn.HasValue ? Model[i].PackedOn.Value.ToString("MM/dd/yyyy") : "")
+                                }
+                                else if (ViewBag.StatusId == 3)
+                                {
+                                    @(Model[i].ShippedOn.HasValue ? Model[i].ShippedOn.Value.ToString("MM/dd/yyyy") : "")
+                                }
+                            </td>
+                        }
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @(Model[i].Account.Companies.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false) != null ? Model[i].Account.Companies.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false).Name : "")
+                            }
+                        </td>
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @(Model[i].Account.FirstName + " " + Model[i].Account.LastName)
+                            }
+                        </td>
+
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @Model[i].Account.Email
+                            }
+                        </td>
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @(Model[i].Account.Communications.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false) != null ? Model[i].Account.Communications.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false).Phone : "")
+                            }
+                        </td>
+
+                        <td>
+                            @(Model[i].OriginalQty.HasValue ? Model[i].OriginalQty.Value : 0)
+                        </td>
+                        <td>
+                            @(Model[i].PackedQty.HasValue ? Model[i].PackedQty.Value : 0)
+                        </td>
+                        @if (showPrice)
+                        {
+                            <td>
+
+                                @((Model[i].GrandTotal.HasValue ? Model[i].GrandTotal.Value : 0.0m).ToString("C"))
+                            </td>
+                            <td>
+                                @((Model[i].Discount.HasValue ? Model[i].Discount.Value : 0.0m).ToString("F2"))
+                            </td>
+                        
+                            if (showBtn)
+                            {
+                            <td>@if (ViewBag.StatusId == 6)
+                                {
+                                @Html.TextBox("txt" + Model[i].OrderId, (Model[i].ShippingCost.HasValue ? Model[i].ShippingCost.Value : 0.0m).ToString("F2"),
+                                new { onchange = "javascript:window.location=window.location.href", style = "width:4em" })
+                                }
+                                else
+                                {
+                                @((Model[i].ShippingCost.HasValue ? Model[i].ShippingCost.Value : 0.0m).ToString("C"))
+                                }
+                            </td>
+                            }
+                            <td>
+                                @((Model[i].FinalAmount.HasValue ? Model[i].FinalAmount.Value : 0.0m).ToString("C"))
+                            </td>
+                        }
+                        <td>
+                            @(Model[i].OrderTag != null ? Model[i].OrderTag.Name : "")
+                        </td>
+                        @if (showBtn)
+                        {
+                            if (ViewBag.StatusId == 7)
+                            {
+                            <td style="min-width: 8em;">
+                                <input type="button" onclick="submitOrder(this);" data-id="@Model[i].OrderId" value="Submit" style="background: none repeat scroll 0 0 #424240; border-radius: 4px; color: #fff; display: inline-block; font-weight: bold; margin: 2px; padding: 2px; text-align: center;" />
+                                <input type="image" onclick="deletePendingOrder(this);" data-id="@Model[i].OrderId" src="@Url.Content("~/Styles/image/dustbin.png")" style="display:inline-block" />
+                            </td>
+                            }
+                            else if (ViewBag.StatusId == 1 || ViewBag.StatusId == 4 || ViewBag.StatusId == 2)
+                            {
+                            <td style="@(ViewBag.StatusId == 1 ? "min-width: 10em;" : "")">
+                                @if (ViewBag.StatusId == 1)
+                                {
+                                    <input type="button" onclick="warehouseOrder(this);" data-id="@Model[i].OrderId" value="Move To Warehouse"
+                                     style="background: none repeat scroll 0 0 #424240;width: 6em;border: 0 none; border-radius: 4px; color: #fff; display: inline-block; font-weight: bold; margin: 2px; padding: 5px; text-align: center;white-space:normal" />
+                                }
+                                <input type="image" onclick="deleteSubmittedOrder(this);" data-id="@Model[i].OrderId" src="@Url.Content("~/Styles/image/dustbin.png")" style="display:inline-block" />
+                            </td>
+                            }
+                            else if (ViewBag.StatusId == 6)
+                            {
+                            <td>
+                                <a href="javascript:void(0);" class="ordEButton aPack" data-id="@Model[i].OrderId" style="width:6em;display:inline-block;">Packaging Info</a>
+                                <a href="javascript:void(0);" class="ordEButton bPack" data-mail="@Model[i].Account.Email" data-id="@Model[i].OrderId" style="width: 6em; display: inline-block;">Send Packing List</a>
+                            </td>
+                            }
+                            else if (ViewBag.StatusId == 3)
+                            {
+                            <td>
+                                @if (!Model[i].ShipViaId.HasValue)
+                                {
+                                    <a href="@Url.Action("QBOrder", "Order", new { Id = Model[i].OrderId })" title="@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "Already Sent To QuickBook" : "") : "")"
+                                     class="ordEButton@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? " sbQB" : " nsbQB") : " nsbQB")" 
+                                    onclick="@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "" : "return confirm('Are you sure?')") : "return confirm('Are you sure?')")"
+                                    style="width:4em;display:inline-block;@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "background-color: #8b8989;" : "") : "")">Send To QB</a>
+                                }
+                                else
+                                {
+                                    if (Model[i].ShipViaId.Value == ViewBag.UpsId)
+                                    {
+                                        if (Model[i].TrackId.HasValue ? Model[i].TrackId.Value > 0 : false)
+                                        {
+                                    <a href="javascript:void(0);" title="@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "Already Sent To QuickBook" : "") : "")"
+                                        class="ordEButton@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? " sbQB" : " nsbQB openConfirm") : " nsbQB openConfirm")"
+                                        data-id="@Model[i].OrderId"
+                                        style="width:4em;display:inline-block;@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "background-color: #8b8989;" : "") : "")">Send To QB</a>
+                                        }
+                                        else
+                                        {
+                                    <a href="javascript:void(0);" title="@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "Already Sent To QuickBook" : "") : "")"
+                                        class="ordEButton@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? " sbQB" : " nsbQB openUPS") : " nsbQB openUPS")"
+                                        data-id="@Model[i].OrderId"
+                                        style="width:4em;display:inline-block;@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "background-color: #8b8989;" : "") : "")">Send To QB</a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                    <a href="javascript:void(0);" title="@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "Already Sent To QuickBook" : "") : "")"
+                                        class="ordEButton@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? " sbQB" : " nsbQB openConfirm") : " nsbQB openConfirm")"
+                                        data-id="@Model[i].OrderId"
+                                        style="width:4em;display:inline-block;@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "background-color: #8b8989;" : "") : "")">Send To QB</a>
+                                    }
+                                }
+                            </td>
+                            }
+                            else
+                            {
+                            <td></td>
+                            }
+                        }
+
+                    </tr>
+                    }
+                }
+            </table>
+        }
+        else
+        {
+            <table id="ordTable" style="margin: 0 auto; text-align: center; width: 89.3%;">
+                <tr style="background: #000; color: #fff">
+                    @if (ViewBag.StatusId > 0)
+                    {
+                        <td>&nbsp;</td>
+                    }
+                    <td>OrderID</td>
+                    <td>Address</td>
+                    @if (ViewBag.StatusId != 0 && ViewBag.StatusId != 7)
+                    {
+                        <td>Date</td>
+                    }
+                    <td>Company</td>
+                    <td>Name</td>
+                    <td>E-Mail</td>
+                    <td>Phone</td>
+                    <td>Original Qty</td>
+                    <td>Packed Qty</td>
+                    @if (showPrice)
+                    {
+                        <td>Grand Total</td>
+                        <td>Discount(%)</td>
+                        if (showBtn)
+                        {
+                        <td>Shipping Cost</td>
+                        }
+                        <td>Final Amount</td>
+                    }
+                    <td>
+                        Tag
+                    </td>
+                    @if (showBtn)
+                    {
+                        <td></td>
+                    }
+                </tr>
+                @if (Model != null)
+                {
+                    for (int i = 0; i < Model.Count; i++)
+                    {
+                    <tr style="border-bottom: 1px solid black; background-color: #e8e8e8; cursor: pointer;">
+                        @if (ViewBag.StatusId > 0)
+                        {
+                            <td>
+                                @if (ViewBag.StatusId != 3 && ViewBag.StatusId != 6)
+                                {
+                                    <a href="@Url.Action("Print", "Order", new { @area = "common", @id = Model[i].OrderId, @pType = "print" })" target="_blank" class="ordEButton">Print/View</a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Print", "Order", new { @area = "common", @id = Model[i].OrderId, @pType = "print" })" target="_blank" href="javascript:void(0);" class="ordEButton">@(showBtn ? "Final Invoice" : "Print/View")</a>
+                                    if (ViewBag.StatusId == 6 && showBtn)
+                                    {
+                                    <a href="@Url.Action("Print", "Order", new { @area = "common", @id = (Model[i].ParentOrderId.HasValue ? Model[i].ParentOrderId : Model[i].OrderId), @pType = "printpo" })" class="ordEButton" style="background: none repeat scroll 0 0 #000;" target="_blank">OG Purchase Order</a>
+                                    }
+                                    if (showBtn)
+                                    {
+                                    <a href="@Url.Action("Print", "Order", new { @area = "common", @id = Model[i].OrderId, @pType = "packlist" })" class="ordEButton" target="_blank">Packing list print/view</a>
+                                    }
+                                }
+                                @if (ViewBag.StatusId == 4 || ViewBag.StatusId == 7 || ViewBag.StatusId == 1 && showBtn)
+                                {
+                                    <a href="@Url.Action("Edit", "Order", new { @Id = Model[i].OrderId })" class="ordEButton">Edit</a>
+                                }
+                                @if (ViewBag.StatusId == 4 || ViewBag.StatusId == 2 && showBtn)
+                                {
+                                    <a href="@Url.Action("ProcessOrder", "Order", new { @id = Model[i].OrderId })" style="background: none repeat scroll 0 0 red;border-radius: 4px;color: #fff;display: block;font-weight: bold;margin: 2px;padding: 2px;text-align: center;text-decoration: none;">Pack</a>
+                                }
+                            </td>
+                        }
+                        <td>
+                            @Model[i].OrderNumber
+                        </td>
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                var billAddress = Model[i].Account.Addresses.FirstOrDefault(x => x.AddressTypeId == (int)AddressTypeEnum.BillingAddress && x.IsActive == true && x.IsDelete == false);
+                                <img src="@Url.Content("~/Styles/image/icon-billaddress.png")" title="@("Billing Address:" + (billAddress != null ? billAddress.Street + ", " + billAddress.City + ", " + billAddress.State + ", " + billAddress.Pincode : ""))" />
+                                var shipAddress = Model[i].Account.Addresses.FirstOrDefault(x => x.AddressTypeId == (int)AddressTypeEnum.ShippingAddress && x.IsActive == true && x.IsDelete == false);
+                                <img src="@Url.Content("~/Styles/image/icon-address.png")" title="@("Shipping Address:" + (shipAddress != null ? shipAddress.Street + ", " + shipAddress.City + ", " + shipAddress.State + ", " + shipAddress.Pincode : ""))" />
+                            }
+                        </td>
+                        @if (ViewBag.StatusId != 0 && ViewBag.StatusId != 7)
+                        {
+                            <td>
+                                @if (ViewBag.StatusId == 1 || ViewBag.StatusId == 4 || ViewBag.StatusId == 2)
+                                {
+                                    @(Model[i].SubmittedOn.HasValue ? Model[i].SubmittedOn.Value.ToString("MM/dd/yyyy") : "")
+                                }
+                                else if (ViewBag.StatusId == 6)
+                                {
+                                    @(Model[i].PackedOn.HasValue ? Model[i].PackedOn.Value.ToString("MM/dd/yyyy") : "")
+                                }
+                                else if (ViewBag.StatusId == 3)
+                                {
+                                    @(Model[i].ShippedOn.HasValue ? Model[i].ShippedOn.Value.ToString("MM/dd/yyyy") : "")
+                                }
+                            </td>
+                        }
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @(Model[i].Account.Companies.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false) != null ? Model[i].Account.Companies.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false).Name : "")
+                            }
+                        </td>
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @(Model[i].Account.FirstName + " " + Model[i].Account.LastName)
+                            }
+                        </td>
+
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @Model[i].Account.Email
+                            }
+                        </td>
+                        <td>
+                            @if (Model[i].Account != null)
+                            {
+                                @(Model[i].Account.Communications.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false) != null ? Model[i].Account.Communications.FirstOrDefault(x => x.IsActive == true && x.IsDelete == false).Phone : "")
+                            }
+                        </td>
+                        <td>
+                            @(Model[i].OriginalQty.HasValue ? Model[i].OriginalQty.Value : 0)
+                        </td>
+                        <td>
+                            @(Model[i].PackedQty.HasValue ? Model[i].PackedQty.Value : 0)
+                        </td>
+                        @if (showPrice)
+                        {
+                            <td>
+
+                                @((Model[i].GrandTotal.HasValue ? Model[i].GrandTotal.Value : 0.0m).ToString("C"))
+                            </td>
+                            <td>
+                                @((Model[i].Discount.HasValue ? Model[i].Discount.Value : 0.0m).ToString("F2"))
+                            </td>
+                            if (showBtn)
+                            {
+                            <td>@((Model[i].ShippingCost.HasValue ? Model[i].ShippingCost.Value : 0.0m).ToString("C"))</td>
+                            }
+                            <td>
+                                @((Model[i].FinalAmount.HasValue ? Model[i].FinalAmount.Value : 0.0m).ToString("C"))
+                            </td>
+                        }
+                        <td>
+                            @(Model[i].OrderTag != null ? Model[i].OrderTag.Name : "")
+                        </td>
+                        @if (showBtn)
+                        {
+                            if (ViewBag.StatusId == 7)
+                            {
+                            <td style="min-width: 8em;">
+                                <input type="image" onclick="deletePendingOrder(this);" data-id="@Model[i].OrderId" src="@Url.Content("~/Styles/image/dustbin.png")" style="display:inline-block" />
+                            </td>
+                            }
+                            else if ((ViewBag.StatusId == 1 || ViewBag.StatusId == 4 || ViewBag.StatusId == 2) && showPrice)
+                            {
+                            <td style="@(ViewBag.StatusId == 1 ? "min-width: 10em;" : "")">
+                                @if (ViewBag.StatusId == 1)
+                                {
+                                    <input type="button" onclick="warehouseOrder(this);" data-id="@Model[i].OrderId" value="Move To Warehouse"
+                                     style="background: none repeat scroll 0 0 #424240;width: 6em;border: 0 none; border-radius: 4px; color: #fff; display: inline-block; font-weight: bold; margin: 2px; padding: 5px; text-align: center;white-space:normal" />
+                                }
+                            </td>
+                            }
+                            else if (ViewBag.StatusId == 6)
+                            {
+                            <td>
+                                <a href="javascript:void(0);" class="ordEButton aPack" data-id="@Model[i].OrderId" style="width:6em;display:inline-block;">Packaging Info</a>
+                                <a href="javascript:void(0);" class="ordEButton bPack" data-mail="@Model[i].Account.Email" data-id="@Model[i].OrderId" style="width: 6em; display: inline-block;">Send Packing List</a>
+                            </td>
+                            }
+                            else if (ViewBag.StatusId == 3)
+                            {
+                            <td>
+                                <a href="@Url.Action("QBOrder", "Order", new { Id = Model[i].OrderId })" title="@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "Already Sent To QuickBook" : "") : "")"
+                                     class="ordEButton@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? " sbQB" : " nsbQB") : " nsbQB")" 
+                                    onclick="@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "" : "return confirm('Are you sure?')") : "return confirm('Are you sure?')")"
+                                    style="width:4em;display:inline-block;@(Model[i].IsSentToQuickBook.HasValue ? (Model[i].IsSentToQuickBook.Value ? "background-color: #8b8989;" : "") : "")">Send To QB</a>
+                            </td>
+                            }
+                            else
+                            {
+                            <td></td>
+                            }
+                        }
+                    </tr>
+                    }
+                }
+            </table>
+        }
+        <div class="pagingContainer" style="margin-left: 6em;">
+            @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { @Id = ViewBag.StatusId, @selectedSalesPerson = ViewBag.selectedSalesPerson, @searchText = ViewBag.searchText,@TagId= ViewBag.selectedTag })
+        </div>
+
+    </div>
+    <div id="passDialog" style="display: none;">
+        @using (Html.BeginForm("qShip", "Order", FormMethod.Post))
+        {
+            <div style="background: none repeat scroll 0 0 #fff; border: 1px solid #000; border-radius: 5px; box-shadow: 0 2px 27px #e7e7e8; padding: 5px; text-align: center;">
+                <div style="margin: 0 auto;">
+                    <h4>Authentication Required</h4>
+                    <span style="display: block;">Please enter admin password</span>
+                </div>
+                <div style="margin-top: 5px;">
+                    <input type="password" id="pwd" name="pwd" class="popPass" />
+                    @Html.Hidden("Ids", "", new { @id = "qshipAll" })
+                </div>
+                <div>
+                    <input type="submit" value="Authenticate" class="popSubmit" />
+                </div>
+            </div>
+        }
+    </div>
+    <div id="packageDialog" title="Packing Info">
+    </div>
+    <div id="confirmDialog" title="Confirm Details">
+    </div>
+    <div id="upsDialog" title="Packing Info">
+        @if (ViewBag.OpenUPS != Guid.Empty)
+        {
+            @Html.Action("UPSDetail", "Order", new { @id = ViewBag.OpenUPS })
+        }
+    </div>
+    <div id="mailDialog" style="font-size: 12px; display: none;">
+        <table>
+            <tr>
+                <td colspan="2">Separate email address with comma(,)in the case of multiple email addresses.</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 20px;"></td>
+            </tr>
+            <tr>
+                <td>Address
+                </td>
+                <td>
+                    <input type="text" id="txtAddress" class="txtbx" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 10px;"></td>
+            </tr>
+            <tr>
+                <td>Subject
+                </td>
+                <td>
+                    <input type="text" id="txtSubject" class="txtbx" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 10px;"></td>
+            </tr>
+            <tr>
+                <td>Message
+                </td>
+                <td>
+                    <textarea rows="4" id="txtMessage" class="txtbx"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    @Html.Hidden("sendIds", "", new { id = "sendIds" })
+                    <input id="btnSubmitEmail" type="button" value=" Send Email " class="save-btn" style="width: 110px; float: right; margin-right: 60px;" /></td>
+            </tr>
+        </table>
+    </div>
+    <div id="packListDialog" title="Send Packing List">
+        <div>
+            <input type="text" id="packAddress" style="width: 90%;" />
+            @Html.Hidden("sendId", "", new { id = "sendId" })
+            <a id="sendPack" href="javascript:void(0);" style="float: right; background-color: #012233; border: medium none; color: white; margin-top: 1.91em; padding: .5em 1em; text-decoration: none;">Send Pdf</a>
+        </div>
+    </div>
+        if (ViewBag.OpenUPS != Guid.Empty)
+        {
+    <label id="oUPS" style="display: none"></label>
+        }
+}
+<script type="text/javascript">
+    $(function () {
+        $("#passDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: '30%',
+            close: function () {
+            }
+        });
+        $("#confirmDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: '30%',
+            close: function () {
+                $("#confirmDialog").html('');
+            }
+        });
+        $("#upsDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: '50%',
+            close: function () {
+                $("#upsDialog").html('');
+                window.location = window.location.href;
+            }
+        });
+        $("#packageDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            draggable: true,
+            width: '45%',
+            close: function () {
+                $("#packageDialog").html('');
+            }
+        });
+        $(".sbQB").each(function () {
+            $(this).attr("href", "javascript:void(0);");
+        });
+        $("#mailDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            draggable: true,
+            width: '35%',
+            close: function () {
+                $("#txtAddress").val("");
+                $("#txtSubject").val("");
+                $("#txtMessage").val("");
+                $("#dialog").removeClass("bgClass4");
+            }
+        });
+        $("#packListDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: '30%',
+            close: function () {
+                $("#packAddress").val('');
+            }
+        });
+        if ($("#oUPS").length > 0) {
+            $("#upsDialog").dialog("open");
+        }
+    });
+    $(".aPack").click(function () {
+        var id = $(this).attr('data-id');
+        $.get("@Url.Action("BBDetails", "Order")", { Id: id }).done(function (data) {
+            $("#packageDialog").html(data);
+            $("#packageDialog").dialog("open");
+        });
+    });
+    $(".openConfirm").click(function () {
+        var id = $(this).attr('data-id');
+        $.get('@Url.Action("ConfirmBox", "Order")', { Id: id }).done(function (data) {
+            $("#confirmDialog").html(data);
+            $("#confirmDialog").dialog("open");
+        });
+    });
+    $(".openUPS").click(function () {
+        var id = $(this).attr('data-id');
+        var elm = $(this);
+        if (confirm('Order should have Tracking No. as it is linked with UPS, Do you want to get Tracking No?')) {
+            elm.parent().addClass("bgClass5");
+            $.get('@Url.Action("UPSDetail", "Order")', { Id: id }).done(function (data) {
+                elm.parent().removeClass("bgClass5");
+                $("#upsDialog").html(data);
+                $("#upsDialog").dialog("open");
+            });
+        }
+    });
+    $("#ordETable tr.item td").click(function () {
+        var id = $(this).parent().attr('data-rowId');
+        if ($("#" + id).length > 0) {
+            if ($("#" + id).is(":checked")) {
+                $(this).parent().css("background-color", "#e8e8e8");
+                $("#" + id).prop('checked', false);
+            }
+            else {
+                $(this).parent().css("background-color", "lightyellow");
+                $("#" + id).prop('checked', true);
+            }
+        }
+    });
+    $(".checkMe").change(function () {
+        $(this).parent().click();
+    });
+    $("#checkAll").change(function () {
+        var state = $(this).is(":checked");
+        $(".checkMe").each(function () {
+            $(this).prop('checked', state);
+            if (state) {
+                $(this).parent().parent().css("background-color", "lightyellow");
+            }
+            else {
+                $(this).parent().parent().css("background-color", "#e8e8e8");
+            }
+        });
+    });
+
+    $("#mailButton").click(function () {
+        if ($(".checkMe:checked").length > 0) {
+
+            var Ids = '';
+            $(".checkMe:checked").each(function () {
+                Ids += $(this).attr('id') + ",";
+            });
+            $("#sendIds").val(Ids);
+            $("#mailDialog").dialog("open");
+        }
+        else {
+            alert("Please select at least one check box");
+        }
+    });
+    $("#btnSubmitEmail").click(function () {
+        var proceed = true;
+        var self = $("#txtAddress");
+        if (self.val() == '') {
+            alert('Mail Id is required.');
+            proceed = false;
+        }
+        var result = self.val().replace(/\s/g, "").split(/,|;/);
+        var errors = [];
+        if (proceed == true) {
+            for (var i = 0; i < result.length; i++) {
+                if (!validateEmail(result[i])) {
+                    errors[i] = '`' + result[i] + '`';
+                }
+            }
+            if (errors.length > 0) {
+                alert('Please Check ' + errors.join(', ') + ' email addresses not valid!');
+                proceed = false;
+            }
+            else {
+                proceed = true;
+            }
+            if (proceed == true) {
+                var ids = self.val();
+                var sb = $("#txtSubject").val();
+                var ms = $("#txtMessage").val();
+                var sA = $(".checkAll").is(":checked");
+                var sI = $("#sendIds").val();
+                $("#mailDialog").addClass("bgClass4");
+                $.post('@Url.Action("SendMail")', { ids: ids, Subject: sb, Message: ms, sI: sI }).done(function (data) {
+                    $("#mailDialog").removeClass("bgClass4");
+                    alert(data);
+                    $("#mailDialog").dialog("close");
+                });
+            }
+        }
+    });
+    $(".bPack").click(function () {
+        $("#packAddress").val($(this).attr('data-mail'));
+        $("#sendId").val($(this).attr('data-id'));
+        $("#packListDialog").dialog("open");
+    });
+
+    $("#sendPack").click(function () {
+        var proceed = true;
+        var self = $("#packAddress");
+        if (self.val() == '') {
+            alert('Mail Id is required.');
+            proceed = false;
+        }
+        var result = self.val().replace(/\s/g, "").split(/,|;/);
+        var errors = [];
+        if (proceed == true) {
+            for (var i = 0; i < result.length; i++) {
+                if (!validateEmail(result[i])) {
+                    errors[i] = '`' + result[i] + '`';
+                }
+            }
+            if (errors.length > 0) {
+                alert('Please Check ' + errors.join(', ') + ' email addresses not valid!');
+                proceed = false;
+            }
+            else {
+                proceed = true;
+            }
+            if (proceed == true) {
+                var Ids = $("#packAddress").val();
+                var Id = $("#sendId").val();
+                $("#packAddress").addClass("bgClass6");
+                $.post('@Url.Action("SendList")', { Id: Id, ids: Ids }).done(function (data) {
+                    $("#packAddress").removeClass("bgClass6");
+                    alert(data);
+                    $("#packListDialog").dialog("close");
+                });
+            }
+        }
+    });
+    function validateEmail(value) {
+        var regex = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+        return (regex.test(value)) ? true : false;
+    }
+
+    function deletePendingOrder(elm) {
+        if (confirm("Are you sure you want to delete this Order?")) {
+            var Id = $(elm).attr('data-id');
+            window.location = '@Url.Action("DeleteOrderNoAdjust", "Order", new { @area = "Common" })' + '/' + Id;
+        }
+    }
+    function deleteSubmittedOrder(elm) {
+        if (confirm("Are you sure you want to delete this Order?")) {
+            var Id = $(elm).attr('data-id');
+            window.location = '@Url.Action("DeleteOrderAdjust", "Order", new { @area = "Common" })' + '/' + Id;
+        }
+    }
+    function deleteAllOrders() {
+        if ($(".checkMe:checked").length > 0) {
+            if (confirm("Are you sure you want to delete these orders?")) {
+                var Ids = '';
+                $(".checkMe:checked").each(function () {
+                    Ids += $(this).attr('id') + ",";
+                });
+                $("#deleteAll").val(Ids);
+                return true;
+            }
+        }
+        else {
+            alert("Please select at least one check box");
+        }
+        return false;
+    }
+    function moveAllOrders() {
+        if ($(".checkMe:checked").length > 0) {
+            if (confirm("Are you sure you want to move these orders?")) {
+                var Ids = '';
+                $(".checkMe:checked").each(function () {
+                    Ids += $(this).attr('id') + ",";
+                });
+                $("#moveAll").val(Ids);
+                return true;
+            }
+        }
+        else {
+            alert("Please select at least one check box");
+        }
+        return false;
+    }
+    function shipAllOrders() {
+        if ($(".checkMe:checked").length > 0) {
+            if (confirm("Are you sure you want to ship these orders?")) {
+                var Ids = '';
+                $(".checkMe:checked").each(function () {
+                    Ids += $(this).attr('id') + ",";
+                });
+                $("#shipAll").val(Ids);
+                return true;
+            }
+        }
+        else {
+            alert("Please select at least one check box");
+        }
+        return false;
+    }
+    function qshipAllOrders() {
+        if ($(".checkMe:checked").length > 0) {
+            var Ids = '';
+            $(".checkMe:checked").each(function () {
+                Ids += $(this).attr('id') + ",";
+            });
+            $("#qshipAll").val(Ids);
+            $("#passDialog").dialog("open");
+        }
+        else {
+            alert("Please select at least one check box");
+        }
+    }
+    function submitOrder(elm) {
+        if (confirm("Are you sure you want to submit this Order?")) {
+            var Id = $(elm).attr('data-id');
+            window.location = '@Url.Action("SubmitOrder", "Order", new { @area = "Common" })' + '/' + Id;
+        }
+    }
+    function warehouseOrder(elm) {
+        if (confirm("Are you sure you want to move this Order to Warehouse?")) {
+            var Id = $(elm).attr('data-id');
+            window.location = '@Url.Action("MoveOrderToWareHouse", "Order", new { @area = "Common" })' + '/' + Id;
+        }
+    }
+    function closeConfirm() {
+        $("#confirmDialog").dialog("close");
+    }
+</script>

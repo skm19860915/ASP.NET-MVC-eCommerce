@@ -1,0 +1,79 @@
+﻿@model Platini.Models.LoginModel
+@using Platini.Models
+<section id="loginBox" class="loginBox">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <p class="text-center">If you have an account with us, please log in.</p>
+    </div>
+    <div class="col-md-5 col-sm-5 col-xs-5">
+        <p>
+            <a href="javascript:void(0);" onclick="CallFacebookLogin(false);">
+                <img src="@Url.Content("~/Styles/images/register-facebook.png")" alt="facebook">
+            </a>
+        </p>
+        <p style="margin-bottom:60px;">
+            <a href="javascript:void(0);" class="customBtn" data-wholesale="false">
+                <img src="@Url.Content("~/Styles/images/register-googleplay.png")" alt="Google">
+            </a>
+        </p>
+
+        <p>
+            Don’t have an account?
+            @Html.ActionLink("Sign Up With Us For Exclusive Membership!", "Registration", "Home", new { @style = "display:block;" })
+        </p>
+    </div>
+    <div class="col-md-1 col-sm-1 col-xs-1 orbor">
+        <span class="or">OR</span>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-6">
+        @using (Ajax.BeginForm("Login", "Home", new { ReturnUrl = Request.Url }, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "loginBox", InsertionMode = InsertionMode.Replace }, new { @autocomplete = "off" }))
+        {
+            <ul class="signupfield">
+                <li>
+                    @Html.TextBoxFor(model => model.UserName, new { @placeholder = "Username", @class = "input-text required-entry" })
+                    @Html.ValidationMessageFor(model => model.UserName, null, new { @class = "redMsg" })
+                </li>
+                <li>
+                    @Html.PasswordFor(model => model.Password, new { @value = Model != null ? Model.Password : string.Empty, @placeholder = "Password", @class = "input-text required-entry" })
+                    @Html.ValidationMessageFor(model => model.Password, null, new { @class = "redMsg" })
+                </li>
+                <li>
+                    <label>Remember Me @Html.CheckBoxFor(m => m.RememberMe)</label>
+                </li>
+                <li>
+                    @Html.HiddenFor(m => m.isPartial)
+                    <input type="submit" value="Login">
+                </li>
+                <li>
+                    <span class="">Forgot password? <a href="@Url.Action("ForgotPassword", "Home")">Reset Password</a></span>
+                </li>
+            </ul>
+        }
+    </div>
+    @if (!string.IsNullOrEmpty(ViewBag.PageMessage))
+    {
+        <span id="showMsg" style="display: none;">@ViewBag.PageMessage</span>
+    }
+    <script type="text/javascript">
+        $(function () {
+            if ($("#showMsg").length > 0) {
+                if ($("#showMsg").text().indexOf("success") < 0) {
+                    buildModal();
+                }
+                else {
+                    var arr = $("#showMsg").text().split('|');
+                    if (arr.length > 1) {
+                        window.location = arr[1];
+                    }
+                    else {
+                        window.location = '@Url.Action("Index", "Home", new { ReturnUrl = Request.Url, @area = "" })';
+                    }
+                }
+            }
+            $(".md-destroy").click(function () {
+                $("#showmessage, #showMsg").remove();
+                window.location = window.location.href;
+            });
+        });
+    </script>
+
+</section>

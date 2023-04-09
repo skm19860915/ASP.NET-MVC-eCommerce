@@ -1,0 +1,200 @@
+﻿@using Platini.Models;
+@model List<DetailViewClass>
+<style>
+    .ui-front {
+        z-index: 99999!important;
+    }
+</style>
+
+<div id="accordion" style="width: 100%;">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        
+    
+        <h3>Style Number: @Model[i].StyleNumber</h3>
+        <div>
+            <div id="dropZonediv" style="height: 340px; border-bottom: #D3D3D3 1px solid; overflow: auto;">
+
+                <div id="dropLabel" class="dropLabel" style="height: 5%;">Drop files below!</div>
+                <div id="dropZone" class="dropZone" style="height: 85%; border: 1px dashed blue" data-val="@Model[i].ClothesId" data-name="@Model[i].StyleNumber"></div>
+                <div id="upProgressHolder" class="upProgressHolder" style="height: 5%;">
+                    <div class="upProgress"></div>
+                </div>
+            </div>
+            <div style="padding-top: 5px;">
+                <ul class="gallery" data-listidx="0">
+                    @if (Model[i].Images != null)
+                    {
+                        foreach (var image in Model[i].Images)
+                        {
+                        
+                        <li class="sortList" id="@(image.ClothesImageId)">
+                            <div style="cursor: pointer;">
+                                <img class="ui-draggable dropped" src="@Url.Content("~/Library/Uploads/WebThumb/" + image.ImagePath)" style="height:50px;width:45px;border-width:0px;">
+                            </div>
+                            <div class="closeDiv" style="cursor: pointer;">
+                                <img src="@Url.Content("~/Styles/image/IsNotActive.png")" onclick="DeleteThis(@image.ClothesImageId,this);"/>
+                            </div>
+
+                        </li>
+                        }
+                    }
+                </ul>
+                <div style="text-align: right;">
+                    <button class="btn-Popup sortButton" style="display:none;" onclick="saveThisSort(this);">Save</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div style="float: right; padding: 10px 0px;">
+    <button id="saveAllImages" onclick="saveSortAll();" class="btn-Popup">Save</button>
+    <button id="closeUpload" onclick="closeUpload();" class="btn-Popup">Cancel</button>
+</div>
+<script src="@Url.Content("~/Scripts/jquery.filedrop.js")"></script>
+<script type="text/javascript">
+    function buildLis(id, elm) {
+        $.get('@Url.Action("GetImages", "Clothes", new { @area = "Common" })', { clothesId: id }).done(function (data) {
+            if (data === undefined || data === null) {
+            }
+            else {
+                elm.parent().siblings("div").find("ul.gallery").empty();
+                for (var x = 0; x < data.length; ++x) {
+                    elm.parent().siblings("div").find("ul.gallery").append('<li class="sortList" id="' + data[x].ClothesImageId + '"><div style="cursor: pointer;"><img class="ui-draggable dropped" src="/Library/Uploads/WebThumb/' + data[x].ImagePath + '" style="height:50px;width:45px;border-width:0px;"></div><div class="closeDiv" style="cursor: pointer;"><img src="@Url.Content("~/Styles/image/IsNotActive.png")" onclick="DeleteThis(' + data[x].ClothesImageId + ',this)"/></div></li>');
+                }
+            }
+        });
+    }
+    
+    $(function () {
+
+        $("#accordion").accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+        $("ul.gallery").each(function () {
+            $(this).sortable({ placeholder: "placeHolder" });
+        });
+
+
+
+        $(".upProgressHolder").each(function () {
+            $(this).progressbar({
+                value: false, complete: function () {
+                    $(this).find(".upProgress").addClass("upDone");
+                    $(this).progressbar("value", 0);
+                }
+            });
+        });
+
+        $('.dropZone').each(function () {
+            var clothesId = $(this).attr('data-val');
+            var styleNumber = $(this).attr('data-name');
+            var elm = $(this);
+            $(this).filedrop({
+                url: '@Url.Action("FileUpload", "Clothes", new { @area = "Common" })',
+                paramname: 'files',
+                data: {
+                    clothesId: clothesId,
+                    StyleNumber: styleNumber
+                },
+                error: function (err, file) {
+                    switch (err) {
+                        case 'BrowserNotSupported':
+                            alert('browser does not support HTML5 drag and drop');
+                            buildLis(clothesId, elm);
+                            elm.find(".upProgressHolder").find(".upProgress").addClass("upDone");
+                            break;
+                        case 'TooManyFiles':
+                            alert('file limit exceeded');
+                            buildLis(clothesId, elm);
+                            elm.find(".upProgressHolder").find(".upProgress").addClass("upDone");
+                            break;
+                        case 'FileTooLarge':
+                            alert(file.name + ", file size too large");
+                            buildLis(clothesId, elm);
+                            elm.find(".upProgressHolder").find(".upProgress").addClass("upDone");
+                            break;
+                        case 'FileTypeNotAllowed':
+                            alert("upload image files only");
+                            buildLis(clothesId, elm);
+                            elm.find(".upProgressHolder").find(".upProgress").addClass("upDone");
+                            break;
+                        case 'FileExtensionNotAllowed':
+                            alert("upload image files only");
+                            buildLis(clothesId, elm);
+                            elm.find(".upProgressHolder").find(".upProgress").addClass("upDone");
+                            break;
+                        default:
+                            alert("Error");
+                            buildLis(clothesId, elm);
+                            elm.find(".upProgressHolder").find(".upProgress").addClass("upDone");
+                            break;
+                    }
+                },
+                queuefiles: 1,
+                allowedfiletypes: ['image/jpeg', 'image/png', 'image/gif'],
+                allowedfileextensions: ['.jpg', '.jpeg', '.png', '.gif'],
+                afterAll: function () {
+                    elm.siblings('.dropLabel').empty().append('The file(s) have been uploaded successfully!');
+                    setName(clothesId, elm);
+                },
+                uploadStarted: function (i, file, len) {
+                    elm.find(".upProgressHolder").progressbar("value", 0);
+                },
+                progressUpdated: function (i, file, progress) {
+                    elm.find(".upProgressHolder").progressbar("value", progress);
+                },
+                uploadFinished: function (i, file, response) {
+                    elm.siblings('.dropLabel').empty().append('Uploading next file...');
+                }
+            });
+        })
+    });
+
+    function setName(Id, elm) {
+        $.post('@Url.Action("SetStyleNumber", "Clothes", new { @area = "Common" })', { clothesId: Id }).done(function () {
+            buildLis(Id, elm);
+        });
+    }
+
+    @*$("#ImageButton").click(function () {
+        $("ul#gallery").sortable();
+    });*@
+    function DeleteThis(Id, elm) {
+        if (confirm("Are you sure you want to delete this image?")) {
+            if (isFinite(Id) && Id > 0) {
+                $.post('@Url.Action("DeleteImage", "Clothes", new { @area = "Common" })', { ClothesId: Id }, function (data) {
+                    if (data === undefined || data === null) {
+
+                        alert("Error");
+                    }
+                    else {
+
+                        var ulParent = $(elm).parent().parent().parent();
+                        ulParent.empty();
+                        for (var x = 0; x < data.length; ++x) {
+                            ulParent.append('<li class="sortList" id="' + data[x].ClothesImageId + '"><div style="cursor: pointer;"><img class="ui-draggable dropped" src="/Library/Uploads/WebThumb/' + data[x].ImagePath + '" style="height:50px;width:45px;border-width:0px;"></div><div class="closeDiv" style="cursor: pointer;"><img src="@Url.Content("~/Styles/image/IsNotActive.png")" onclick="DeleteThis(' + data[x].ClothesImageId + ',this)"/></div></li>');
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function saveThisSort(elm) {
+        var ids = [];
+        $(elm).parent().siblings("ul").find('.sortList').each(function (index, value) {
+            var item = {};
+            item.id = $(this).prop('id');
+            item.so = index + 1;
+            ids.push(item);
+        });
+        $.post(
+            '@Url.Action("SaveSort", "Clothes", new { @area = "Common" })',
+                { NewOrders: JSON.stringify(ids) },
+                function (response) {
+                }
+            );
+    }
+</script>

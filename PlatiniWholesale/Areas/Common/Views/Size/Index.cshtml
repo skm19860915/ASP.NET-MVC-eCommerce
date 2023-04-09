@@ -1,0 +1,396 @@
+﻿@using Platini.Models;
+@model Platini.Areas.Common.Models.SizeAdminModel
+@{
+    ViewBag.Title = "Size Admin";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .page-title {
+        /*background: none repeat scroll 0 0 #424240;
+        color: #D7D7D7;*/
+        background: linear-gradient(to bottom, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        font-size: 15px;
+        font-weight: bold;
+        height: 48px;
+        /*top: 140px;*/
+        position: relative;
+        text-align: left;
+        width: 83.55%;
+        z-index: -1;
+    }
+
+        .page-title h3 {
+            font-size: 15px;
+            /*padding-left: 10px;
+            padding-top: 10px;*/
+        }
+
+    .drpdwn {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+        background: none repeat scroll 0 0 #eeeeee;
+    }
+
+    .txtbox {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+    }
+</style>
+
+<script type="text/javascript">
+    function editSize(id) {
+        var arr = id.split('-');
+        $("#forEditText").show();
+        $("#txtEditSize").val(arr[1]);
+        $("#hdnSizeId").val(arr[0]);
+    }
+
+    function deleteSize(id) {
+        if (confirm('Are u sure want to delete?')) {
+            var sizeid = parseInt(id);
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("DeleteSize", "Size"))",
+                data: { "sizeId": sizeid },
+                success: function (data) {
+                    var selectedItem = $("#ddlSizeGroups option:selected").val();
+                    $.ajax({
+                        type: "GET",
+                        url: "@(Url.Action("GetSizesBySizeId", "Size"))",
+                        data: { "sizeGroupId": selectedItem },
+                        success: function (result) {
+                            $("#sizeList tr td").remove();
+                            $.each(result, function (id, option) {
+                                drawRow(option);
+                            });
+                        },
+                        error: function () { }
+                    });
+                },
+                error: function () { }
+            });
+        }
+    }
+
+    // Append row data into the table
+    function drawRow(rowData) {
+        debugger;
+        var row = $("<tr />")
+        $("#sizeList").append(row);
+        row.append($("<td style=" + "text-align:center;" + ">" + $("#ddlCategories option:selected").text() + "</td>"));
+        row.append($("<td style=" + "text-align:center;" + ">" + $("#ddlSubCategories option:selected").text() + "</td>"));
+        row.append($("<td style=" + "text-align:center;" + ">" + $("#ddlCategoryTypes option:selected").text() + "</td>"));
+        row.append($("<td style=" + "text-align:center;" + ">" + $("#ddlSizeGroups option:selected").text() + "</td>"));
+        if (rowData.Name != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.Name + "</td>"));
+        }
+        else {
+
+            row.append($("<td>" + " " + "</td>"));
+        }
+        var cond = '';
+        if ($("#hdnMode").val() != "edit") {
+            cond = " style='display:none;' ";
+        }
+        row.append($("<td style=" + "text-align:center;" + "/>").html("<a id=" + rowData.Id + "-" + rowData.Name + " class=" + "edit" + " href='javascript:void(0);' onclick='editSize(this.id);'> Edit </a>&nbsp;&nbsp;<a href='javascript:deleteSize(" + rowData.Id + ");'"+cond+"> Delete </a>"));
+
+    }
+
+
+    $(function () {
+
+        $("#btnAdd").click(function () {
+            debugger;
+            var temp = $("#txtAddSize").val();
+            if (temp != '') {
+                var arrList = new Array();
+                arrList.push($("#ddlSizeGroups option:selected").val());
+                arrList.push($("#ddlCategoryTypes option:selected").val());
+                $.ajax({
+                    type: "POST",
+                    traditional: true,
+                    url: "@(Url.Action("AddSize", "Size"))",
+                    data: { "arrList": arrList, "name": temp },
+                    success: function (result) {
+                        debugger;
+                        $("#txtAddSize").val("");
+                        if (result != null || result != "") {
+                            var arr = result.split('-');
+                            if (arr[0] != null && arr[1] != null) {
+                                var selectedItem = $("#ddlSizeGroups option:selected").val();
+                                $.ajax({
+                                    type: "GET",
+                                    url: "@(Url.Action("GetSizesBySizeId", "Size"))",
+                                    data: { "sizeGroupId": selectedItem },
+                                    success: function (result) {
+                                        debugger;
+                                        $("#grid").show();
+                                        $("#sizeList tr td").remove();
+                                        $.each(result, function (id, option) {
+                                            drawRow(option);
+                                        });
+                                        $("#forEditText").hide();
+                                        $("#txtEditSize").val("");
+                                        $("#hdnSizeId").val('');
+                                    },
+                                    error: function () { }
+                                });
+                            }
+                            else {
+                                ShowAlert(result);
+                            }
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+        });
+
+        $("#btnSubmit").click(function () {
+            var temp = $("#txtAddGroup").val();
+            if (temp != '') {
+                var id = $("#ddlCategoryTypes option:selected").val();
+                $.ajax({
+                    type: "GET",
+                    url: "@(Url.Action("CreateSizeGroup", "Size"))",
+                    data: { "name": temp, categoryId: id },
+                    success: function (result) {
+                        $("#txtAddGroup").val("");
+                        if (result != null || result != "") {
+                            var arr = result.split('-');
+                            if (arr[0] != null && arr[1] != null) {
+                                $("#sizeList tr td").remove();
+                                $("#forEditText").hide();
+                                $("#txtEditSize").val("");
+                                $("#hdnSizeId").val('');
+                                $("#ddlSizeGroups").append($('<option></option>').val(arr[0]).html(arr[1]));
+                                $('#ddlSizeGroups option:selected').attr("selected", null);
+                                $('#ddlSizeGroups option[value=' + arr[0] + ']').attr("selected", "selected");
+                                $("#divAddSize").show();
+
+                            }
+                            else {
+                                ShowAlert(result);
+                            }
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+        });
+
+        $("#btnSave").click(function () {
+            var sizeValue = $("#txtEditSize").val();
+            if (sizeValue != '') {
+                var sizeId = $("#hdnSizeId").val();
+                var selectedItem = $("#ddlSizeGroups option:selected").val();
+                $.ajax({
+                    type: "GET",
+                    url: "@(Url.Action("EditSize", "Size"))",
+                    data: { "sizeId": sizeId, "sizeValue": sizeValue, "groupId": selectedItem },
+                    success: function (data) {
+                        if (data != "") {
+                            ShowAlert(data);
+                        } else {
+                            var selectedItem = $("#ddlSizeGroups option:selected").val();//$("#ddlSizeGroup option:selected").val();
+                            var updateHolder = $("#sizeList");
+                            $.ajax({
+                                type: "GET",
+                                url: "@(Url.Action("GetSizesBySizeId", "Size"))",
+                                data: { "sizeGroupId": selectedItem },
+                                success: function (result) {
+                                    $("#sizeList tr td").remove();
+                                    $.each(result, function (id, option) {
+                                        drawRow(option);
+                                    });
+                                    $("#forEditText").hide();
+                                    $("#txtEditSize").val("");
+                                    $("#hdnSizeId").val('');
+                                },
+                                error: function () { }
+                            });
+
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+        });
+
+
+        $("#ddlSizeGroups").change(function () {
+            if ($("#ddlSizeGroups option:selected").val() > 0) {
+                if ($("#hdnMode").val() == "edit") {
+                    $("#divAddSize").show();
+                }
+                else {
+                    $("#divAddSize").hide();
+                }
+                var selectedItem = $(this).val();
+                var updateHolder = $("#sizeList");
+                $.ajax({
+                    type: "GET",
+                    url: "@(Url.Action("GetSizesBySizeId", "Size"))",
+                    data: { "sizeGroupId": selectedItem },
+                    success: function (result) {
+                        $("#grid").show();
+                        $("#sizeList tr td").remove();
+                        $.each(result, function (id, option) {
+                            drawRow(option);
+                        });
+                    },
+                    error: function () { }
+                });
+            } else {
+                $("#divAddSize").hide();
+                $("#grid").hide();
+                $("#forEditText").hide();
+            }
+        });
+
+
+        $("#btnCancel").click(function () {
+            $("#txtEditSize").val("");
+            $("#hdnSizeId").val('');
+            $("#forEditText").hide();
+        });
+
+        $("#ddlCategories").change(function () {
+            $("#forEditText").hide();
+            $("#grid").hide();
+            $("#divAddSize").hide();
+            $("#divAddGroup").hide();
+            //getSubCategories();
+        });
+
+        $("#ddlSubCategories").change(function () {
+            $("#forEditText").hide();
+            $("#grid").hide();
+            $("#divAddSize").hide();
+            $("#divAddGroup").hide();
+            //getCategoryTypes();
+
+        });
+
+        $("#ddlCategoryTypes").change(function () {
+            $("#forEditText").hide();
+            $("#grid").hide();
+            if ($("#hdnMode").val() == "edit") {
+                if ($("#ddlCategoryTypes option:selected").val() > 0) {
+                    $("#divAddGroup").show();
+                    $("#divAddSize").hide();
+                } else {
+                    $("#divAddSize").hide();
+                    $("#divAddGroup").hide();
+                }
+            }
+            else {
+                $("#divAddSize").hide();
+                $("#divAddGroup").hide();
+            }
+        });
+
+        $("#delSizeGroup").click(function () {
+            var selectedItem = $("#ddlSizeGroups option:selected").val();
+            if (selectedItem > 0) {
+                if (confirm('Are u sure want to delete?')) {
+                    $.ajax({
+                        type: "GET",
+                        url: "@(Url.Action("DeleteSizeGroup", "Size"))",
+                        data: { "sizeGroupId": selectedItem },
+                        success: function (result) {
+                            $('#ddlSizeGroups option:selected').attr("selected", null);
+                            $("#ddlSizeGroups option[value='" + selectedItem + "']").remove();
+                            $("#forEditText").hide();
+                            $("#grid").hide();
+                            $("#divAddSize").hide();
+                        },
+                        error: function () { }
+                    });
+                }
+            }
+        });
+
+    });
+</script>
+
+<div id="layoutTopDiv" style="width: 80%; margin: 0px auto;">
+    <div>
+        <div class="page-title nameheadingbg" style="width: 100%; border: 1px solid #ccc;">
+            <h3>Size Admin</h3>
+        </div>
+    </div>
+    <table id="main" style="width: 100%; border: 1px solid #ccc;">
+        <tr>
+            <td style="height: 20px;" colspan="9"></td>
+        </tr>
+        <tr>
+            <td>
+                <input id="hdnMode" type="hidden" value="@SiteConfiguration.Mode.ToString().ToLower()" /></td>
+            <td style="vertical-align: middle; padding-left: 3px;">Category : </td>
+            <td>@Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.CategoryList, "CategoryId", "Name"), " Select ", new { @id = "ddlCategories", @class = "drpdwn", @style = "width:150px;" })</td>
+            <td style="vertical-align: middle;">Sub-Category : </td>
+            <td>@Html.DropDownListFor(m => m.SubCategoryId, new SelectList(Model.SubCategoryList, "CategoryId", "Name"), " Select ", new { @id = "ddlSubCategories", @class = "drpdwn", @style = "width:150px;" })</td>
+            <td style="vertical-align: middle;">Category Type : </td>
+            <td>@Html.DropDownListFor(m => m.CategoryTypeId, new SelectList(Model.SubCategoryList, "CategoryId", "Name"), " Select ", new { @id = "ddlCategoryTypes", @class = "drpdwn forList", @style = "width:150px;" })</td>
+            <td style="vertical-align: middle;">Select Size Group : </td>
+            <td>
+                @Html.DropDownListFor(m => m.SizeGroupId, new SelectList(Model.SizeGroupList, "SizeGroupId", "Name"), " Select ", new { @id = "ddlSizeGroups", @class = "drpdwn", @style = "width:150px;" })
+                @if (SiteConfiguration.Mode.ToString().ToLower() == "edit")
+                {<img id="delSizeGroup" src="@Url.Content("~/styles/images/cross.png")" style="cursor:pointer;" />}
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 40px;" colspan="9"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td colspan="3">
+                <div id="divAddGroup" style="display: none;">
+                    @Html.TextBox("AddSizeGroup", "", new { @id = "txtAddGroup", @class = "txtbox", style = "width:212px" })
+                    <input type="button" id="btnSubmit" name="Submit" value=" Add Size Group " class="save-btn" style="width: 110px;" />
+                </div>
+            </td>
+            <td></td>
+            <td colspan="3">
+                <div id="divAddSize" style="display: none;">
+                    <input type="text" id="txtAddSize" name="txtAddSize" class="txtbox" style="width: 212px;" />
+                    <input type="button" id="btnAdd" name="btnAdd" value=" Add Size " class="save-btn" style="width: 110px;" />
+                </div>
+            </td>
+
+        </tr>
+        <tr>
+            <td style="height: 20px;" colspan="9">
+                <div id="grid" class="main-listing-box" style="width: 100%; padding: 5px 0px 5px 0px; display: none;">
+                    <table id="sizeList" style="width: 100%;">
+                        <tr class="title-pannel">
+                            <th class="col-lg-2" style="text-align: center">Category</th>
+                            <th class="col-lg-2" style="text-align: center">Sub-Category</th>
+                            <th class="col-lg-2" style="text-align: center">Type</th>
+                            <th class="col-lg-2" style="text-align: center">Size Group</th>
+                            <th class="col-lg-1" style="text-align: center">Size</th>
+
+                            <th class="col-lg-3" style="text-align: center">Action</th>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="forEditText" style="margin-left: 100px; margin-top: 20px; width: 78%; display: none;">
+    <div style="float: right;">
+        <input id="hdnSizeId" type="hidden" value="" hidden="hidden" />
+        <input type="text" id="txtEditSize" name="txtEditSize" class="txtbox" />
+        <input id="btnSave" type="button" name="btnSave" value=" Save Size " class="save-btn" style="width: 80px;" />
+        <input id="btnCancel" type="reset" name="Cancel" value=" Cancel " class="save-btn" />
+    </div>
+</div>
+

@@ -1,0 +1,549 @@
+﻿@using Platini.Models;
+@model Cart
+<script type="text/javascript" src="~/Scripts/elements.js"></script>
+
+
+<div class="fullheight" style="overflow:scroll !important;">
+    @using (Html.BeginForm("Cart", "Home", FormMethod.Post, new { id = "cartForm" }))
+    {
+        @Html.HiddenFor(m => m.OrderId)
+        @Html.HiddenFor(m => m.UserId)
+        <table id="FormHeader" style="text-align: left;">
+            <tbody>
+                <tr>
+                    <td rowspan="3" style="text-align: center;">
+                        <img src="@Url.Content("~/Styles/Image/logo.png")" width="75"></td>
+                    <td colspan="2">
+                        <table style="position: relative; width: 100%">
+                            <tbody>
+                                <tr id="TopHeader" style="font-size: 15px; text-align: center;">
+                                    <td>Ghacham Inc.</td>
+                                    <td style="text-align: center;">PLATINI JEANS CO.</td>
+                                    <td>PURCHASE ORDER # <span>@Model.OrdNum</span>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr id="ContactInfo" style="font-size: 13px; border: solid 1px #000;">
+                    <td colspan="2" style="text-align: center;">7340 Alondra Blvd. Paramount. CA 90723 / 562-602-0400 / FAX: 562-684-4679 <a target="_blank" style="color: blue;" class="formHeadLink" href="http://platinijeans.com/">www.platinijeans.com</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="small">Date:@(Model.UserId > 0 ? DateTime.UtcNow.ToShortDateString() : "")</span></td>
+                    <td><span class="small">Buyer:</span>
+                        @Html.TextBoxFor(m => m.CartOwner.Buyer, new { @disabled = "disabled", @class = "cln" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="2" class="bline" style="vertical-align: top;"><span class="small" style="font-size: 10px;">Sold To:</span>
+                        @if (ViewBag.CustomerMode)
+                        {
+                            @Html.TextBoxFor(m => Model.CartOwner.CompanyName, new { @class = "cln", @disabled = "disabled" })
+                        }
+                        else
+                        {
+                            @Html.TextBox("getCustomers", Model.CartOwner.CompanyName, new { @id = "getCustomers", @class = "cln", @style = "width:auto;" })
+                        }
+                    </td>
+
+                    <td class="bline"><span class="small" style="font-size: 10px;">Ship To:</span>
+                        @Html.TextBoxFor(m => m.CartOwner.ShippingAddress.To, new { @maxlength = "50", @class = "cln" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bline">
+                        @Html.TextBoxFor(m => m.CartOwner.BillingAddress.Line1)
+                        @Html.HiddenFor(m => m.CartOwner.BillingAddress.AddressId)
+                    </td>
+                    <td class="bline">
+                        @Html.TextBoxFor(m => m.CartOwner.ShippingAddress.Line1, new { @maxlength = "50", @class = "cln" })
+                        @Html.HiddenFor(m => m.CartOwner.ShippingAddress.AddressId)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bline">
+                        @Html.TextBoxFor(m => m.CartOwner.BillingAddress.Line2)
+                    </td>
+                    <td class="bline">
+                        @Html.TextBoxFor(m => m.CartOwner.ShippingAddress.Line2, new { @maxlength = "50", @class = "cln", @style = "width: 62%" })
+                        Zip Code:
+                        @Html.TextBoxFor(m => m.CartOwner.ShippingAddress.ZipCode, new { @maxlength = "50", @class = "cln", @style = "width: 20%" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <table class="inTable">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 34%">
+                                        <span class="small" style="font-size: 10px;">Tel:</span>
+                                        @Html.HiddenFor(m => m.CartOwner.CommunicationId)
+                                        @Html.TextBoxFor(m => m.CartOwner.Phone, new { @maxlength = "20", @class = "cln" })
+                                    </td>
+                                    <td style="width: 33%"><span class="small" style="font-size: 10px;">Fax:</span>
+                                        @Html.TextBoxFor(m => m.CartOwner.Fax, new { @maxlength = "20", @class = "cln" })</td>
+                                    <td style="width: 33%"><span class="small" style="font-size: 10px;">Email:</span>
+                                        @Html.TextBoxFor(m => m.CartOwner.Email, new { @maxlength = "50", @class = "cln" })</td>
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        <span class="small" style="font-size: 10px;">Terms:</span>
+                                        @Html.DropDownListFor(m => m.CartOwner.TermId, new SelectList(Model.Terms, "Id", "Value", 0), "Select Term", null)
+                                    </td>
+
+                                    <td><span class="small" style="float: left; margin-top: 11px; font-size: 10px;">Sales Person:</span>
+                                        <input type="text" class="clssalesperson input-control cln" style="border: 1px solid #000000 !important; display: inline; float: left; margin: 12px 0 0; width: 129px !important; position: relative;" autocomplete="off">
+                                    </td>
+
+                                    <td style="width: 34%"><span class="small" style="font-size: 10px;">Ship Via:</span>
+                                        @Html.DropDownListFor(m => m.CartOwner.ShipVia, new SelectList(Model.Shipping, "Id", "Value", 0), "--Select--", null)
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <table class="inTable">
+                            <tbody>
+                                <tr>
+                                    <td><span class="small" style="font-size: 10px;">New User:</span><input type="checkbox" style="vertical-align: middle; width: 16px;">
+                                    </td>
+                                    <td>&nbsp;&nbsp;&nbsp;<span style="color: red" class="formHeadNote">Note:&nbsp;</span>
+                                        @Html.TextBoxFor(m => m.Note, new { @style = "width: 450px; border: 1px solid black !important" })
+                                    </td>
+                                    <td style="text-align: right;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table id="tableShoping" style="border-collapse: collapse; margin-top: 10px; width: 100%; text-align: center;">
+            <tr class="headerText">
+                <td style="width: 40px;">
+                    <a href="javascript:void(0);" class="achorshowhide" style="margin: 0px;">HideImage</a>
+                </td>
+                <td>Style</td>
+                <td>Delivery</td>
+                <td>Scale</td>
+                <td>Scales</td>
+                <td>Inseam</td>
+                <td>Available Open Sizes</td>
+                <td>Price</td>
+                <td>Qty</td>
+                <td>Total</td>
+                <td>Remove</td>
+            </tr>
+            @for (int i = 0; i < Model.Clothes.Count; ++i)
+            {
+                bool first = false;
+                for (int j = 0; j < Model.Clothes[i].Contents.Count; ++j)
+                {
+                    first = j == 0;
+                <tr style="@(first ? "border-top: 1px solid #13409b !important;" : "")">
+                    <td>
+                        @if (first)
+                        {
+                            <label style="margin: 0px; font-size: 12px;">@Model.Clothes[i].GroupName</label>
+                        }
+                        <span style="display:block;">
+                            @if (!string.IsNullOrEmpty(Model.Clothes[i].Contents[j].Image))
+                            {
+                                <img src="@Url.Content("~/Library/Uploads/WebThumb/" + Model.Clothes[i].Contents[j].Image)" width="72" class="ClothImg" />
+                            }
+                            else
+                            {
+                                <img src="@Url.Content("~/Library/Uploads/WebThumb/NO_IMAGE.jpg")" width="72" class="ClothImg" />
+                            }
+                        </span>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Detail", new { @id = Model.Clothes[i].Contents[j].ClothesId })"style="color:#000;" target="_blank">@Model.Clothes[i].Contents[j].StyleNumber</a>
+                        @Html.HiddenFor(m => Model.Clothes[i].Contents[j].ClothesId)
+                    </td>
+                    <td>@Model.Clothes[i].Contents[j].Delivery</td>
+                    <td colspan="8">
+                        <table id="packTable" style="width: 100%;">
+                            @for (int k = 0; k < Model.Clothes[i].Contents[j].SPs.Count; ++k)
+                            {
+                                bool wasFitShown = false;
+                                <tr>
+                                    @if (Model.Clothes[i].Contents[j].SPs[k].Pack != null || Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count > 0)
+                                    {
+                                        <td style="width: 10%">
+                                            @if (Model.Clothes[i].Contents[j].SPs[k].Pack != null)
+                                            {
+                                                if (Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesScaleId > 0 && Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesId > 0 && Model.Clothes[i].Contents[j].SPs[k].Pack.OrderSSId != Guid.Empty)
+                                                {
+                                                <b>@Model.Clothes[i].Contents[j].SPs[k].Pack.Name</b>
+                                                <div>
+                                                    @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.PurchasedQty, new { @class = "effect opCal_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k + (Model.Clothes[i].Contents[j].SPs[k].Pack.InvQty <= 0 ? " lackClass" : ""), @onchange = "checkMePack(this," + Model.Clothes[i].Contents[j].SPs[k].Pack.PurchasedQty + ",'hidAP')", @datasum = Model.Clothes[i].Contents[j].SPs[k].Pack.QuantSum, @style = "border-radius:4px;background:#fff" })
+                                                    @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesScaleId)
+                                                    @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.OrderSSId)
+                                                    @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.InvQty, new { @class = "hidAP", @dataval = Model.Clothes[i].Contents[j].ClothesId, @datarow = k })
+                                                </div>
+                                                }
+                                            }
+                                        </td>
+                                            if (!string.IsNullOrEmpty(Model.Clothes[i].Contents[j].SPs[k].Fit))
+                                            {
+                                                wasFitShown = true;
+                                        <td style="">
+                                            <select disabled="disabled" style="font-weight: normal; margin-top: 1em;">
+                                                <option>@Model.Clothes[i].Contents[j].SPs[k].Fit</option>
+                                            </select>
+                                        </td>
+                                            }
+                                            else
+                                            {
+                                        <td style="width: 10%"></td>
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Model.Clothes[i].Contents[j].SPs[k].Inseam))
+                                            {<td style="">
+                                                <select disabled="disabled" style="font-weight: normal; margin-top: 1em;">
+                                                    <option>@Model.Clothes[i].Contents[j].SPs[k].Inseam</option>
+                                                </select>
+                                            </td>
+                                            }
+                                            else
+                                            {
+                                        <td style="@(wasFitShown ? "width: 4%" : "width: 10%")"></td>
+                                            }
+                                    
+                                        <td style="width: 30%;">
+                                            @if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count > 0)
+                                            {
+                                                <ul>
+                                                    @for (int l = 0; l < Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count; l++)
+                                                    {
+                                                        <li style="float: left; list-style: none; text-align: center; padding: 3px 5px;">
+                                                            <b>@Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].SizeName</b>
+                                                            <div>
+                                                                @if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity.HasValue ? Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity.Value > 0 : false)
+                                                                {
+                                                                    @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity, new { @class = "effect opCal2_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k + (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity <= 0 ? " lackClass" : ""), @onchange = "checkMePack(this," + Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity + ",'hidOS')", @style = "border-radius:4px;background:#fff" })
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBox("txtEmpty", "X", new { @class = "effect", @style = "border-radius:4px;background:#fff", @disabled = "disabled" })
+                                                                }
+                                                                @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].ClothesScaleSizeId)
+                                                                @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity, new { @class = "hidOS", @dataval = Model.Clothes[i].Contents[j].ClothesId, @datarow = k })
+                                                            </div>
+                                                        </li>
+                                                    }
+
+                                                </ul>
+                                            }
+                                        </td>
+                                        <td style="width: 10%;">
+                                            <label style="margin-top: 1.5em;">$ @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].Price, Model.Clothes[i].Contents[j].Price.ToString("F2"), new { @style = "width: 50px;", @class = "txt_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k, onchange = "changeAll(this,'txt_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k + "')" })</label>
+                                        </td>
+                                        <td style="width: 10%;">
+                                            <label class="opCalQty" id="qty_@(Model.Clothes[i].Contents[j].ClothesId + "_" + k)" style="margin-top: 1.5em;">@Model.Clothes[i].Contents[j].SPs[k].Quantity</label>
+                                        </td>
+                                        <td style="width: 10%;">$<label class="opCalTot" id="tot_@(Model.Clothes[i].Contents[j].ClothesId + "_" + k)" style="margin-top: 1.5em;">@Model.Clothes[i].Contents[j].SPs[k].Total.ToString("F2")</label>
+                                        </td>
+                                        <td style="width: 10%;">
+                                            <input type="button" value="Remove" class="btnOrder btnRemove" style="margin-top: 1.0em;" />
+                                            @if (Model.Clothes[i].Contents[j].SPs[k].Pack != null)
+                                            {
+                                                @Html.Hidden("packsToDel", Model.Clothes[i].Contents[j].SPs[k].Pack.OrderSSId, new { @class = "ordPack" })
+                                            }
+                                            @if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes != null)
+                                            {
+                                                @Html.Hidden("sizesToDel", string.Join(",", Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Select(x => x.OrderSSId)), new { @class = "ordSize" })
+                                            }
+                                        </td>
+                                
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+
+                </tr>
+                }
+            }
+        </table>
+
+        <div class="bottomBar" style="">
+            <div class="cartShare" style="">
+                <label style="margin: 0;">
+                    Share Cart
+                <a href="@Url.Action("PrintThisCart", new { Id = Model.OrderId })" target="_blank">
+                    <img src="@Url.Content("~/Styles/image/print.png")" style="padding-left:0.5em;" /></a>
+                    <a href="javascript:void(0);" id="mailMe" target="_blank">
+                        <img src="@Url.Content("~/Styles/image/email.png")" style="padding-left:0.5em;" /></a>
+                </label>
+            </div>
+            <div class="totals" style="">
+                <label style="margin: 0; padding-right: 0.5em;font-size: 13px;">Total Qty: <span id="tQty" style="font-size: 13px;">@Model.TotalQty</span></label>
+                <label style="margin: 0; padding-right: 0.5em;font-size: 13px;">Grand Total: $<span id="tGrand" style="font-size: 13px;">@Model.GrandTotal.ToString("F2")</span></label>
+                @if (!ViewBag.CustomerMode)
+                {
+                    <label style="margin: 0; padding-right: 0.5em;font-size: 13px;">Disc(%): @Html.TextBoxFor(m => m.Discount, Model.Discount.ToString("F2"), new { @style = "width: 3em; font-size: 13px;", @class = "numOnly", @onchange = "doAllRowCal();" })</label>
+                }
+                else
+                {
+                    if (Model.Discount > 0)
+                    {
+                        <label style="margin: 0; padding-right: 0.5em;font-size: 13px;">Disc(%): @Model.Discount</label>
+                    }
+                    @Html.HiddenFor(m => m.Discount)
+                }
+                <label style="margin: 0;font-size: 13px;">Final Amount: $<span id="tFinal" style="font-size: 13px;">@Model.FinalAmount.ToString("F2")</span></label>
+                @if (!ViewBag.CustomerMode)
+                {
+                    <div style="float: right;">
+                        <input type="submit" value="@(Model.isSubmit ? "Update" : "Save/Refresh")" style="background: none repeat scroll 0 0 #000; color: #FFFFFF; border: 1px solid #545453; border-radius: 4px; outline: medium none; padding: 4px; transition: all 0.15s ease-in-out 0s;" />
+                        @if (!Model.isSubmit && Model.Clothes.Count > 0)
+                        {
+                            @Html.HiddenFor(m => m.isSubmit)
+                            @Html.ActionLink("Delete/Refresh", "DeleteOrder", new { id = Model.OrderId }, new { @style = "background: none repeat scroll 0 0 #000; color: #FFFFFF; border: 1px solid #545453; border-radius: 4px; outline: medium none; padding: 4.6px; transition: all 0.15s ease-in-out 0s;", onclick = "return confirm('Are you sure you want to delete this order?')" })
+                            <input type="button" id="submitMe" value="Submit" style="background: none repeat scroll 0 0 #000; color: #FFFFFF; border: 1px solid #545453; border-radius: 4px; outline: medium none; padding: 4px; transition: all 0.15s ease-in-out 0s;" />
+                        }
+                    </div>
+                }
+                else
+                {
+                    if (Model.Clothes.Count > 0)
+                    {
+                    <input type="submit" value="@(Model.isSubmit ? "Update" : "Save/Refresh")" style="background: none repeat scroll 0 0 #000; color: #FFFFFF; border: 1px solid #545453; border-radius: 4px; outline: medium none; padding: 4px; transition: all 0.15s ease-in-out 0s;" />
+                        if (!Model.isSubmit)
+                        {
+                    @Html.HiddenFor(m => m.isSubmit)
+                    <input type="button" id="submitMe" value="SUBMIT" style="background: none repeat scroll 0 0 #000; color: #FFFFFF; border: 1px solid #545453; border-radius: 4px; outline: medium none; padding: 4px; transition: all 0.15s ease-in-out 0s;" />
+                        }
+                    }
+                }
+            </div>
+            <div style="float: right; width: 17%;">
+                <input type="text" placeholder="Add By Style#" style="width: 10em;" id="getStyles" data-id="0" />
+                <input type="button" id="addStyles" value="Add" style="background: none repeat scroll 0 0 #000; color: #FFFFFF; border: 1px solid #545453; border-radius: 4px; outline: medium none; padding: 4px; transition: all 0.15s ease-in-out 0s;" />
+            </div>
+        </div>
+    }
+    <div id="registerDialog" title="Register A New Customer">
+    </div>
+    <div id="detPart">
+    </div>
+    <div id="mDialog" style="font-size: 12px;">
+        <table>
+            <tr>
+                <td colspan="2">Separate email address with comma(,)in the case of multiple email addresses.</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 20px;"></td>
+            </tr>
+            <tr>
+                <td>Address
+                </td>
+                <td>
+                    <input type="text" id="txtmAddress" class="txtbx" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 10px;"></td>
+            </tr>
+            <tr>
+                <td>Subject
+                </td>
+                <td>
+                    <input type="text" id="txtmSubject" class="txtbx" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 10px;"></td>
+            </tr>
+            <tr>
+                <td>Message
+                </td>
+                <td>
+                    <textarea rows="4" id="txtmMessage" class="txtbx"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input id="btnmSubmitEmail" type="button" value=" Send Email " class="save-btn" style="width: 110px; float: right; margin-right: 60px;" /></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#mDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            draggable: true,
+            width: '35%',
+            close: function () {
+                $("#txtmAddress").val("");
+                $("#txtmSubject").val("");
+                $("#txtmMessage").val("");
+                $("#mDialog").removeClass("bgClass4");
+            }
+        });
+        ActivateAuto();
+        $("#tableShoping").css("margin-bottom", $(".bottomBar").height() + "px");
+        if ($(".lackClass").length > 0)
+            alert("The text boxes in your cart with red color are out of Stock");
+    });
+    $(".achorshowhide").click(function () {
+        $("img.ClothImg").toggle();
+    });
+    $(".btnRemove").click(function () {
+        if (confirm("Are you sure you want to remove this item?")) {
+            var pack = $(this).siblings(".ordPack").val();
+            var sizes = $(this).siblings(".ordSize").val();
+            $(this).parent().addClass("bgClass2");
+            $.post('/Home/DeleteQuantity', { PackId: pack, SizeIds: sizes }).done(function (data) {
+                window.location = window.location.href;
+            });
+        }
+    });
+    $(".numOnly").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+            // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) ||
+            // Allow: home, end, left, right, down, up
+            (e.keyCode >= 35 && e.keyCode <= 40)) {
+            // let it happen, don't do anything
+            return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+    function changeAll(elm, className) {
+        var newVal = parseFloat($(elm).val()).toFixed(2);
+        $("." + className).each(function () {
+            $(this).val(newVal);
+        });
+        var arr = className.split('_');
+        doRowCalc(arr[1], arr[2]);
+    }
+    function checkMePack(elm, oldVal, className) {
+        var newVal = parseInt($(elm).val());
+        var Id = $(elm).siblings("." + className).attr('dataval');
+        var RowId = $(elm).siblings("." + className).attr('datarow');
+        if (newVal > 0) {
+            var avlVal = parseInt($(elm).siblings("." + className).val());
+            if (avlVal < newVal || avlVal == 0) {
+                if (className == "hidAP")
+                    alert("You cannot order more for this pack than the " + avlVal + " we have available!");
+                else
+                    alert("You cannot order more for this size than the " + avlVal + " we have available! ");
+                $(elm).val(oldVal);
+            }
+        }
+        doRowCalc(Id, RowId);
+    }
+    function doRowCalc(id, rowId) {
+        var rowQ = 0;
+        var rowP = parseFloat($(".txt_" + id + "_" + rowId).val());
+        $(".opCal_" + id + "_" + rowId).each(function () {
+            rowQ += (parseInt($(this).val()) * parseInt($(this).attr('datasum')));
+        });
+        $(".opCal2_" + id + "_" + rowId).each(function () {
+            rowQ += parseInt($(this).val());
+        });
+        var rowT = rowP * rowQ;
+        $("#qty_" + id + "_" + rowId).html(rowQ);
+        $("#tot_" + id + "_" + rowId).html(rowT.toFixed(2));
+        doAllRowCal();
+    }
+    function doAllRowCal() {
+        var rowQ = 0;
+        $(".opCalQty").each(function () {
+            rowQ += parseInt($(this).html());
+        });
+        var rowP = 0;
+        $(".opCalTot").each(function () {
+            rowP += parseFloat($(this).html());
+        });
+        $("#tQty").html(rowQ);
+        $("#tGrand").html(rowP.toFixed(2));
+        var disc = parseFloat($("#Discount").val());
+        var final = rowP - (rowP * (disc / 100));
+        $("#tFinal").html(final.toFixed(2));
+    }
+    $("#submitMe").click(function () {
+        if (parseInt($("#UserId").val()) > 0) {
+            if (confirm("Are you sure you want to submit this order?")) {
+                $("#isSubmit").val("True");
+                $("#cartForm").submit();
+            }
+        }
+        else
+            alert('Please select a user from the "Sold To" box.');
+    });
+    //$("#registerDialog").dialog({
+    //    autoOpen: false,
+    //    width:'65%'
+    //});
+    $('#detPart').dialog({
+        autoOpen: false,
+        modal: true,
+        width: '85%'
+    });
+    $("#addStyles").click(function () {
+        $("#getStyles").addClass("bgClass6");
+        GetStyleData($('#getStyles').attr('data-id'));
+    });
+    $("#mailMe").click(function () {
+        $("#mDialog").dialog("open");
+    });
+    $("#btnmSubmitEmail").click(function () {
+
+        var proceed = true;
+        var self = $("#txtmAddress");
+        if (self.val() == '') {
+            alert('Mail Id is required.');
+            proceed = false;
+        }
+        var result = self.val().replace(/\s/g, "").split(/,|;/);
+        var errors = [];
+        if (proceed == true) {
+            for (var i = 0; i < result.length; i++) {
+                if (!validateEmail(result[i])) {
+                    errors[i] = '`' + result[i] + '`';
+                }
+            }
+            if (errors.length > 0) {
+                alert('Please check ' + errors.join(', ') + ' some of the email addresses are not valid.');
+                proceed = false;
+            }
+            else {
+                proceed = true;
+            }
+            if (proceed == true) {
+                var ids = self.val();
+                var sb = $("#txtmSubject").val();
+                var ms = $("#txtmMessage").val();
+                $("#mDialog").addClass("bgClass4");
+                $.post('@Url.Action("MailThisCart")', { Id: '@Model.OrderId', Ids: ids, Subject: sb, Message: ms }).done(function (data) {
+                    $("#mDialog").removeClass("bgClass4");
+                    alert(data);
+                    $("#mDialog").dialog("close");
+                });
+            }
+        }
+    });
+    function validateEmail(value) {
+        var regex = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+        return (regex.test(value)) ? true : false;
+    }
+</script>

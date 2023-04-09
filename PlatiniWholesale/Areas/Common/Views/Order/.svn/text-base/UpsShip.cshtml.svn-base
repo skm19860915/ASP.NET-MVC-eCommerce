@@ -1,0 +1,68 @@
+﻿@using Platini.Models
+@model UpsReview
+<style>
+    #detDiv table td {
+        vertical-align: middle;
+    }
+
+    .leftPad {
+        padding: .3em!important;
+    }
+
+    .mainDiv {
+        border: 1px solid black;
+        font-size: 12px;
+        margin: 0 auto;
+    }
+</style>
+<div id="finalDiv">
+    <div class="mainDiv">
+        <div class="leftPad">
+            <span style="display: inline-block; text-align: right;">Ship To:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">@Model.ShipAddress</span>
+        </div>
+        <div class="leftPad">
+            <span style="display: inline-block; text-align: right;">Ship From:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">@Model.ShipFrom</span>
+        </div>
+        <div class="leftPad">
+            <span style="display: inline-block; text-align: right;">UPS Service:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">@Model.ServiceName</span>
+        </div>
+        <div class="leftPad">
+            <span style="display: inline-block; text-align: right;">UPS Shipment Cost:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">$ @Model.Price</span>
+        </div>
+    </div>
+
+    <div id="detDiv">
+        <span>Box Details</span>
+        <table style="background-color: #e8e8e8; border-collapse: collapse; border-color: #012233; border-style: solid; border-width: 1px; width: 100%; text-align: center;" id="boxTable">
+            <tr>
+                <td style="background-color: #012233; color: White;">L</td>
+                <td style="background-color: #012233; color: White;">W</td>
+                <td style="background-color: #012233; color: White;">H</td>
+                <td style="background-color: #012233; color: White;">Weight</td>
+            </tr>
+            @for (int i = 0; i < Model.Boxes.Count; i++)
+            {
+                <tr>
+                    <td>@Html.TextBox("BoxL_" + i, Model.Boxes[i].Dimension.Split(':')[0], new { @style = "width: 3em;", @disabled = "disabled" })</td>
+                    <td>@Html.TextBox("BoxW_" + i, Model.Boxes[i].Dimension.Split(':')[1], new { @style = "width: 3em;", @disabled = "disabled" })</td>
+                    <td>@Html.TextBox("BoxH_" + i, Model.Boxes[i].Dimension.Split(':')[2], new { @style = "width: 3em;", @disabled = "disabled" })</td>
+                    <td>@Html.TextBoxFor(m => Model.Boxes[i].Weight, new { @style = "width: 3em;", @disabled = "disabled" })</td>
+                </tr>
+        }
+        </table>
+    </div>
+
+    <div style="text-align: right;" class="leftPad">
+        @using (Ajax.BeginForm("UpsFinal", new AjaxOptions() { LoadingElementId = "loader", UpdateTargetId = "finalDiv" }))
+        {
+            <div id="loader" style="width: 96%; display: none;" class="bgClass3">
+                &nbsp;
+            </div>
+            <input type="submit" value="Ship" style="background-color: green; border: 1px solid black; color: white; padding: .5em 1em;" />
+    }
+    </div>
+</div>

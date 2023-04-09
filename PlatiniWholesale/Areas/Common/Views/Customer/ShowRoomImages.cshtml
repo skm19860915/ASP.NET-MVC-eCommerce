@@ -1,0 +1,138 @@
+﻿@{
+    if (!string.IsNullOrEmpty(ViewBag.From))
+    { Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml"; }
+}
+@using Platini.Models
+@using Platini.DB
+@model ShowRoomImages
+<style>
+    .marginBot {
+        margin-bottom: 15px;
+    }
+
+    .list-inline > li {
+        margin-top: 10px;
+    }
+</style>
+<script src="@Url.Content("~/Scripts/jquery.filedrop.js")"></script>
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="col-md-12 col-lg-12 col-sm-12" style="border: 2px solid black">
+        <div class="text-center marginBot">
+            DROP UPTO 50 IMAGES AT ONCE BELOW
+        </div>
+        <div class="marginBot" id="massdropZone" style="min-height: 10em; border: 1px dashed black;">
+            <label class="text-center" id="mDropLabel"></label>
+        </div>
+        <div id="mupProgressHolder" style="height: 1em;">
+            <div class="mupProgress"></div>
+        </div>
+        <div class="marginBot">
+            <ul id="bigGallery" class="list-inline">
+                @foreach (var li in Model.Images)
+                {
+                    <li id="@li.ShowRoomImageId">
+                        <img src="/Library/Uploads/@(li.ImagePath)" width="64" title="@(li.ImageName)" data-id="@(li.ShowRoomImageId)" data-so="@(li.SortOrder.HasValue ? li.SortOrder.Value : int.MaxValue)" />
+                        <div class="closeDiv" style="cursor: pointer; text-align: center;">
+                            <img id="img45" src="/Styles/image/IsNotActive.png" onclick="DeleteThis(@li.ShowRoomImageId,this);">
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="marginBot" style="text-align: right;">
+            @Html.ActionLink("Back", "Edit", new { @id = Model.AccountId }, new { @class = "save-btn" })
+            <a href="javascript:void(0);" id="saveOrder" onclick="saveSortAll();" class="btn-Popup" style="text-decoration: none; color: #fff; padding: 10px;">Save</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("ul#bigGallery").sortable();
+    $("#mupProgressHolder").progressbar({
+        value: false, complete: function () {
+            $(".mupProgress").addClass("upDone");
+            $("#mupProgressHolder").progressbar("value", 0);
+        }
+    });
+
+
+    function DeleteThis(id, elm) {
+        if (confirm("Are you sure you want to delete")) {
+            $.post('@Url.Action("DeleteImage")', { Id: id }).done(function (data) {
+                $(elm).parent().parent().remove();
+            });
+        }
+    }
+    function saveSortAll() {
+        var ids = [];
+        $("ul#bigGallery li").each(function (index, value) {
+            var item = {};
+            item.id = $(this).prop('id');
+            item.so = index + 1;
+            ids.push(item);
+        });
+        $.post('@Url.Action("SaveSort")', { NewOrders: JSON.stringify(ids) }).done(function () {
+
+        });
+    }
+    function appendLi(resp) {
+        $("ul#bigGallery").append(
+            $('<li>').append(
+                $('<img>').attr('src', '/Library/Uploads/' + resp.Path).attr('title', resp.Name).attr('data-id', resp.Id).attr('data-so', resp.SO).attr('width', '64'),
+                $('<div>').addClass("closeDiv").css({ "cursor": "pointer", "text-align": "center" }).append($("<img>").attr('id', "img" + resp.Id).attr('src', "/Styles/image/IsNotActive.png").attr('onclick', "DeleteThis(" + resp.Id + ",this);"))
+                ).attr('id', resp.Id));
+    }
+    $('#massdropZone').filedrop({
+        url: '@Url.Action("mFileUpload")',
+        data: {
+            AccountId: '@Model.AccountId',
+        },
+        paramname: 'files',
+        error: function (err, file) {
+            switch (err) {
+                case 'BrowserNotSupported':
+                    alert('browser does not support HTML5 drag and drop');
+                    break;
+                case 'TooManyFiles':
+                    alert('file limit exceeded');
+                    $(".mupProgress").addClass("upDone");
+                    break;
+                case 'FileTooLarge':
+                    alert(file.name + ", file size too large");
+                    $(".mupProgress").addClass("upDone");
+                    break;
+                case 'FileTypeNotAllowed':
+                    alert("upload image files only");
+                    $(".mupProgress").addClass("upDone");
+                    break;
+                case 'FileExtensionNotAllowed':
+                    $(".mupProgress").addClass("upDone");
+                    break;
+                default:
+                    alert("Error");
+                    $(".mupProgress").addClass("upDone");
+                    break;
+            }
+        },
+        maxfiles: 50,
+        maxfilesize: 20,
+        queuewait: 10000,
+        allowedfiletypes: ['image/jpeg', 'image/png', 'image/gif'],
+        allowedfileextensions: ['.jpg', '.jpeg', '.png', '.gif'],
+        afterAll: function () {
+            $('#mDropLabel').empty().append('All files uploaded successfully...');
+        },
+        uploadStarted: function (i, file, len) {
+            $("#mupProgressHolder").progressbar("value", 0);
+        },
+        progressUpdated: function (i, file, progress) {
+            $("#mupProgressHolder").progressbar("value", progress);
+        },
+        uploadFinished: function (i, file, response) {
+            if (response != 'error')
+                appendLi(response);
+            $('#mDropLabel').empty().append('Uploading next file...');
+        }
+    });
+</script>

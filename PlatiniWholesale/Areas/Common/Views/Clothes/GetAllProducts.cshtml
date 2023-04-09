@@ -1,0 +1,23 @@
+﻿@model Platini.Models.AllProductListClass
+
+<table id="relCheck">
+    @for (int i = 0; i < Model.AllProductList.Count(); i = i + 14)
+    {       
+        <tr class="trclass">
+            @for (int j = i; j < i + 14; j++)
+            {
+                if (j < Model.AllProductList.Count())
+                {
+                    var item = Model.AllProductList[j];
+                <td class="chbox">@Html.CheckBoxFor(x => item.Checked, new { id = item.ClothesId })</td>
+                <td>@*@Html.HiddenFor(x=>item.ClothesId)*@</td>
+                <td style="padding-left: 2px">@Html.DisplayFor(x => item.StyleNumber)</td>
+                }
+                else
+                {
+                <td colspan="14"></td> 
+                }
+            }
+        </tr>
+    }
+</table>

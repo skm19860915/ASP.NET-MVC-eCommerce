@@ -1,0 +1,201 @@
+﻿@using Platini.Models;
+@model List<Platini.DB.QuickBookFailureRecord>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .bg-role {
+        /*background-color: #e8e8e8;*/
+        border: hidden;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+
+    .title-pannel {
+        font-size: 14px;
+        background-color: #e8e8e8;
+    }
+</style>
+<style>
+    .ui-dialog > .ui-widget-header {
+        background: none repeat scroll 0 0 #012233;
+        text-align: center;
+    }
+
+    .ui-dialog {
+        -webkit-box-shadow: 0 0 5px 3px #999;
+        -moz-box-shadow: 0 0 5px 3px #999;
+        box-shadow: 0 0 5px 3px #999;
+    }
+
+    .ui-widget-content {
+        background: #eeeeee;
+        border: 1px solid #aaaaaa;
+        color: #222222;
+    }
+
+    .ui-front {
+        z-index: 99999 !important;
+    }
+</style>
+
+<script type="text/javascript">
+
+    function viewLog() {
+        alert($("a#log").attr('title'));
+    }
+
+    $(function () {
+        $('tr td a#log').click(function () {
+            alert($(this).attr('title'));
+        });
+
+        $('tr th input:checkbox').click(function () {
+            if (this.checked) { // check select status
+                $('tr td input:checkbox').each(function () {
+                    this.checked = true;
+                });
+            } else {
+                $('tr td input:checkbox').each(function () {
+                    this.checked = false;
+                });
+            }
+        });
+
+        $("tr td input#btnRetry").click(function () {
+            var arr = $(this).attr('title').split('-');
+            var id = parseInt(arr[1]);
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("Retry", "Failure"))",
+                data: { "failureFrom": arr[0], id: id },
+                success: function (result) {
+                },
+                error: function () { }
+            });
+        });
+
+        $("#btnRetryAll").click(function () {
+            var collection = [];
+            $('tr td input:checkbox').each(function () {
+                if (this.checked == true) {
+                    collection.push($(this).attr('title'));
+                }
+            });
+            //alert(collection);
+            $.ajax({
+                type: "GET",
+                traditional: true,
+                url: "@(Url.Action("RetryAll", "Failure"))",
+                data: { "arr": collection },
+                success: function (result) {
+                },
+                error: function () { }
+            });
+        });
+    });
+
+</script>
+
+<div class="main-listing-box">
+    <table border="0">
+        @if (SiteConfiguration.Mode.ToLower() == "edit")
+        {
+            <tr style="border: 0px;">
+                <td colspan="6">&nbsp;
+                </td>
+                <td style="float: right; padding-right: 80px;">
+                    <input id="btnRetryAll" type="reset" value=" Retry All " />
+                </td>
+            </tr>
+        }
+        <tr class="title-pannel">
+            @if (SiteConfiguration.Mode.ToLower() == "edit")
+            {
+                <th style="text-align: center;">
+                    @Html.CheckBox("Select All")
+                </th>
+            }
+            <th class="col-lg-3" style="text-align: center;">Failure From
+            </th>
+            <th class="col-lg-2" style="text-align: center;">Failure From ID
+            </th>
+            <th class="col-lg-2" style="text-align: center;">Sync Status
+            </th>
+            <th class="col-lg-2" style="text-align: center;">Failure Date
+            </th>
+            <th class="col-lg-2" style="text-align: left;">View Log
+            </th>
+            @if (SiteConfiguration.Mode.ToLower() == "edit")
+            {
+                <th class="col-lg-2" style="text-align: center;">Action
+                </th>
+            }
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr class="bg-role" style="text-align: center;">
+                @if (SiteConfiguration.Mode.ToLower() == "edit")
+                {
+                    <td>@Html.CheckBox(@item.Id.ToString(), false, new { @class = "chkbox", @title = @item.FailureFrom + "-" + @item.FailureFromId })</td>
+                }
+                <td class="col-lg-2">
+                    @item.FailureFrom
+                </td>
+                <td class="col-lg-2">
+                    @item.FailureFromId
+                </td>
+                <td class="col-lg-2">
+                    @item.SyncStatus
+                </td>
+                <td class="col-lg-2">
+                    @item.FailureDate
+                </td>
+                <td class="col-lg-2" style="text-align: left; padding-left: 15px;">
+                    <a id="log" title="@item.ErrorDetails" href="#">View Log</a>                    
+                    @*<a href="javascript:void(0);" class="ordEButton aPack" data-id="@item.Id" style="width:6em;display:inline-block;">
+                        View Log 
+                    </a>*@
+                        @if (SiteConfiguration.Mode.ToLower() == "edit")
+                        {
+                            if (item.FailureFrom == "Customer")
+                            {
+                                <a id="@item.FailureFromId" href="@Url.Action("Edit", "Customer", new { id = @item.FailureFromId })" style="float:right;">Edit</a>
+                            }
+                        }
+</td>
+                @if (SiteConfiguration.Mode.ToLower() == "edit")
+                {
+                    <td class="col-lg-2" style="text-align: center;">
+                        <input id="btnRetry" title="@item.FailureFrom-@item.FailureFromId" type="reset" value=" Retry " />
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+<div id="errdialog" title="View Log">   
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#errdialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: '45%',
+            close: function () {
+                $("#errdialog").html('');
+            }
+        });
+    });
+
+    $(".aPack").click(function () {
+        var id = $(this).attr('data-id');
+        $.get("@Url.Action("ErrorLog", "Failure")", { Id: id }).done(function (data) {
+            $("#errdialog").html(data);
+            $("#errdialog").dialog("open");
+        });
+    });
+</script>

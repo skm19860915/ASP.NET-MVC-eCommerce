@@ -1,0 +1,931 @@
+﻿@using Platini.Models
+@model Cart
+@{
+    ViewBag.Title = "Process Order";
+    Layout = "~/Areas/Common/Views/Shared/_Layout1.cshtml";
+}
+
+<style>
+    .highlight {
+        background-color: yellow;
+    }
+
+    table td {
+        vertical-align: middle !important;
+    }
+
+    #tableShoping td {
+        padding: 3px 5px;
+        color: #000;
+    }
+
+    #tableShoping tr {
+        padding: 5px 0px;
+    }
+
+    .headerText {
+        background: #BBBBBB;
+        color: #663300 !important;
+        font-weight: bold;
+    }
+
+    #packTable {
+        margin-bottom: 1.5em;
+        text-align: center;
+    }
+
+        #packTable td {
+            padding: 0;
+        }
+
+    .bottomBar {
+        background: none repeat scroll 0 0 #424240;
+        bottom: 0;
+        width: 100%;
+        padding: 1em;
+    }
+
+    .cartShare {
+        background-color: #fff;
+        padding: 0.3em;
+        border-radius: 5px;
+        border: 1px solid #fff;
+    }
+
+        .cartShare:hover {
+            border: 1px solid yellow;
+        }
+
+    .ui-dialog > .ui-widget-header {
+        background: none repeat scroll 0 0 #012233;
+        text-align: center;
+    }
+
+    .ui-dialog {
+        -webkit-box-shadow: 0 0 5px 3px #999;
+        -moz-box-shadow: 0 0 5px 3px #999;
+        box-shadow: 0 0 5px 3px #999;
+    }
+
+    .ui-menu-item a {
+        text-decoration: none;
+    }
+
+    .ui-widget-content {
+        background: #eeeeee;
+        border: 1px solid #aaaaaa;
+        color: #222222;
+    }
+
+    .ui-front {
+        z-index: 1002;
+    }
+
+    .ui-menu-item {
+        border: 1px solid #ccc;
+        background-color: #EEEEEE;
+        margin: .5em !important;
+    }
+
+
+    .ui-corner-all {
+        border-radius: 0px !important;
+        border-bottom-left-radius: 0px !important;
+        border-bottom-right-radius: 0px !important;
+    }
+
+    .ui-state-focus {
+        font-weight: bold !important;
+        background: none !important;
+        border: none !important;
+    }
+
+    .ui-autocomplete {
+        overflow: auto;
+        border: 1px solid #ccc;
+        background: #EEEEEE !important;
+        border-radius: 0px !important;
+        border-bottom-left-radius: 0px !important;
+        border-bottom-right-radius: 0px !important;
+    }
+</style>
+<link rel="stylesheet" href="@Url.Content("~/Styles/style.css")" />
+<div class="ProcessOrder">
+    <div style="text-align: right" class="backrow">
+        <a href="@Url.Action("Index", "Order", new { @area = "Common" })">Back</a>
+    </div>
+    <div class="cutomerInfo">
+        <ul>
+            <li style="width: 100%"> Order Details</li>
+
+            <li style="width: 100%">
+                <div class="lebalTabe">Order Number: </div>
+                <div class="fielsTable">@Model.OrdNum</div>
+            </li>
+        </ul>
+    </div>
+    <div class="cutomerInfo">
+        <ul>
+            <li> Customer Information</li>
+
+            <li>
+                <div class="lebalTabe">Customer Name: </div>
+                <div class="fielsTable">@Model.UserName</div>
+            </li>
+
+            <li>
+                <div class="lebalTabe">Shipping Address:</div>
+                <div class="fielsTable">@Model.CartOwner.ShippingAddress.Line1, @Model.CartOwner.ShippingAddress.Line2, </div>
+            </li>
+            <li>
+                <div class="lebalTabe">Billing Address:</div>
+                <div class="fielsTable">@Model.CartOwner.BillingAddress.Line1, @Model.CartOwner.BillingAddress.Line2 </div>
+            </li>
+            <li>
+                <div class="lebalTabe">Zip Code:</div>
+                <div class="fielsTable">@Model.CartOwner.ShippingAddress.ZipCode</div>
+            </li>
+            <li>
+                <div class="lebalTabe">Zip Code:</div>
+                <div class="fielsTable">@Model.CartOwner.ShippingAddress.ZipCode </div>
+            </li>
+            <li>
+                <div class="lebalTabe">Phone Number:</div>
+                <div class="fielsTable">@Model.CartOwner.Phone</div>
+            </li>
+        </ul>
+    </div>
+
+    @using (Html.BeginForm("ProcessOrder", "Order", FormMethod.Post, new { id = "processForm" }))
+    {
+        @Html.HiddenFor(m => Model.OrderId, new { @id = "OrderId" })
+        @Html.HiddenFor(m => Model.UserId)
+        if (ViewBag.LoadNew)
+        {
+            <label id="actAuto" style="display: none"></label>
+        }
+        <table id="tableShoping" style="border-collapse: collapse; margin-top: 1em; width: 100%; text-align: center;">
+            <tr class="headerText">
+                <td style="width: 40px;">
+                    <a href="javascript:void(0);" class="achorshowhide" style="margin: 0px;">HideImage</a>
+                </td>
+                <td>Style</td>
+                <td>Delivery</td>
+                <td>Scale</td>
+                <td>Scales</td>
+                <td>Inseam</td>
+                <td>Available Open Sizes</td>
+                <td>Qty</td>
+                <td></td>
+                <td></td>
+            </tr>
+            @for (int i = 0; i < Model.Clothes.Count; ++i)
+            {
+                bool first = false;
+                for (int j = 0; j < Model.Clothes[i].Contents.Count; ++j)
+                {
+                    first = j == 0;
+                    <tr style="@(first ? "border-top: 1px solid #BFBF8E !important;" : "")">
+                        <td>
+                            @if (first)
+                            {
+                                <label style="margin: 0px; font-size: 12px;">@Model.Clothes[i].GroupName</label>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.Clothes[i].Contents[j].Image))
+                            {
+                                <img src="@Url.Content("~/Library/Uploads/WebThumb/" + Model.Clothes[i].Contents[j].Image)" width="72" class="ClothImg" />
+                            }
+                            else
+                            {
+                                <img src="@Url.Content("~/Library/Uploads/WebThumb/NO_IMAGE.jpg")" width="72" class="ClothImg" />
+                            }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Detail", "Home", new { @id = Model.Clothes[i].Contents[j].StyleNumber, @area = "" })" style="color:#000;" target="_blank">@Model.Clothes[i].Contents[j].StyleNumber</a>
+                            @Html.HiddenFor(m => Model.Clothes[i].Contents[j].ClothesId)
+                        </td>
+                        <td></td>
+                        <td colspan="8">
+                            <table id="packTable" style="width: 100%;">
+                                @for (int k = 0; k < Model.Clothes[i].Contents[j].SPs.Count; ++k)
+                                {
+                                    bool wasFitShown = false;
+                                    <tr>
+                                        @if (Model.Clothes[i].Contents[j].SPs[k].Pack != null || Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count > 0)
+                                        {
+                                            if (SiteIdentity.Roles == RolesEnum.Warehouse.ToString() || SiteIdentity.Roles == RolesEnum.Warehouse.ToString())
+                                            {
+                                                <td style="width: 15%">
+                                                    @if (Model.Clothes[i].Contents[j].SPs[k].Pack != null)
+                                                    {
+                                                        if (Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesScaleId > 0 && Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesId > 0 && Model.Clothes[i].Contents[j].SPs[k].Pack.OrderSSId != Guid.Empty)
+                                                        {
+                                                            <b>@Model.Clothes[i].Contents[j].SPs[k].Pack.Name</b>
+                                                            <div>
+                                                                @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.PurchasedQty, new { @class = "effect opCal_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k, @onchange = "checkMeWarePack(this," + Model.Clothes[i].Contents[j].SPs[k].Pack.InvQty + ",'hidAP')", @datasum = Model.Clothes[i].Contents[j].SPs[k].Pack.QuantSum, @style = "border-radius:4px;background:#fff" })
+                                                                @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesScaleId)
+                                                                @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.OrderSSId)
+                                                                @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.InvQty, new { @class = "hidAP", @dataval = Model.Clothes[i].Contents[j].ClothesId, @datarow = k, @datapur = Model.Clothes[i].Contents[j].SPs[k].Pack.InvQty })
+                                                            </div>
+                                                        }
+                                                    }
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td style="width: 15%">
+                                                    @if (Model.Clothes[i].Contents[j].SPs[k].Pack != null)
+                                                    {
+                                                        if (Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesScaleId > 0 && Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesId > 0 && Model.Clothes[i].Contents[j].SPs[k].Pack.OrderSSId != Guid.Empty)
+                                                        {
+                                                            <b>@Model.Clothes[i].Contents[j].SPs[k].Pack.Name</b>
+                                                            <div>
+                                                                @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.PurchasedQty, new { @class = "effect opCal_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k, @onchange = "checkMePack(this," + Model.Clothes[i].Contents[j].SPs[k].Pack.InvQty + ",'hidAP')", @datasum = Model.Clothes[i].Contents[j].SPs[k].Pack.QuantSum, @style = "border-radius:4px;background:#fff" })
+                                                                @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesScaleId)
+                                                                @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.OrderSSId)
+                                                                @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.InvQty, new { @class = "hidAP", @dataval = Model.Clothes[i].Contents[j].ClothesId, @datarow = k, @datapur = Model.Clothes[i].Contents[j].SPs[k].Pack.InvQty })
+                                                            </div>
+                                                        }
+                                                    }
+                                                </td>
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Model.Clothes[i].Contents[j].SPs[k].Fit))
+                                            {
+                                                wasFitShown = true;
+                                                <td style="width: 15%">
+                                                    <select disabled="disabled" style="font-weight: normal; margin-top: 1em;">
+                                                        <option>@Model.Clothes[i].Contents[j].SPs[k].Fit</option>
+                                                    </select>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td style="width: 15%"></td>
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Model.Clothes[i].Contents[j].SPs[k].Inseam))
+                                            {
+                                                <td style="width: 10%;">
+                                                    <select disabled="disabled" style="font-weight: normal; margin-top: 1em;">
+                                                        <option>@Model.Clothes[i].Contents[j].SPs[k].Inseam</option>
+                                                    </select>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td style="@(wasFitShown ? "width: 10%" : "width: 10%")"></td>
+                                            }
+                                            if (SiteIdentity.Roles == RolesEnum.Warehouse.ToString() || SiteIdentity.Roles == RolesEnum.Warehouse.ToString())
+                                            {
+                                                <td style="width: 38%;">
+                                                    @if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count > 0)
+                                                    {
+                                                        <ul>
+                                                            @for (int l = 0; l < Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count; l++)
+                                                            {
+                                                                <li style="float: left; list-style: none; text-align: center; padding: 3px 5px;">
+                                                                    <b>@Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].SizeName</b>
+                                                                    <div>
+                                                                        @if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity.HasValue ? Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity.Value > 0 : false)
+                                                                        {
+                                                                            @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity, new { @class = "effect opCal2_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k + (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity <= 0 ? " lackClass" : ""), @onchange = "checkMeWarePack(this," + Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].TotalInventory + ",'hidOS')", @style = "border-radius:4px;background:#fff" })
+                                                                        }
+                                                                        else if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity.HasValue ? Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity.Value > 0 : false)
+                                                                        {
+                                                                            @Html.TextBox("txtEmpty", "0", new { @class = "effect opCal2_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k + (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity <= 0 ? " lackClass" : ""), @onchange = "checkMeWarePack(this," + Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].TotalInventory + ",'hidOS')", @style = "border-radius:4px;background:#fff" })
+                                                                            @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity, new { id = "opCal3_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.TextBox("txtEmpty", "X", new { @class = "effect", @style = "border-radius:4px;background:#fff", @disabled = "disabled" })
+                                                                        }
+                                                                        @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].ClothesScaleSizeId)
+                                                                        @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity, new { @class = "hidOS", @dataval = Model.Clothes[i].Contents[j].ClothesId, @datarow = k, @datapur = Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity })
+                                                                        @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].OrderSSId)
+                                                                        @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].ClothesScaleId)
+                                                                    </div>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td style="width: 38%;">
+                                                    @if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count > 0)
+                                                    {
+                                                        <ul>
+                                                            @for (int l = 0; l < Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count; l++)
+                                                            {
+                                                                <li style="float: left; list-style: none; text-align: center; padding: 3px 5px;">
+                                                                    <b>@Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].SizeName</b>
+                                                                    <div>
+                                                                        @if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity.HasValue ? Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity.Value > 0 : false)
+                                                                        {
+                                                                            @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity, new { @class = "effect opCal2_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k + (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity <= 0 ? " lackClass" : ""), @onchange = "checkMePack(this," + Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].TotalInventory + ",'hidOS')", @style = "border-radius:4px;background:#fff" })
+                                                                        }
+                                                                        else if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity.HasValue ? Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity.Value > 0 : false)
+                                                                        {
+                                                                            @Html.TextBox("txtEmpty", "0", new { @class = "effect opCal2_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k + (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity <= 0 ? " lackClass" : ""), @onchange = "checkMePack(this," + Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].TotalInventory + ",'hidOS')", @style = "border-radius:4px;background:#fff" })
+                                                                            @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity, new { id = "opCal3_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k })
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.TextBox("txtEmpty", "X", new { @class = "effect", @style = "border-radius:4px;background:#fff", @disabled = "disabled" })
+                                                                        }
+                                                                        @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].ClothesScaleSizeId)
+                                                                        @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity, new { @class = "hidOS", @dataval = Model.Clothes[i].Contents[j].ClothesId, @datarow = k, @datapur = Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity })
+                                                                        @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].OrderSSId)
+                                                                        @Html.HiddenFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].ClothesScaleId)
+                                                                    </div>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </td>}
+
+                                                <td style="width: 5%;">
+                                                    <label class="opCalQty@(Model.Clothes[i].Contents[j].SPs[k].isConfirmed ? " highlight" : "")" id="qty_@(Model.Clothes[i].Contents[j].ClothesId + "_" + k)"
+                                                           onclick="confirmQuant(this,'@Model.Clothes[i].Contents[j].SPs[k].FitId','@Model.Clothes[i].Contents[j].SPs[k].InseamId');"
+                                                           data-fit="@Model.Clothes[i].Contents[j].SPs[k].FitId" data-seam="@Model.Clothes[i].Contents[j].SPs[k].InseamId"
+                                                           style="margin-top: 0.5em;padding:0.3em;font-size:17px;">@Model.Clothes[i].Contents[j].SPs[k].Quantity</label>
+                                                        @Html.CheckBoxFor(m => Model.Clothes[i].Contents[j].SPs[k].isConfirmed, new { style = "display:none;", @class = "confirmMeQuant" })
+                                                    </td>
+                                                    <td style="width: 10%;">
+                                                        @if (Model.Clothes[i].Contents[j].SPs[k].ShowPrepack && !ViewBag.isCustomer)
+                                                        {
+                                                            <input type="button" value="Break Prepack" class="btnbreak btnOrder" style="padding: 2px; color: rgb(255, 255, 255); background: rgb(0, 0, 0);white-space:normal;"
+                                                                   data-id="@Model.Clothes[i].Contents[j].ClothesId" data-fit="@Model.Clothes[i].Contents[j].SPs[k].FitId" data-seam="@Model.Clothes[i].Contents[j].SPs[k].InseamId">
+                                                        }
+                                                    </td>
+                                                    <td style="width: 7%;">
+                                                        <input type="button" value="Remove" class="btnOrder btnRemove" style="padding: 2px; color: rgb(255, 255, 255); background: rgb(0, 0, 0);white-space:normal;" />
+                                                        @if (Model.Clothes[i].Contents[j].SPs[k].Pack != null)
+                                                        {
+                                                             @Html.Hidden("packsToDel", Model.Clothes[i].Contents[j].SPs[k].Pack.OrderSSId, new { @class = "ordPack" })
+                                                        }
+                                                        @if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes != null)
+                                                        {
+                                                            @Html.Hidden("sizesToDel", string.Join(",", Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Select(x => x.OrderSSId)), new { @class = "ordSize" })
+                                                        }
+                                                        @*<a href="#" class="btnbreak btnOrder" style="padding: 2px; color: rgb(255, 255, 255); background: rgb(0, 0, 0);white-space:normal;">Delete</a>*@
+                                                    </td>
+                                        }
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+
+                    </tr>
+                }
+            }
+        </table>
+        <div class="bottomBar" style="margin-bottom: 6em;">
+            <div class="labelProc">
+                <a href="javascript:void(0)" id="aPack">Packing</a>
+                @{
+            var Boxes = ViewBag.Box;
+            var Bags = ViewBag.Bag;
+            if ((Bags != 0 || Boxes != 0))
+            {
+                <span>
+                    [#@Boxes, #@Bags ]
+                </span>
+            }
+                }
+            </div>
+            <div class="Note">
+                <label style="color: white;">Notes:@Html.TextBoxFor(m => m.Note)</label>
+                @Html.Hidden("bbCount", (int)ViewBag.BBCount, new { @id = "hidCount" })
+                @Html.HiddenFor(m => Model.PrintMe, new { @class = "hidPrintTrue" })
+                <a id="PrintCart" href="@Url.Action("Print", "Order", new { @area = "common", @id = Model.OrderId, @pType = "packlist" })" style="display:none" class="ordEButton" target="_blank">
+                </a>
+            </div>
+            <div class="adbyStyle">
+                <input type="text" placeholder="Add By Style#" style="width: 10em;" id="getStyles" data-id="0" />
+                <input type="button" id="addStyles" value="Add" style="background: none repeat scroll 0 0 #000; color: #FFFFFF; border: 1px solid #545453; border-radius: 4px; outline: medium none; padding: 4px; transition: all 0.15s ease-in-out 0s;" />
+            </div>
+            <div class="cartShare qtyp">
+                <label id="lblQty" class="lblqty">
+                    Total Packed [<span id="tQty" onclick="confirmTotalQuant(this)">@Model.TotalQty</span>]
+                    <input type="hidden" value="" id="totQty" />
+                    <input type="checkbox" style="display:none;" id="hConfirm" value="" class="confirmMeTotalQuant" />
+                </label>
+                <input type="button" value="Save/Close" id="btnSave" class="packButton" style="margin-right: 2em" />
+                <input type="button" value="Save/Update" id="btnSaveU" class="packButton" style="display: none" />
+                <input type="button" value="Save/Print" id="btnSaveP" class="packButton" />
+            </div>
+        </div>
+    }
+    <div id="dialog" title="Packing Info">
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#dialog").dialog({
+            autoOpen: false,
+            modal: true,
+            draggable: true,
+            width: '45%',
+            close: function () {
+                $("#dialog").html('');
+            }
+        });
+        if ($("#actAuto").length > 0)
+        { ActivateAuto(); }
+    });
+
+    $("#aPack").on("click", function () {
+        $.ajax({
+            type: "POST",
+            traditional: true,
+            url: "@(Url.Action("UpdateProcessOrder", "Order"))",
+            data: $('#processForm').serialize(),
+            success: function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@(Url.Action("BBDetails", "Order"))",
+                    data: { "Id": '@Model.OrderId' },
+                    success: function (result) {
+                        $("#dialog").html('');
+                        $("#dialog").append(result);
+                        $("#dialog").dialog("open");
+                    },
+                    error: function () { }
+                });
+            },
+            error: function () { }
+        });
+    });
+
+    $(".btnbreak").click(function () {
+        $(this).parent().addClass("bgClass3");
+        var Id = $(this).attr('data-id');
+        var fId = $(this).attr('data-fit');
+        var sId = $(this).attr('data-seam');
+        $.post('@Url.Action("BreakPack", "Order")', { Id: Id, fId: fId, sId: sId, OrderId: '@Model.OrderId' }).done(function (data) {
+            if (data == "1") {
+                var dialog = $('<p>Can not break it. you have only 1 prepack.</p>').dialog({
+                    title: "Warning!",
+                    buttons: {
+                        "Ok": function () {
+                            dialog.dialog('close');
+                        }
+                    }
+                });
+            }
+            if (data == "success") {
+                var dialog = $('<p>Pre-pack broken successfully.</p>').dialog({
+                    title: "Warning!",
+                    buttons: {
+                        "Ok": function () {
+                            dialog.dialog('close');
+                        }
+                    }
+                });               
+            }            
+        });
+    });
+
+    $(".btnRemove").click(function () {
+        var $this= $(this);
+        var dialog = $('<p>Are you sure you want to remove this item?</P>').dialog({
+            title: "Warning!",
+            buttons: {
+                "Yes": function () {
+                    var pack = $this.siblings(".ordPack").val();
+                    var sizes = $this.siblings(".ordSize").val();
+                    //alert(sizes +"," +pack);
+                    $(this).parent().addClass("bgClass2");
+                    $.post('/Common/Order/DeleteQuantity', { PackId: pack, SizeIds: sizes }).done(function (data) {
+                        window.location = window.location.href;
+                    });
+                },
+                "No": function () {
+                    dialog.dialog('close');
+                }
+            }
+        });
+        //if (confirm("Are you sure you want to remove this item?")) {
+        //    var pack = $(this).siblings(".ordPack").val();
+        //    var sizes = $(this).siblings(".ordSize").val();
+        //    $(this).parent().addClass("bgClass2");
+        //    $.post('/Common/Order/DeleteQuantity', { PackId: pack, SizeIds: sizes }).done(function (data) {
+        //        window.location = window.location.href;
+        //    });
+        //}
+    });
+
+    $("#addStyles").click(function () {
+        $("#getStyles").addClass("bgClass6");
+        var OrdrId = $("#OrderId").val();
+        GetStyleDataProcess($('#getStyles').attr('data-id'), '@ViewBag.LoadNew', OrdrId);
+    });
+
+    $("#btnSave,#btnSaveP").click(function () {
+        var OrdrId = $("#OrderId").val();
+        if ($(".confirmMeTotalQuant").length == $(".confirmMeTotalQuant:checked").length) {
+            $('#lblQty').css({ "font-size": "17px", "color": "red" });
+
+            if ($(this).attr('id') == 'btnSaveP') {
+                $(".hidPrintTrue").val("1");
+            }
+            if ($("#hidCount").val() == '0') {
+                var dialog = $('<p>Are you sure you want to submit this order without packing information?</p>').dialog({
+                    title: "Warning!",
+                    buttons: {
+                        "Yes": function () {
+                            var ischeck = 1;
+                            if ($(".confirmMeQuant").length == $(".confirmMeQuant:checked").length) {
+                                ischeck = 0;
+                            }
+                            if (ischeck == 1) {
+                                var dialog = $('<p>You have unconfirmed quantities, do you want to create a back order?</p>').dialog({
+                                    title: "Warning!",
+                                    buttons: {
+                                        "Yes": function () {
+                                            if ($(".hidPrintTrue").val() == "1") {
+                                                $('#PrintCart').trigger('click');
+                                            }
+                                            $("#processForm").attr('action', '/Common/Order/BackOrder');
+                                            $("#processForm").submit();
+                                        },
+                                        "No": function () {
+                                            if ($(".hidPrintTrue").val() == "1") {
+                                                $('#PrintCart').trigger('click');
+                                            }
+                                            $("#processForm").submit();
+                                        },
+                                        "Cancel": function () {
+                                            dialog.dialog('close');
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                if ($(".hidPrintTrue").val() == "1") {
+                                    $('#PrintCart').trigger('click');
+                                }
+                                $("#processForm").submit();
+                            }
+                        },
+                        "Cancel": function () {
+                            dialog.dialog('close');
+                        }
+                    }
+                });
+            }
+            else {
+                var ischeck = 1;
+                if ($(".confirmMeQuant").length == $(".confirmMeQuant:checked").length) {
+                    ischeck = 0;
+                }
+                if (ischeck == 1) {
+                    var dialog = $('<p>You have unconfirmed quantities, do you want to create a back order?</p>').dialog({
+                        title: "Warning!",
+                        buttons: {
+                            "Yes": function () {
+                                if ($(".hidPrintTrue").val() == "1") {
+                                    $('#PrintCart').trigger('click');
+                                }
+                                $("#processForm").attr('action', '/Common/Order/BackOrder');
+                                $("#processForm").submit();
+                            },
+                            "No": function () {
+                                if ($(".hidPrintTrue").val() == "1") {
+                                    $('#PrintCart').trigger('click');
+                                }
+                                $("#processForm").submit();
+                            },
+                            "Cancel": function () {
+                                dialog.dialog('close');
+                            }
+                        }
+                    });
+                }
+                else {
+                    if ($(".hidPrintTrue").val() == "1") {
+                        $('#PrintCart').trigger('click');
+                    }
+                    $("#processForm").submit();
+                }
+            }
+        }
+        else {
+            if ($(this).attr('id') == 'btnSaveP') {
+                $(".hidPrintTrue").val("1");
+            }
+            var val = parseInt($('#tQty').text());
+            var dialog = $('<p>[' + val + '] CONFIRM/CANCEL.</p>').dialog({
+                buttons: {
+                    "Yes": function () {
+                        if ($(this).attr('id') == 'btnSaveP') {
+                            $(".hidPrintTrue").val("1");
+                        }
+                        if ($("#hidCount").val() == '0') {
+                            var dialog = $('<p>Are you sure you want to submit this order without packing information?</p>').dialog({
+                                title: "Warning!",
+                                buttons: {
+                                    "Yes": function () {
+                                        var ischeck = 1;
+                                        if ($(".confirmMeQuant").length == $(".confirmMeQuant:checked").length) {
+                                            ischeck = 0;
+                                        }
+                                        if (ischeck == 1) {
+                                            var dialog = $('<p>You have unconfirmed quantities, do you want to create a back order?</p>').dialog({
+                                                title: "Warning!",
+                                                buttons: {
+                                                    "Yes": function () {
+                                                        if ($(".hidPrintTrue").val() == "1") {                                                            
+                                                            $('#PrintCart').trigger('click');
+                                                        }
+                                                        $("#processForm").attr('action', '/Common/Order/BackOrder');
+                                                        $("#processForm").submit();
+                                                    },
+                                                    "No": function () {
+                                                        if ($(".hidPrintTrue").val() == "1") {                                                            
+                                                            $('#PrintCart').trigger('click');
+                                                        }
+                                                        $("#processForm").submit();
+                                                    },
+                                                    "Cancel": function () {
+                                                        dialog.dialog('close');
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            if ($(".hidPrintTrue").val() == "1") {
+                                                $('#PrintCart').trigger('click');                                                
+                                            }
+                                            $("#processForm").submit();
+                                        }
+                                    },
+                                    "Cancel": function () {
+                                        dialog.dialog('close');
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            var ischeck = 1;
+                            if ($(".confirmMeQuant").length == $(".confirmMeQuant:checked").length) {
+                                ischeck = 0;
+                            }
+                            if (ischeck == 1) {
+                                var dialog = $('<p>You have unconfirmed quantities, do you want to create a back order?</p>').dialog({
+                                    title: "Warning!",
+                                    buttons: {
+                                        "Yes": function () {
+                                            if ($(".hidPrintTrue").val() == "1") {
+                                                $('#PrintCart').trigger('click');                                                
+                                            }
+                                            $("#processForm").attr('action', '/Common/Order/BackOrder');
+                                            $("#processForm").submit();
+                                        },
+                                        "No": function () {
+                                            if ($(".hidPrintTrue").val() == "1") {
+                                                $('#PrintCart').trigger('click');                                               
+                                            }
+                                            $("#processForm").submit();
+                                        },
+                                        "Cancel": function () {
+                                            dialog.dialog('close');
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                if ($(".hidPrintTrue").val() == "1") {
+                                    $('#PrintCart').trigger('click');
+                                    //$($("#PrintCart")[0]).click()                                    
+                                }
+                                $("#processForm").submit();
+                            }
+                        }
+                    },
+                    "Cancel": function () {
+                        dialog.dialog('close');
+                    }
+                }
+            });
+        }
+    });  
+
+    $('#PrintCart').on('click', function () {        
+        window.open($(this).attr('href'));
+    });
+    function confirmTotalQuant(elm) {
+        $('#lblQty').css({ "font-size": "17px", "color": "red" });
+        var Id = $('#tQty').attr('id');
+        $('#tQty').parent().addClass("bgClass3");
+        var val = parseInt($('#tQty').text());
+        if (val > 0) {
+            $.ajax({
+                type: "POST",
+                traditional: true,
+                url: "@(Url.Action("ConfirmTotalQuantity", "Order"))",
+                data: $('#processForm').serialize(),
+                success: function () {
+                    $('#tQty').toggleClass("highlight");
+                    //$('#tQty').siblings("input[type='checkbox']").prop("checked", !$('#tQty').siblings("input[type='checkbox']").prop("checked"));
+                }, error: function () { }
+            });
+            $(elm).parent().removeClass("bgClass3");
+        }
+        else {
+            var dialog = $('<p>Can not confirm an item with 0 quantity.</P>').dialog({
+                title: "Warning!",
+                buttons: {
+                    "OK": function () {
+                        dialog.dialog('close');
+                    }
+                }
+            });
+            //alert("Can't confirm an item with 0 quantity.");
+            $(elm).parent().removeClass("bgClass3");
+        }
+    }
+
+    function confirmQuant(elm, fId, sId) {
+        var Id = $(elm).attr('id').split('_')[1];
+        $(elm).parent().addClass("bgClass3");
+        var val = parseInt($(elm).text());
+        if (val > 0) {
+            $.post('@Url.Action("ConfirmQuantity", "Order")', { Id: Id, fId: fId, sId: sId, OrderId: '@Model.OrderId' }).done(function (data) {
+                if (data == "success") {
+                    $(elm).toggleClass("highlight");
+                    $(elm).siblings("input[type='checkbox']").prop("checked", !$(elm).siblings("input[type='checkbox']").prop("checked"));
+                }
+                $(elm).parent().removeClass("bgClass3");
+            });
+        }
+        else {
+            var dialog = $('<p>Can not confirm an item with 0 quantity.</P>').dialog({
+                title: "Warning!",
+                buttons: {
+                    "OK": function () {
+                        dialog.dialog('close');
+                    }
+                }
+            });
+            //alert("Can't confirm an item with 0 quantity.");
+            $(elm).parent().removeClass("bgClass3");
+        }
+    }
+
+    $(".achorshowhide").click(function () {
+        $("img.ClothImg").toggle();
+    });
+    $(".numOnly").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+            // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) ||
+            // Allow: home, end, left, right, down, up
+            (e.keyCode >= 35 && e.keyCode <= 40)) {
+            // let it happen, don't do anything
+            return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+    function checkMePack(elm, oldVal, className) {
+        var newVal = parseInt($(elm).val());
+        var Id = $(elm).siblings("." + className).attr('dataval');
+        var RowId = $(elm).siblings("." + className).attr('datarow');
+        var avlVal = parseInt($(elm).siblings("." + className).attr('datapur'));
+        if (isNaN(parseInt($(elm).siblings("." + className).attr('datapur')))) {
+            avlVal = 0;
+        }
+        if (oldVal < newVal) {
+            if (oldVal == 0 || oldVal < avlVal) {
+                var dialog = $('<p>You can not add more than the ' + oldVal + ' we have available!</P>').dialog({
+                    title: "Warning!",
+                    buttons: {
+                        "OK": function () {
+                            dialog.dialog('close');
+                        }
+                    }
+                });                
+                $(elm).val(avlVal);
+                newVal = avlVal;
+            }
+            else {                
+                var dialog = $('<p>You can not add more than the ' + oldVal + ' we have available!</P>').dialog({
+                    title: "Warning!",
+                    buttons: {
+                        "OK": function () {
+                            dialog.dialog('close');
+                        }
+                    }
+                });
+                $(elm).val(oldVal);
+                newVal = avlVal;
+            }
+        }
+        $("#opCal3_" + Id + "_" + RowId).val(newVal);
+        doRowCalc(Id, RowId);
+    }
+    function checkMeWarePack(elm, oldVal, className) {
+        var newVal = parseInt($(elm).val());
+        var Id = $(elm).siblings("." + className).attr('dataval');
+        var RowId = $(elm).siblings("." + className).attr('datarow');
+        var avlVal = parseInt($(elm).siblings("." + className).attr('datapur'));
+        if (isNaN(parseInt($(elm).siblings("." + className).attr('datapur')))) {
+            avlVal = 0;
+        }
+        $(elm).val(newVal);
+        $("#opCal3_" + Id + "_" + RowId).val(newVal);
+        doRowCalc(Id, RowId);
+    }
+    function doRowCalc(id, rowId) {
+        var rowQ = 0;
+        $(".opCal_" + id + "_" + rowId).each(function () {
+            rowQ += (parseInt($(this).val()) * parseInt($(this).attr('datasum')));
+        });
+        $(".opCal2_" + id + "_" + rowId).each(function () {
+            rowQ += parseInt($(this).val());
+        });
+        $("#qty_" + id + "_" + rowId).html(rowQ);
+        doAllRowCal();
+        if (rowQ == 0) {
+            if ($("#qty_" + id + "_" + rowId).hasClass("highlight")) {
+                var dialog = $('<p>Can not confirm an item with 0 quantity.</P>').dialog({
+                    title: "Warning!",
+                    buttons: {
+                        "OK": function () {
+                            dialog.dialog('close');
+                        }
+                    }
+                });
+                //alert("Can't confirm an item with 0 quantity.");
+                var fId = $("#qty_" + id + "_" + rowId).attr('data-fit');
+                var sId = $("#qty_" + id + "_" + rowId).attr('data-seam');
+                $.post('@Url.Action("ConfirmQuantity", "Order")', { Id: id, fId: fId, sId: sId, OrderId: '@Model.OrderId' }).done(function (data) {
+                    if (data == "success") {
+                        $("#qty_" + id + "_" + rowId).toggleClass("highlight");
+                        $("#qty_" + id + "_" + rowId).siblings("input[type='checkbox']").prop("checked", !$("#qty_" + id + "_" + rowId).siblings("input[type='checkbox']").prop("checked"));
+                    }
+                    $("#qty_" + id + "_" + rowId).parent().removeClass("bgClass3");
+                });
+            }
+        }
+    }
+    function doAllRowCal() {
+        var rowQ = 0;
+        $(".opCalQty").each(function () {
+            rowQ += parseInt($(this).html());
+        });
+        //$("#tQty").html(rowQ);
+    }
+    function confirmQuant(elm, fId, sId) {
+        var Id = $(elm).attr('id').split('_')[1];
+        $(elm).parent().addClass("bgClass3");
+        var val = parseInt($(elm).text());
+        if (val > 0) {
+            $.post('@Url.Action("ConfirmQuantity", "Order")', { Id: Id, fId: fId, sId: sId, OrderId: '@Model.OrderId' }).done(function (data) {
+                if (data == "success") {
+                    $(elm).toggleClass("highlight");
+                    $(elm).siblings("input[type='checkbox']").prop("checked", !$(elm).siblings("input[type='checkbox']").prop("checked"));
+                    $.ajax({
+                        type: "POST",
+                        traditional: true,
+                        url: "@(Url.Action("UpdateProcessOrder", "Order"))",
+                        data: $('#processForm').serialize(),
+                        success: function () {
+                            $.ajax({
+                                type: "GET",
+                                url: "@(Url.Action("ProcessOrder", "Order"))",
+                                data: { "Id": '@Model.OrderId' },
+                                success: function (result) {
+                                    window.location = window.location.href;
+                                },
+                                error: function () { }
+                            });
+                        },
+                        error: function () { }
+                    });;
+                }
+                $(elm).parent().removeClass("bgClass3");
+            });
+        }
+        else {
+            var dialog = $('<p>Can not confirm an item with 0 quantity.</P>').dialog({
+                title: "Warning!",
+                buttons: {
+                    "OK": function () {
+                        dialog.dialog('close');
+                    }
+                }
+            });
+            //alert("Can't confirm an item with 0 quantity.");
+            $(elm).parent().removeClass("bgClass3");
+        }
+    }
+</script>

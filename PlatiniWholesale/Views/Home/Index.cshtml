@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+<script type="text/javascript" src="~/Scripts/supersized.3.2.7.min.js"></script>
+<script type="text/javascript" src="~/Scripts/supersized.shutter.min.js"></script>
+<link rel="stylesheet" href="/Styles/supersized.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/Styles/supersized.shutter.css" type="text/css" media="screen" />
+
+<script type="text/javascript">
+    $(function () {
+        $.get('@Url.Action("GetBackGrounds", "Home")').done(function (data) {
+                if (data === undefined || data === null) {
+                }
+                else {
+                    $(".mainbodycontainer").hide();
+                    $.supersized({
+                        slide_interval: 5000,
+                        transition: 1,
+                        transition_speed: 700,
+                        slide_links: 'blank',
+                        slides: data,
+                    });
+                }
+            });
+        });
+</script>
+@Html.Action("Dashboard", "Home", new { area = "" })
+

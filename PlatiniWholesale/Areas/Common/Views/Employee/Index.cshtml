@@ -1,0 +1,136 @@
+﻿@using MvcPaging;
+@using Platini.Models;
+@model IPagedList<Platini.Models.EmployeeClass>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-6 col-lg-6 col-sm-6">
+    @using (Html.BeginForm("Index", "Employee", new { area = "Common" }, FormMethod.Get))
+    {         
+        <div class="filter-block">
+            <div class="formblock">
+                <div class="block" style="width: 800px;">
+                    <div class="formrow">
+                        Search by Name
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            @Html.TextBox("searchString")
+                        </div>
+                    </div>
+                    <div class="formrow">
+                        <div class="label">
+                            Role
+                        </div>
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            @{ List<SelectListItem> roles = new List<SelectListItem>();
+                               roles.Add(new SelectListItem { Text = "All Roles", Value = "0" });
+                               roles.Add(new SelectListItem { Text = "SuperAdmin", Value = "1" });
+                               roles.Add(new SelectListItem { Text = "Admin", Value = "2" });
+                               roles.Add(new SelectListItem { Text = "SalesPerson", Value = "4" });
+                               roles.Add(new SelectListItem { Text = "Warehouse", Value = "3" });
+                            }
+                            @Html.DropDownList("selectedRole", roles, new { style = "width:120px;height:22px;" })
+                        </div>
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            <input id="searchBtn" class="cobtn" value="GO" type="submit" style="height: 22px;" onclick="@Url.Action("Index", "Employee", new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, @searchString = ViewBag.searchStringParam, @selectedRole = ViewBag.selectedRoleParam })" />
+                            <span style="float: left;">&nbsp;&nbsp;</span><input id="clearSearchBtn" class="cobtn" value="Clear" type="button" style="height: 22px;" onclick="javascript: window.location = window.location.href.split('?')[0];" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    }
+</div>
+<div class="col-md-6 col-lg-6 col-sm-6">
+    <div class="navigationlist">
+        <ul>
+            @if (SiteConfiguration.Mode.ToLower() == "edit")
+            {       
+                <li>
+                    <a ID="Addbtn" href="@Url.Action("Create", "Employee")" class="addlisting">
+                        <img id="addIcon" src="@Url.Content("~/Styles/images/addlistIcon.png")" />Add New</a>
+                </li>
+            }
+            <li>
+                <a href="@Url.Action("Index", "Employee")" id="resetsearch">
+                    <img src="@Url.Content("~/Styles/images/listIcon.png")" alt="">Refresh</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="minContainer">
+        <div class="listmanager">
+            <div class="head">
+                Employee List
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        <td>#</td>
+                        <td class="col-lg-2">@Html.ActionLink("Username", "Index", "Employee", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "Username", @searchString = ViewBag.searchStringParam, @selectedRole = ViewBag.selectedRoleParam }, null)</td>
+                        <td class="col-lg-1">@Html.ActionLink("First Name", "Index", "Employee", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "FirstName", @searchString = ViewBag.searchStringParam, @selectedRole = ViewBag.selectedRoleParam }, null)</td>
+                        <td class="col-lg-1">@Html.ActionLink("Last Name", "Index", "Employee", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "LastName", @searchString = ViewBag.searchStringParam, @selectedRole = ViewBag.selectedRoleParam }, null)</td>
+                        <td class="col-lg-2">@Html.ActionLink("Communication-Email", "Index", "Employee", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "Email", @searchString = ViewBag.searchStringParam, @selectedRole = ViewBag.selectedRoleParam }, null)</td>
+                        <td class="col-lg-1">@Html.ActionLink("Role", "Index", "Employee", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "RoleId", @searchString = ViewBag.searchStringParam, @selectedRole = ViewBag.selectedRoleParam }, null)</td>
+                        <td class="col-lg-2" style="text-align: center;">@Html.ActionLink("Phone No", "Index", "Employee", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "PhoneNo", @searchString = ViewBag.searchStringParam, @selectedRole = ViewBag.selectedRoleParam }, null)</td>
+                        <td class="col-lg-1" style="text-align: center;">@Html.ActionLink("Active", "Index", "Employee", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "IsActive", @searchString = ViewBag.searchStringParam, @selectedRole = ViewBag.selectedRoleParam }, null)</td>
+                        <td style="text-align: right;">#</td>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                    <a href="@Url.Action("Edit", "Employee", new { Id = item.EmployeeId })">Edit</a>
+                                
+                            </td>
+                            <td class="col-lg-2">
+                                
+                                    <a href="@Url.Action("Edit", "Employee", new { Id = item.EmployeeId })">@Html.DisplayFor(modelItem => item.Username)</a>
+                                
+                            </td>
+                            <td class="col-lg-1">
+                                @Html.DisplayFor(modelItem => item.FirstName)
+                            </td>
+                            <td class="col-lg-1">
+                                @Html.DisplayFor(modelItem => item.LastName)
+                            </td>
+                            <td class="col-lg-2">
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td class="col-lg-1">
+                                @item.Role
+                            </td>
+                            <td class="col-lg-2" style="text-align: center;">
+                                @Html.DisplayFor(modelItem => item.PhoneNo)
+                            </td>
+                            <td class="col-lg-2" style="text-align: center;">
+                                @Html.CheckBox("check", item.IsActive.Value, new { @disabled = "disabled" })
+                            </td>
+                            <td style="text-align: right;">
+                                @if (SiteConfiguration.Mode.ToLower() == "edit")
+                                {
+                                    <a href="@Url.Action("Delete", "Employee", new { Id = item.EmployeeId })" onclick = "return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+                <div class="pagingContainer"></div>
+
+                @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, @searchString = ViewBag.searchStringParam, @selectedRole = ViewBag.selectedRoleParam })
+            </div>
+        </div>
+    </div>
+</div>
+
+

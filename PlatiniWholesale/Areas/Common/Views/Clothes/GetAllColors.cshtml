@@ -1,0 +1,46 @@
+﻿@model Platini.Models.AllProductListClass
+<span>Add  Related Colors</span>
+<table id="relCheck">
+    @for (int i = 0; i < Model.AllProductList.Count(); i = i + 14)
+    {       
+        <tr class="trclass">
+            @for (int j = i; j < i + 14; j++)
+            {
+                if (j < Model.AllProductList.Count())
+                {
+                    var item = Model.AllProductList[j];
+                <td class="chbox">@Html.CheckBoxFor(x => item.Checked, new { id = item.ClothesId, @class = "check" })</td>
+                <td>@*@Html.HiddenFor(x=>item.ClothesId)*@</td>
+                <td style="padding-left: 2px">@Html.DisplayFor(x => item.StyleNumber)</td>
+                }
+                else
+                {
+                <td colspan="14"></td> 
+                    break;
+                }
+            }
+        </tr>
+    }
+</table>
+
+<div style="width: 22%;">
+    <button id="saveAll" data-val="@ViewBag.ClothId" data-cat="@ViewBag.CatId" class="btnOrder"  type="button">Save/Update</button>
+</div>
+<script>
+    $("#saveAll").click(function () {
+
+        $("#saveAll").parent().addClass("bgClass3");
+        var Ids = [];
+        var id = parseInt($(this).attr('data-val'));
+        var catid = parseInt($(this).attr('data-cat'));
+        $(".check:checked").each(function () {
+            Ids.push(parseInt($(this).attr("id")));
+        });
+        $.post("@Url.Action("SaveRelatedColors", "Clothes", new { @area = "common" })", { RelatedProductIds: Ids.join(","), categoryId: catid, clothId: id }).done(function () {
+
+            $(".md-close").click();
+            window.location = window.location.href;
+        });
+    });
+</script>
+

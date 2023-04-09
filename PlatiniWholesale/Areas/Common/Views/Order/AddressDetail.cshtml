@@ -1,0 +1,60 @@
+﻿@using Platini.Models
+@model AddressModel
+
+
+<style>
+    fieldset {
+        border: 1px solid black;
+        font-size: 12px;
+        margin: 0 auto;
+    }
+
+        fieldset legend {
+            width: auto;
+            font-size: 14px;
+            margin: .5em 1.5em;
+        }
+
+    #detDiv table td {
+        vertical-align: middle;
+    }
+
+    .leftPad {
+        padding: .3em !important;
+    }
+</style>
+<div style="display: inline-block; width: 100%;">
+    @if (Model != null)
+    {
+        if (Model.AddressTypeId == (int)AddressTypeEnum.BillingAddress)
+        { <span style="display: inline-block; width: 100%; text-align: center;"><strong>BILLING ADDRESS</strong></span>}
+        else
+        { <span style="display: inline-block; width: 100%; text-align: center;"><strong>Shipping Address</strong></span>}
+        <div class="leftPad">
+            <span style="display: inline-block; width: 25%; text-align: right;">Address:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">@Html.DisplayFor(m => m.Street, new { @class = "valCheck valAddr" })</span>
+        </div>
+        <div class="leftPad">
+            <span style="display: inline-block; width: 25%; text-align: right;">City:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">
+                @Html.DisplayFor(m => m.City, new { @class = "valCheck valCity" })
+        </span>
+    </div>
+        <div class="leftPad">
+            <span style="display: inline-block; width: 25%; text-align: right;">State:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">@Html.DisplayFor(m => m.State, new { @class = "valCheck valState" })</span>
+        </div>
+        <div class="leftPad">
+            <span style="display: inline-block; width: 25%; text-align: right;">ZipCode:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">@Html.DisplayFor(m => m.Pincode, new { @class = "valCheck valZip" })</span>
+        </div>
+        <div class="leftPad">
+            <span style="display: inline-block; width: 25%; text-align: right;">Country:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">@Html.DisplayFor(m => m.Country, new { @class = "valCheck valAddr" })</span>
+        </div>
+    }
+    else
+    {
+        <span style="display: inline-block; width: 100%; text-align: center;"><strong>Address details not available!</strong></span>
+    }
+</div>

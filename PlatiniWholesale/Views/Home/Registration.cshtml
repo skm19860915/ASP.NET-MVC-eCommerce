@@ -1,0 +1,260 @@
+﻿@model Platini.Models.RegistrationModel
+@using Platini.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+<script type="text/javascript" src="~/Scripts/supersized.3.2.7.min.js"></script>
+<script type="text/javascript" src="~/Scripts/supersized.shutter.min.js"></script>
+<link rel="stylesheet" href="/Styles/supersized.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/Styles/supersized.shutter.css" type="text/css" media="screen" />
+<script type="text/javascript" src="~/Scripts/intlTelInput.min.js"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/utils.js")"></script>
+<link href="~/Styles/intlTelInput.css" rel="stylesheet">
+<script type="text/javascript">
+    $(function () {
+        $.get('@Url.Action("GetBackGrounds", "Home")').done(function (data) {
+            if (data === undefined || data === null) {
+            }
+            else {
+                $(".mainbodycontainer").hide();
+                $.supersized({
+                    slide_interval: 5000,
+                    transition: 1,
+                    transition_speed: 700,
+                    slide_links: 'blank',
+                    slides: data,
+                });
+            }
+        });
+    });
+</script>
+@{bool isWholeSale = Model != null ? Model.forceWholesale : false;}
+<div class="col-lg-8 col-sm-8 col-md-8" style="padding: 2%; float: none; margin: 0 auto;">
+    <section class="signupBox loginopc">
+        @using (Html.BeginForm("RegistrationPost", "Home", new { area = "" }, FormMethod.Post, new { id = "RegistrationForm", autocomplete = "off" }))
+        {
+            <ul class="signupfield">
+                @if (isWholeSale)
+                {
+                    <li>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <label>Business Name</label>
+                            <div class="input-box">
+                                @Html.TextBoxFor(model => model.CompanyName, new { @class = "input-text" })
+                                @Html.ValidationMessageFor(m => m.CompanyName, null, new { @class = "redMsg" })
+                            </div>
+                        </div>
+                    </li>
+                }
+                <li>
+                    <div class="@(!isWholeSale ? "col-md-4 col-sm-4 col-xs-4" : "col-md-6 col-sm-6 col-xs-6")">
+                        <label><em>*</em>First Name</label>
+                        <div class="input-box">
+                            @Html.TextBoxFor(model => model.FirstName, new { @class = "input-text" })
+                            @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "redMsg" })
+                        </div>
+                    </div>
+                    <div class="@(!isWholeSale ? "col-md-4 col-sm-4 col-xs-4" : "col-md-6 col-sm-6 col-xs-6")">
+                        <label><em>*</em>Last Name</label>
+                        <div class="input-box">
+                            @Html.TextBoxFor(model => model.LastName, new { @class = "input-text" })
+                            @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "redMsg" })
+                        </div>
+                    </div>
+                    @if (!isWholeSale)
+                    {
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            <label><em>*</em>Phone no</label>
+                            <div class="input-box">
+                                @Html.TextBoxFor(model => model.PhoneNumber, new { @id = "phone", @class = "input-text", @style = "padding-left: 48px;" })
+                                @Html.HiddenFor(model => model.CountryCode, new { @id = "ccode" })
+                                @Html.ValidationMessageFor(m => m.PhoneNumber, null, new { @class = "redMsg" })
+                            </div>
+                        </div>
+                    }
+                </li>
+                <li>
+                    @if (isWholeSale)
+                    {
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            <label><em>*</em>Username</label>
+                            <div class="input-box">
+                                @Html.TextBoxFor(model => model.UserName, new { @class = "input-text", @id = "Username", @onblur = "checkUser();" })
+                                @Html.ValidationMessageFor(m => m.UserName, null, new { @class = "redMsg" })
+                                <span class="greenMsg" id="regmsgApp"></span>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                        <label>@*<em>*</em>*@Email</label>
+                        <div class="input-box">
+                            @Html.TextBoxFor(model => model.Email, new { @class = "input-text", @id = !isWholeSale ? "Username" : "txtEmail", @onblur = !isWholeSale ? "checkUser();" : "" })
+                            @*@Html.ValidationMessageFor(m => m.Email, null, new { @class = "redMsg" })*@
+                            @if (!isWholeSale)
+                            {
+                                <span class="greenMsg" id="regmsgApp"></span>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4">
+                        <label><em>*</em>Create Password</label>
+                        <div class="input-box">
+                            @Html.PasswordFor(model => model.Password, new { @value = Model != null ? Model.Password : string.Empty, @class = "input-text required-entry" })
+                            @Html.ValidationMessageFor(m => m.Password, null, new { @class = "redMsg" })
+                        </div>
+                    </div>
+                    @if (!isWholeSale)
+                    {
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            <label><em>*</em>Confirm Password</label>
+                            <div class="input-box">
+                                @Html.PasswordFor(model => model.cPassword, new { @value = Model != null ? Model.Password : string.Empty, @class = "input-text required-entry" })
+                                @Html.ValidationMessageFor(m => m.cPassword, null, new { @class = "redMsg" })
+                            </div>
+                        </div>
+                    }
+                </li>
+                @if (isWholeSale)
+                {
+                    <li>
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            <label><em>*</em>Phone no</label>
+                            <div class="input-box">
+                                @Html.TextBoxFor(model => model.PhoneNumber, new { @id = "phone", @class = "input-text", @style = "padding-left: 48px;" })
+                                @Html.HiddenFor(model => model.CountryCode, new { @id = "ccode" })
+                                @Html.ValidationMessageFor(m => m.PhoneNumber, null, new { @class = "redMsg" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            <label>City</label>
+                            <div class="input-box">
+                                @Html.TextBoxFor(model => model.City, new { @class = "input-text" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-4">
+                            <label>Reseller Number</label>
+                            <div class="input-box">
+                                @Html.TextBoxFor(model => model.ResellerNumber, new { @class = "input-text" })
+                            </div>
+                        </div>
+                    </li>
+                }
+
+                <li>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        @Html.HiddenFor(m => m.forceWholesale)
+                        <input type="submit" value="Submit" id="regsubmit">
+                    </div>
+                </li>
+            </ul>
+        }
+        @if (!isWholeSale)
+        {
+            <ul class="signupfield">
+                <li>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <h2>Facebook Connect</h2>
+                        <p>You can register using your Facebook account.</p>
+                        <p>
+                            @if (isWholeSale)
+                            {
+                                <a href="javascript:void(0);" onclick="CallFacebookLogin(true);">
+                                    <img src="@Url.Content("~/Styles/images/register-facebook.png")" alt="facebook">
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="javascript:void(0);" onclick="CallFacebookLogin(false);">
+                                    <img src="@Url.Content("~/Styles/images/register-facebook.png")" alt="facebook">
+                                </a>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <h2>Google Connect</h2>
+                        <p>You can register using your Google account.</p>
+                        <p>
+                            @if (isWholeSale)
+                            {
+                                <a href="javascript:void(0);" class="customBtn" data-wholesale="true">
+                                    <img src="@Url.Content("~/Styles/images/register-googleplay.png")" alt="Google">
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="javascript:void(0);" class="customBtn" data-wholesale="false">
+                                    <img src="@Url.Content("~/Styles/images/register-googleplay.png")" alt="Google">
+                                </a>
+                            }
+                        </p>
+                    </div>
+
+                </li>
+            </ul>
+        }
+        @if (!isWholeSale)
+        {
+            <div class="col-md-12 col-sm-12 col2-xs-12 signup-text">
+                <span>Are you a wholesaler? Click <a href="@Url.Action("WholeSaleRegistration", "Home")">here </a>to register for a wholesale account.</span>
+            </div>
+        }
+    </section>
+    <script type="text/javascript">
+        $(function () {
+            var telInput = $("#phone"),
+            errorMsg = $("#error-msg"),
+            validMsg = $("#valid-msg");
+
+            telInput.intlTelInput({ utilsScript: "../Scripts/utils.js?3" });
+
+            // on blur: validate
+            telInput.blur(function () {
+                if ($.trim(telInput.val())) {
+                    if (telInput.intlTelInput("isValidNumber")) {
+                        validMsg.removeClass("hide");
+                    } else {
+                        telInput.addClass("error");
+                        errorMsg.removeClass("hide");
+                        validMsg.addClass("hide");
+                    }
+                }
+            });
+
+            $("#RegistrationForm").submit(function () {
+                $("#ccode").val($("#phone").intlTelInput("getNumber"));
+                var va = $('#ccode').val();
+            });
+
+            $("#mobile-number").intlTelInput("setNumber", "+44 7733 123 456");
+
+            // on keydown: reset
+            telInput.keydown(function () {
+                telInput.removeClass("error");
+                errorMsg.addClass("hide");
+                validMsg.addClass("hide");
+            });
+        });
+
+        function checkUser() {
+            if ($("#Username").val() != "") {
+                $.post('@Url.Action("CheckUser", "Home")', { Username: $("#Username").val() }).done(function (data) {
+
+                    if (data.message != "The username you have selected is available!") {
+                        $("#regsubmit").prop('disabled', true);
+
+                    }
+                    else {
+
+                        $("#regsubmit").prop('disabled', false);
+                    }
+
+                    $("#regmsgApp").empty().append(data.message);
+                });
+            }
+        }
+
+
+    </script>
+</div>

@@ -1,0 +1,194 @@
+﻿@using Platini.Models
+@model Platini.Models.UserClass
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{    
+    @Html.AntiForgeryToken()
+    <div id="errorMsgName" class="box_error" style="display: none;">
+        <label id="errormsg"></label>
+    </div>
+    <div class="deshboardpanal">
+        <div class="adminright_panal">
+            <div class="nameheadingbg">
+                <h1>User Registration</h1>
+            </div>
+            <div class="row">
+                <div class="registration">
+                    @Html.ValidationSummary(true)
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                Sales Person
+                            </label>
+                            <div class="field">
+                                @if (Model.CustomerId > 0 || Model.AccountId > 0)
+                                {
+                                    @:@Html.TextBoxFor(model => model.SalesPerson, new { @readonly = "True" })
+                                }
+                            </div>
+                        </div>
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                BusinessName<span style="font-weight: 100">(StoreName)</span>
+                            </label>
+                            <div class="field">
+                                @if (Model.CustomerId > 0 || Model.AccountId > 0)
+                                {
+                                    @:@Html.TextBoxFor(model => model.BusinessName, new { @readonly = "True" })
+                                }
+                                else
+                                {
+                                    @:@Html.TextBoxFor(model => model.BusinessName)
+                                }
+                            </div>
+                        </div>
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                User Name <span class="forStar">*</span>
+                            </label>
+                            <div class="field">
+                                @if (Model.AccountId > 0)
+                                {
+                                    @:@Html.TextBoxFor(model => model.Username, new { @readonly = "True" })
+                                                                    }
+                                else
+                                {
+                                    @:@Html.TextBoxFor(model => model.Username)
+                                                                }
+
+                                @if (Model.AccountId == 0)
+                                {
+                                    <br />
+                                    <span style="color: red;">@Html.ValidationMessageFor(model => model.Username)</span>
+                                    <br />
+                                    <a onclick="javascript:checkUsernameAvailablity();" style="color: blue; background: none!important; border: none; padding: 0!important; cursor: pointer;">Check Availability</a>
+                                }
+                            </div>
+                        </div>
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                First Name <span class="forStar">*</span>
+                            </label>
+                            <div class="field">
+                                @Html.TextBoxFor(model => model.FirstName)
+                                <br />
+                                <span style="color: red;">@Html.ValidationMessageFor(model => model.FirstName)</span>
+                            </div>
+                        </div>
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                Last Name <span class="forStar">*</span>
+                            </label>
+                            <div class="field">
+                                @Html.TextBoxFor(model => model.LastName)
+                                <br />
+                                <span style="color: red;">@Html.ValidationMessageFor(model => model.LastName)</span>
+                            </div>
+                        </div>
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                Phone <span class="forStar">*</span>
+                            </label>
+                            <div class="field">
+                                @Html.TextBoxFor(model => model.PhoneNo)
+                                <br />
+                                <span style="color: red;">@Html.ValidationMessageFor(model => model.PhoneNo)</span>
+                            </div>
+                        </div>
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                E-Mail <span class="forStar">*</span>
+                            </label>
+                            <div class="field">
+                                @Html.TextBoxFor(model => model.Email)
+                                <br />
+                                <span style="color: red;">@Html.ValidationMessageFor(model => model.Email)</span>
+                            </div>
+                        </div>
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                Password <span class="forStar">*</span>
+                            </label>
+                            <div class="field">
+                                @Html.TextBoxFor(model => model.Password)
+                                <br />
+                                <span style="color: red;">@Html.ValidationMessageFor(model => model.Password)</span>
+                            </div>
+                        </div>
+                        <div class="formRow">
+                            <label runat="server" class="fieldLabel" for="contact_name">
+                                Active</label>
+
+                            <div class="comn">
+                                @if (Model == null)
+                                {
+                                    <div class="comn2" style="width: 90px">
+                                        @Html.RadioButtonFor(model => model.IsActive, "true", new { @checked = "checked" }) Yes
+                                    </div>
+                                    <div class="comn2" style="width: 90px">
+                                        @Html.RadioButtonFor(model => model.IsActive, "false") No
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="comn2" style="width: 90px">
+                                        @Html.RadioButtonFor(model => model.IsActive, "true") Yes
+                                    </div>
+                                    <div class="comn2" style="width: 90px">
+                                        @Html.RadioButtonFor(model => model.IsActive, "false") No
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    &nbsp;</label>
+                                <div class="field">
+                                    @Html.HiddenFor(model => model.AccountId)
+                                    <button id="updbtn" type="submit" class="save-btn" value="Save">Save</button>
+                                    <button id="cncbtn" type="button" class="save-btn" value="Cancel" onclick="window.location.href='@Url.Action("Index", "User", new { @customerId = Model.CustomerId })'">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<br />
+<br />
+
+<script type="text/javascript">
+    var checkUsernameAvailablity = function () {
+        var username = $("#Username").val();
+
+        $.ajax({
+            type: "GET",
+            url: "@(Url.Action("checkUsernameAvailablity", "User"))",
+            data: { "username": username },
+            success: function (data) {
+                if (data == "User Name is available.") {
+                    $('span[data-valmsg-for="Username"]').html();
+                    var ht = '<span style="color:green;">' + data + '</span>';
+                    $('span[data-valmsg-for="Username"]').html(ht);
+                }
+                else {
+                    $('span[data-valmsg-for="Username"]').html();
+                    $('span[data-valmsg-for="Username"]').html(data);
+                }
+            },
+            error: function () { }
+        });
+    }
+</script>
+

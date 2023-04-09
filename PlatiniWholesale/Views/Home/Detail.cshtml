@@ -1,0 +1,659 @@
+﻿@using Platini.Models;
+@model Platini.Models.DetailViewClass
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+@{
+    bool showFit = Model.FitList.Any();
+    bool pShown = false;
+    var colors = new string[] { "Blue", "Red", "GoldenRod" };
+    int colorIndex = 0;
+    bool showWP = (!string.IsNullOrEmpty(Platini.Models.SiteIdentity.UserId)) || (Platini.Models.SiteIdentity.Type == Platini.Models.CustomerType.Retail.ToString());
+    bool showBreakPack = (!string.IsNullOrEmpty(Platini.Models.SiteIdentity.UserId) && SiteIdentity.Roles.ToLower() != RolesEnum.Customer.ToString().ToLower() && SiteIdentity.Roles.ToLower() != RolesEnum.SalesPerson.ToString().ToLower());
+    int roleId = SiteIdentity.RoleId();
+}
+
+<div id="content" class="product-detail">
+    <div class="product-info">
+        <div class="row">
+
+            @*<!--LeftSlider-->*@
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 image-container">
+                <div class="col-xs-3 image-additional slide carousel imagesslidebottom" id="image-additional">
+                    <div id="image-additional-carousel" class="carousel-inner">
+                        <div id="divItem" class="item clearfix active">
+                            @if (Model.Images.Count > 0)
+                            {
+                                int i = 0;
+                                for (i = 0; i < Model.Images.Count; i++)
+                                {
+                                    var item = Model.Images[i];
+                                    <a class="colorbox-product cboxElement col-xs-12 colleft " href="@Url.Content("~/Library/Uploads/WebThumb/" + item.ImagePath)" data-zoom-image="@Url.Content("~/Library/Uploads/" + item.ImagePath)" data-image="@Url.Content("~/Library/Uploads/" + item.ImagePath)">
+                                        <img id="img@(i)" src="@Url.Content("~/Library/Uploads/WebThumb/" + item.ImagePath)" data-zoom-image="@Url.Content("~/Library/Uploads/WebThumb/" + item.ImagePath)" class="product-image-zoom img-responsive leftImages">
+                                    </a>
+                                }
+                            }
+                            else
+                            {
+                                <a class="colorbox-product cboxElement col-xs-12 colleft" href="@Url.Content("~/Library/Uploads/" + "NO_IMAGE.jpg")" data-zoom-image="@Url.Content("~/Library/Uploads/" + "NO_IMAGE.jpg")" data-image="@Url.Content("~/Library/Uploads/" + "NO_IMAGE.jpg")">
+                                    <img id="noImage" src="@Url.Content("~/Library/Uploads/WebThumb/" + "NO_IMAGE.jpg")" data-zoom-image="@Url.Content("~/Library/Uploads/WebThumb/" + "NO_IMAGE.jpg")" class="product-image-zoom img-responsive">
+                                </a>
+                            }
+                        </div>
+
+                    </div>
+                    @*<!-- Controls -->*@
+                </div>
+                <div class="image col-xs-9 responsiveimages">
+                    <div class="bigimages">
+                        <div id="loaderDiv@(Model.ClothesId)" class="loadcontent" style="display: none;">
+                            <img style="width:auto;" src="@Url.Content("~/Styles/image/platinipreloader2.gif")">
+                        </div>
+                        @if (Model.Images.Count > 0)
+                        {
+                            <a href="@Url.Content("~/Library/Uploads/WebThumb/" + Model.Images.FirstOrDefault().ImagePath)" class="colorbox-product cboxElement">
+                                <img itemprop="image" src="@Url.Content("~/Library/Uploads/WebThumb/" + Model.Images.FirstOrDefault().ImagePath)" id="image" data-zoom-image="@Url.Content("~/Library/Uploads/" + Model.Images.FirstOrDefault().ImagePath)" class="product-image-zoom img-responsive">
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Content("~/Library/Uploads/WebThumb/" + "NO_IMAGE.jpg")" class="colorbox-product cboxElement">
+                                <img itemprop="image" src="@Url.Content("~/Library/Uploads/WebThumb/" + "NO_IMAGE.jpg")" id="image" data-zoom-image="@Url.Content("~/Library/Uploads/" + "NO_IMAGE.jpg")" class="product-image-zoom img-responsive">
+                            </a>
+                        }
+                    </div>
+
+
+                    @if (ViewBag.modevalue == "c")
+                    {
+                        <img class="@(Platini.Models.SiteConfiguration.Mode.ToLower() == Platini.Models.ModeEnum.Edit.ToString().ToLower() ? "imgClearance" : "")" src="@Url.Content("~/Styles/images/btnClearance_color.png")" style="cursor:pointer;bottom:62px;right:0;position:absolute;display:block;Z-index:100;height:120px;">
+                    }
+                    else if (SiteIdentity.Roles == RolesEnum.Admin.ToString() || SiteIdentity.Roles == RolesEnum.SuperAdmin.ToString())
+                    {
+                        <img class="@(Platini.Models.SiteConfiguration.Mode.ToLower() == Platini.Models.ModeEnum.Edit.ToString().ToLower() ? "imgClearance" : "")" src="@Url.Content("~/Styles/images/btnClearance.png")" style="cursor:pointer;bottom:62px;right:0;position:absolute;display:block;Z-index:100;height:120px;">
+                    }
+
+                    @if (Model.Images.Count > 0)
+                    {
+                        <div class="images-btnnext">
+                            <div class="btnsd">
+                                <div class="leftarrow"><a href="javascript:void(0);" class="left"></a></div>
+                                <div class="midel_part">
+                                    @*<!--<h4>Product</h4>-->*@
+                                    <p><span id="spnCount">1 of</span> @Model.Images.Count</p>
+                                </div>
+                                <div class="rightarrow"><a href="javascript:void(0);" class="right"></a></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            @*<!--LeftSliderEnd-->
+
+                <!--RightMiddleContent-->*@
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 product-view">
+                <div class="row">
+                    <div class="col-lg-12 product-info">
+                        <!-- product-view -->
+                        <div class="product-name"><span>@Html.DisplayFor(m => m.StyleNumber)</span> </div>
+
+
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            <div class="summary">
+                                @Html.Raw(HttpUtility.HtmlDecode(Model.Description))
+                            </div>
+                        }
+
+                        @if (!String.IsNullOrEmpty(Model.Color))
+                        {<div class="description">
+                            <p>
+                                <i class="fa fa-chevron-down"></i>
+                                <label>Color:</label>
+                                <a href="#">@Html.DisplayFor(m => m.Color)</a>
+                            </p>
+                        </div>
+                        }
+                        @*<p>
+                                <i class="fa fa-chevron-down"></i>
+                                <label>Fabric:</label>
+
+                            </p>
+                            <p>
+                                <i class="fa fa-chevron-down"></i>
+                                <label>Availability:</label>
+                                <span>@if (Model.AvailableOpenSizes.Count > 0 || Model.AvailablePrePacks.Count > 0)
+                                      {<span>In Stock</span>}
+                                      else
+                                      { <span>Out Of Stock</span>}</span>
+                            </p>*@
+
+                        @if (!string.IsNullOrEmpty(Model.Note))
+                        {
+                            <div>
+                                @Model.Note
+                                @if (roleId == (int)RolesEnum.Admin || roleId == (int)RolesEnum.SuperAdmin)
+                                {
+                                    if (SiteConfiguration.Mode.ToLower() == ModeEnum.Edit.ToString().ToLower())
+                                    {
+                                        <div class="cart noteButton md-trigger md-setperspective" data-modal="modal-note">@(!string.IsNullOrEmpty(Model.Note) ? "Update" : "Add") Admin Note</div>
+                                        <div class="md-modal md-effect-1" id="modal-note">
+                                            <div class="md-content popupCOntainer">
+                                                @using (Html.BeginForm("SaveNote", "Home"))
+                                                {
+                                                    <div class="topRor">
+                                                        <div class="col-xs-11 col-lg-11 col-md-11 ">Product Note By Admin</div>
+                                                        <div class="col-xs-1 col-lg-1 col-md-1 md-close" style="text-align: right;">
+                                                            <img src="/Styles/images/cross.png" alt="">
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="popinner">
+                                                        @Html.TextArea("newNote", Model.Note, new { @style = "width: 99%;" })
+                                                        @Html.Hidden("cloth", Model.ClothesId)
+                                                    </div>
+                                                    <div class="totalBox" style="padding: 0">
+
+                                                        <div class="adtoorder">
+                                                            <input id="btnSaveNote" type="submit" value="Save" class="btnOrder" />
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="md-overlay"></div>
+                                    }
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            if (roleId == (int)RolesEnum.Admin || roleId == (int)RolesEnum.SuperAdmin)
+                            {
+                                if (SiteConfiguration.Mode.ToLower() == ModeEnum.Edit.ToString().ToLower())
+                                {
+                                    <div>
+                                        <div class="cart noteButton md-trigger md-setperspective" data-modal="modal-note">@(!string.IsNullOrEmpty(Model.Note) ? "Update" : "Add") Admin Note</div>
+                                        <div class="md-modal md-effect-1" id="modal-note">
+                                            <div class="md-content popupCOntainer">
+                                                @using (Html.BeginForm("SaveNote", "Home"))
+                                                {
+                                                    <div class="topRor">
+                                                        <div class="col-xs-11 col-lg-11 col-md-11 ">Product Note By Admin</div>
+                                                        <div class="col-xs-1 col-lg-1 col-md-1 md-close" style="text-align: right;">
+                                                            <img src="/Styles/images/cross.png" alt="">
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="popinner">
+                                                        @Html.TextArea("newNote", Model.Note, new { @style = "width: 99%;" })
+                                                        @Html.Hidden("cloth", Model.ClothesId)
+                                                    </div>
+                                                    <div class="totalBox" style="padding: 0">
+
+                                                        <div class="adtoorder">
+                                                            <input id="btnSaveNote" type="submit" value="Save" class="btnOrder" />
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="md-overlay"></div>
+                                    </div>
+                                }
+                            }
+                        }
+                        @if (!String.IsNullOrEmpty(Platini.Models.SiteIdentity.UserId) && SiteIdentity.Type != ((int)CustomerType.Retail).ToString())
+                        {
+                            if (!String.IsNullOrEmpty(Platini.Models.SiteIdentity.UserId) && SiteIdentity.Type == ((int)CustomerType.Wholesale).ToString())
+                            {
+                                if (Model.DiscountedPrice != null && Model.DiscountedPrice > 0 && Model.DiscountedPrice <= Model.Price)
+                                {
+                                    <div class="price">
+                                        <div class="price-gruop" style="font-size: 18px;color:#f45d62;"><span class="text-price">Wholesale Price </span><span style="text-transform:lowercase; font-weight:normal">was:</span><strike class="lblPrice"> $ @String.Format("{0:0.00}", Model.Price)</strike></div>
+                                    </div>
+                                    <div class="price">
+                                        <div class="price-gruop"><span class=" text-price">Wholesale Price </span><span style="text-transform:lowercase; font-weight:normal">now:</span> $ @String.Format("{0:0.00}", Model.DiscountedPrice)</div>
+                                    </div>
+                                }
+                                else
+                                { <div class="price">
+                                    <div class="price-gruop"><span class="text-price">Wholesale Price:</span> $ @String.Format("{0:0.00}", Model.Price)</div>
+                                </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="price">
+                                    <div class="price-gruop"><span class="text-price">Wholesale Price:</span> $ @String.Format("{0:0.00}", Model.Price)</div>
+                                </div>
+                            }
+                        }
+                        @if (!String.IsNullOrEmpty(Platini.Models.SiteIdentity.UserId) && SiteIdentity.Type != ((int)CustomerType.Retail).ToString())
+                        {<div class="price">
+                            <div class="price-gruop"><span class="text-price">MSRP: </span>$ @String.Format("{0:0.00}", Model.MSRP)</div>
+                        </div>
+
+                        }
+                        else
+                        {
+                            if (Model.DiscountedMSRP != null && (Model.DiscountedMSRP > 0 && Model.DiscountedMSRP < Model.MSRP))
+                            {
+                                <div class="price">
+                                    <div class="price-gruop" style="font-size: 18px;color:#f45d62;"><span class=" text-price">MSRP </span><span style="text-transform:lowercase; font-weight:normal">was: </span><strike class="lblPrice">$ @String.Format("{0:0.00}", Model.MSRP)</strike></div>
+                                    <div class="price-gruop"><span class="text-price">MSRP </span><span style="text-transform:lowercase; font-weight:normal">now:</span>$ @String.Format("{0:0.00}", Model.DiscountedMSRP)</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="price">
+                                    <div class="price-gruop"><span class="text-price">MSRP: </span>$ @String.Format("{0:0.00}", Model.MSRP)</div>
+                                </div>
+                            }
+                        }
+                        <div>
+                            @if (SiteIdentity.Type == ((int)CustomerType.Wholesale).ToString() && !string.IsNullOrEmpty(SiteIdentity.UserId))
+                            {
+                                <label id="divViewSizeAndOrder" class="cart ctdrs oView" data-id="@Model.ClothesId">View Size and Order</label>
+                            }
+                            else
+                            {
+                                @Html.Action("DetailPartial", "Home", new { area = "", Id = Model.ClothesId, @part = "1" })
+                            }
+                            @if (roleId != (int)RolesEnum.Customer && roleId != (int)RolesEnum.User && !string.IsNullOrEmpty(SiteIdentity.UserId))
+                            {
+                                if (SiteConfiguration.Mode.ToString().ToLower() == ModeEnum.Edit.ToString().ToLower())
+                                {
+                                    <label class="ctdrs"><a href="@Url.Action("Step1", "Clothes", new { @area = "common", id = Model.ClothesId })">Edit</a></label>
+                                }
+                            }
+                        </div>
+
+                        @if (roleId != (int)RolesEnum.Customer && roleId != (int)RolesEnum.User && !string.IsNullOrEmpty(SiteIdentity.UserId))
+                        {
+                            if (SiteConfiguration.Mode.ToString().ToLower() == ModeEnum.Edit.ToString().ToLower())
+                            {
+                                <div>
+                                    <label class="relButton md-trigger md-setperspective" id="aRelcolor" data-val="@Model.ClothesId" data-cat="@Model.CategoryId" data-modal="modal-color">Related Colors</label>
+                                    <label class="relButton md-trigger md-setperspective" id="aRelProd" data-val="@Model.ClothesId" data-modal="modal-color">Related Products</label>
+
+                                </div>
+                            }
+                        }
+                        @if (Model.MoreProducts.Count > 0)
+                        {
+                            bool first = true;
+                            var listMaster = Model.MoreProducts.Select((x, i) => new { Index = i, Value = x }).GroupBy(x => x.Index / 3).Select(x => x.Select(v => v.Value).ToList()).ToList();
+                            <div class="related-wapper nextprevious">
+                                <div class="box product-related clearfix">
+                                    <div id="related" class="products-rows row slide row-fluid moreproductsblock" data-ride="carousel">
+                                        <div class="title">More Products</div>
+                                        <div class="pull-right">
+                                            <div class="carousel-controls carousel-controls12" style="margin-right: 60px;">
+                                                <a class="carousel-control left" href="#related" data-slide="prev" title="Previous poruduct"><i class="fa fa-angle-left"></i></a>
+                                                <a class="carousel-control right " href="#related" data-slide="next" title="Next poruduct"><i class="fa fa-angle-right"></i></a>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="box-content carousel-inner">
+                                            @foreach (var list in listMaster)
+                                            {
+                                                <div class="item@(first ? " active" : "")">
+                                                    <div class="row-fluid products-row">
+
+
+                                                        @foreach (var item in list)
+                                                        {
+                                                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 product-col">
+                                                                <div class="product-block">
+                                                                    <div class="image">
+                                                                        @if (String.IsNullOrEmpty(item.ImagePath))
+                                                                        {
+                                                                            <a class="img" itemprop="url" title="@item.StyleNumber" href="@Url.Action("Detail", "Home", new { id = item.StyleNumber, area = "" })">
+                                                                                <img class="img-responsive previmg" itemprop="image" src="@Url.Content("~/Library/Uploads/WebThumb/" + "NO_IMAGE.jpg")" title="@item.StyleNumber" alt="@item.StyleNumber">
+                                                                            </a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <a class="img" itemprop="url" title="@item.StyleNumber" href="@Url.Action("Detail", "Home", new { id = item.StyleNumber, area = "" })">
+                                                                                <img class="img-responsive previmg" itemprop="image" src="@Url.Content("~/Library/Uploads/WebThumb/" + item.ImagePath)" title="@item.StyleNumber" alt="@item.StyleNumber">
+                                                                            </a>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        }
+                                                    </div>
+                                                </div>
+                                                        first = false;
+                                            }
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @*<!--RightMiddleContentEnd-->*@
+        </div>
+    </div>
+
+
+    @*<!--SliderStart-->*@
+
+    <div class="related-wapper">
+        <div class="box product-related clearfix">
+            @if (Model.RelatedProducts.Count > 0)
+            {
+                pShown = true;
+                <div class="box-heading"><span>Related Products (@Model.RelatedProducts.Count)</span></div>
+                <div id="relatedPro" class="products-rows row slide row-fluid" data-ride="carousel">
+                    <div class="carousel-controls" style="margin-right: 60px;">
+                        <a class="carousel-control left" href="#relatedPro" data-slide="prev"><i class="fa fa-angle-left"></i></a>
+                        <a class="carousel-control right " href="#relatedPro" data-slide="next"><i class="fa fa-angle-right"></i></a>
+                    </div>
+
+                    <div class="box-content carousel-inner imgClass">
+                        @{bool first = true;
+                        var listMaster = Model.RelatedProducts.Select((x, i) => new { Index = i, Value = x }).GroupBy(x => x.Index / 4).Select(x => x.Select(v => v.Value).ToList()).ToList();}
+                        @foreach (var list in listMaster)
+                        {
+                            <div class="item@(first ? " active" : "")">
+                                <div class="row-fluid products-row">
+                                    @foreach (var item in list)
+                                    {
+                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 product-col">
+                                            <div class="product-block">
+                                                <div class="image">
+                                                    <div id="loaderDiv@(item.ClothesId)" class="loadcontent" style="display: none;">
+                                                        <img style="" src="@Url.Content("~/Styles/image/platinipreloader2.gif")">
+                                                    </div>
+                                                    @if (String.IsNullOrEmpty(item.ImagePath))
+                                                    {
+                                                        <a class="img" itemprop="url" title="@item.StyleNumber" href="@Url.Action("Detail", "Home", new { id = item.StyleNumber, area = "" })">
+                                                            <img class="img-responsive" itemprop="image" src="@Url.Content("~/Library/Uploads/WebThumb/" + "NO_IMAGE.jpg")" title="@item.StyleNumber" alt="@item.StyleNumber">
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="img" itemprop="url" title="@item.StyleNumber" href="@Url.Action("Detail", "Home", new { id = item.StyleNumber, area = "" })">
+                                                            <img class="img-responsive" itemprop="image" src="@Url.Content("~/Library/Uploads/WebThumb/" + item.ImagePath)" title="@item.StyleNumber" alt="@item.StyleNumber">
+                                                        </a>
+                                                    }
+                                                    <div class="right">
+                                                        <div class="action hidden-xs">
+                                                            <div>
+                                                                <div class="quick-view col-lg-4 col-md-4 col-xs-4">
+                                                                    <a class="pav-colorbox cboxElement oView" href="javascript:void(0)" data-id="@item.ClothesId" title="View Sizes">
+                                                                        <span class="hidden-md hidden-sm hidden-xs">View Sizes</span>
+                                                                    </a>
+
+                                                                </div>
+                                                                <div class="col-lg-5 col-md-5 col-xs-5">
+                                                                    <a class="pav-colorbox cboxElement" href="@Url.Action("Detail", "Home", new { id = item.StyleNumber, area = "" })">
+                                                                        <span class="hidden-md hidden-sm hidden-xs relPrice">
+                                                                            <i class="fa fa-gift"></i>
+                                                                            @item.StyleNumber
+                                                                        </span>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col-lg-2 col-md-2 col-xs-2">
+                                                                    <span class="special-price">$@String.Format("{0:0.00}", item.Price)</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                                    first = false;
+                        }
+                    </div>
+                </div>
+            }
+            @if (Model.RelatedColors.Count > 0)
+            {
+                <div class="box-heading"><span>Related Colors (@Model.RelatedColors.Count)</span></div>
+                <div id="relatedColor" class="products-rows row slide row-fluid" data-ride="carousel">
+                    <div class="carousel-controls" style="@(pShown ? "margin-right: 60px; top: 535px;" : "")">
+                        <a class="carousel-control left" href="#relatedColor" data-slide="prev"><i class="fa fa-angle-left"></i></a>
+                        <a class="carousel-control right " href="#relatedColor" data-slide="next"><i class="fa fa-angle-right"></i></a>
+                    </div>
+                    <div class="box-content carousel-inner imgClass">
+                        @{bool first = true;
+                        var listMaster = Model.RelatedColors.Select((x, i) => new { Index = i, Value = x }).GroupBy(x => x.Index / 4).Select(x => x.Select(v => v.Value).ToList()).ToList();}
+                        @foreach (var list in listMaster)
+                        {
+                            <div class="item@(first ? " active" : "")">
+                                <div class="row-fluid products-row">
+                                    @foreach (var item in list)
+                                    {
+                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 product-col">
+                                            <div class="product-block">
+                                                <div class="image">
+                                                    <div id="loaderDiv@(item.ClothesId)" class="loadcontent" style="display: none;">
+                                                        <img style="" src="@Url.Content("~/Styles/image/platinipreloader2.gif")">
+                                                    </div>
+                                                    @if (String.IsNullOrEmpty(item.ImagePath))
+                                                    {
+                                                        <a class="img" itemprop="url" title="@item.StyleNumber" href="@Url.Action("Detail", "Home", new { id = item.StyleNumber, area = "" })">
+                                                            <img class="img-responsive" itemprop="image" src="@Url.Content("~/Library/Uploads/WebThumb/" + "NO_IMAGE.jpg")" title="@item.StyleNumber" alt="@item.StyleNumber">
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="img" itemprop="url" title="@item.StyleNumber" href="@Url.Action("Detail", "Home", new { id = item.StyleNumber, area = "" })">
+                                                            <img class="img-responsive" itemprop="image" src="@Url.Content("~/Library/Uploads/WebThumb/" + item.ImagePath)" title="@item.StyleNumber" alt="@item.StyleNumber">
+                                                        </a>
+                                                    }
+                                                    <div class="right">
+                                                        <div class="action hidden-xs">
+                                                            <div>
+                                                                <div class="quick-view col-lg-4 col-md-4 col-xs-4">
+                                                                    <a class="pav-colorbox cboxElement oView" href="javascript:void(0)" data-id="@item.ClothesId" title="View Sizes">
+                                                                        <span class="hidden-md hidden-sm hidden-xs">View Sizes</span>
+                                                                    </a>
+
+                                                                </div>
+                                                                <div class="col-lg-5 col-md-5 col-xs-5">
+                                                                    <a class="pav-colorbox cboxElement" href="@Url.Action("Detail", "Home", new { id = item.StyleNumber, area = "" })">
+                                                                        <span class="hidden-md hidden-sm hidden-xs relPrice">
+                                                                            <i class="fa fa-gift"></i>
+                                                                            @item.StyleNumber
+                                                                        </span>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col-lg-2 col-md-2 col-xs-2">
+                                                                    <span class="special-price">$@String.Format("{0:0.00}", item.Price)</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                                    first = false;
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    @*<!--SliderEnd-->*@
+</div>
+@if (SiteConfiguration.Mode.ToString().ToLower() == ModeEnum.Edit.ToString().ToLower())
+{
+    <div class="md-modal md-effect-1" style="width: 90%; max-width: 90%;" id="modal-color">
+        <div class="md-content popupCOntainer">
+            <div class="topRor">
+                <div class="md-close" style="text-align: right;">
+
+                    <img src="~/Styles/images/cross.png" alt="">
+                </div>
+            </div>
+            <div id="RelatedColorDialog" style="padding: 10px; min-height: 100px;"></div>
+        </div>
+    </div>
+    <div class="md-overlay"></div>
+}
+
+
+<script type="text/javascript">
+    $(function () {
+        $(".oView").click(function () {
+            var Id = $(this).attr("data-id");
+            $("#loaderDiv" + Id).show();
+            $.get("@Url.Action("DetailPartial", "Home", new { area = "" })", { Id: Id }).done(function (data) {
+                $("#loaderDiv" + Id).hide();
+                $("#pCont").nextAll().remove();
+                $("#pCont").after(data);
+                $("#modalTrigger").click();
+            });
+        });
+    });
+    $("#aRelcolor").click(function () {
+        var id = parseInt($(this).attr('data-val'));
+        var catid = parseInt($(this).attr('data-cat'));
+        $("#RelatedColorDialog").empty();
+        $("#RelatedColorDialog").addClass("bgClass7");
+        $.get("@Url.Action("GetAllColors", "Clothes", new { @area = "common" })", { categoryId: catid, clothId: id }).done(function (data) {
+            $("#RelatedColorDialog").append(data);
+            $("#RelatedColorDialog").removeClass("bgClass7");
+        });
+    });
+
+    $("#aRelProd").click(function () {
+        var id = parseInt($(this).attr('data-val'));
+        $("#RelatedColorDialog").empty();
+        $("#RelatedColorDialog").addClass("bgClass7");
+        $.get("@Url.Action("GetRelatedProducts", "Home")", { clotheId: id }).done(function (data) {
+            $("#RelatedColorDialog").append(data);
+            $("#RelatedColorDialog").removeClass("bgClass7");
+        });
+    });
+    $(".imgClearance").click(function () {
+        var clearance = -1;
+        if ($(".imgClearance").attr("src") == "@Url.Content("~/Styles/images/btnClearance.png")") {
+            $(".imgClearance").attr("src", "@Url.Content("~/Styles/images/btnClearance_color.png")");
+            clearance = 1;
+        }
+        else {
+            $(".imgClearance").attr("src", "@Url.Content("~/Styles/images/btnClearance.png")");
+            clearance = 0;
+        }
+        if (clearance >= 0) {
+            $("#loaderDiv" + '@Model.ClothesId').show();
+            $.post("@Url.Action("UpdateClearance", "Home", new { area = "" })", { clr: clearance, cId: '@Model.ClothesId' }).done(function (data) {
+                $("#loaderDiv" + '@Model.ClothesId').hide();
+            });
+        }
+    });
+
+    $("#tbGO").click(function () {
+        $("#styleForm").click();
+    });
+    $("#imgTip[title]").tooltip();
+</script>
+
+<script type="text/javascript">
+    $('#image-additional-carousel .item:first').addClass('active');
+    $('#image-additional-carousel').carousel({ interval: false });
+
+    $(document).ready(function myfunction() {
+        // find the position of the first image
+        var firstImage = 0;
+        var lastImage = 4;
+
+        // set current, next and previous image
+        var currentImage = firstImage;
+        var nextImage = firstImage + 1;
+        var prevImage = lastImage;
+        var imgArray = $(".leftImages").map(function () {
+            return $(this).attr("data-zoom-image");
+        });
+        var count = imgArray.length;
+        $('.rightarrow a').click(function myfunction() {
+
+            var img1 = $('#img1').attr("src");
+            var img2 = $('#img2').attr("src");
+            var img3 = $('#img3').attr("src");
+            var img4 = $('#img4').attr("src");
+
+            var frstImage = $('#img' + currentImage).attr("src");
+
+            currentImage = currentImage + 1;
+
+            if (currentImage == count)
+                currentImage = 0;
+            $('#image').attr("src", imgArray[currentImage]);
+
+            $('#image').data('zoom-image', imgArray[currentImage]);
+
+            $('#spnCount').text((currentImage + 1) + ' of');
+            //$('#img1').attr("src", img2);
+            //$('#img2').attr("src", img3);
+            //$('#img3').attr("src", img4);
+            //$('#img4').attr("src", img1);
+            for (i = 0, j = currentImage; j < count; i++, j++) {
+                $("#img" + i).attr("src", imgArray[j]);
+            }
+            for (k = i, l = 0; k < count; k++, l++) {
+                $("#img" + k).attr("src", imgArray[l]);
+            }
+        });
+
+        $('.leftarrow a').click(function myfunction() {
+
+            var cntImg = currentImage;
+
+            currentImage = currentImage - 1;
+            if (currentImage < 0)
+                currentImage = count - 1;
+
+            $('#image').attr("src", imgArray[currentImage]);
+
+            $('#image').attr('data-zoom-image', imgArray[currentImage]);
+
+            $('#spnCount').text((currentImage + 1) + ' of');
+            var img1 = $('#img1').attr("src");
+            var img2 = $('#img2').attr("src");
+            var img3 = $('#img3').attr("src");
+            var img4 = $('#img4').attr("src");
+
+            //$('#img1').attr("src", img4);
+            //$('#img4').attr("src", img3);
+            //$('#img3').attr("src", img2);
+            //$('#img2').attr("src", img1);
+            for (i = 0, j = currentImage; j < count; i++, j++) {
+                $("#img" + i).attr("src", imgArray[j]);
+            }
+            for (k = i, l = 0; k < count; k++, l++) {
+                $("#img" + k).attr("src", imgArray[l]);
+            }
+
+
+        });
+
+
+        $(".leftImages").click(function () {
+            $("#image").attr("src", $(this).attr("src"));
+            $("#image").attr("data-zoom-image", $(this).attr("src"));
+        });
+
+    });
+
+</script>

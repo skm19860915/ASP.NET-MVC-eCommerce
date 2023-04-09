@@ -1,0 +1,376 @@
+﻿@using Platini.Models;
+@model Cart
+<html>
+<head>
+    <title>Cart</title>
+
+    <link type="text/css" rel="stylesheet" href="~/Styles/style.css" />
+    <link type="text/css" rel="stylesheet" href="~/Styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="~/Styles/fonts.css">
+    <style>
+        #tableShoping td {
+            padding: 3px 5px;
+            color: #000;
+        }
+
+        #tableShoping tr {
+            padding: 5px 0px;
+        }
+
+        .headerText {
+            background: #BBBBBB;
+            color: #663300 !important;
+            font-weight: bold;
+        }
+
+        #packTable {
+            margin-bottom: 1.5em;
+            text-align: center;
+        }
+
+            #packTable td {
+                padding: 0;
+            }
+
+        .bottomBar {
+            background: none repeat scroll 0 0 #424240;
+            position: fixed;
+            bottom: 0;
+            width: 88%;
+            padding: 1em;
+        }
+
+        .cartShare {
+            float: left;
+            width: 12%;
+            background-color: #fff;
+            padding: 0.3em;
+            border-radius: 5px;
+            border: 1px solid #fff;
+        }
+
+            .cartShare:hover {
+                border: 1px solid yellow;
+            }
+
+        .totals {
+            float: left;
+            width: 69%;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 4px;
+            margin-left: .8em;
+            font-weight: 500!important;
+            font-size: 13px;
+            border: 1px solid #fff;
+        }
+
+            .totals label {
+                font-size: 11px;
+            }
+
+            .totals span {
+                font-size: 13px;
+            }
+
+            .totals:hover {
+                border: 1px solid yellow;
+            }
+
+        .lackClass {
+            background-color: red!important;
+        }
+    </style>
+    <script type="text/javascript" src="~/Scripts/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(".achorshowhide").click(function () {
+                $("img.ClothImg").toggle();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div>
+        @{bool hP = false;
+          hP = ViewBag.HidePice || SiteIdentity.Roles == RolesEnum.Warehouse.ToString();
+        }
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div style="margin: 1em auto; text-align: center;">
+                @ViewBag.Message
+            </div>
+        }
+
+        <table id="FormHeader" style="text-align: left; width: 80%;">
+            <tbody>
+                <tr>
+                    <td rowspan="3" style="text-align: center;">
+                        <img src="@Url.Content("~/Styles/Image/logo.png")" width="75"  style="width: 75px;"></td>
+                    <td colspan="2">
+                        <table style="position: relative; width: 100%">
+                            <tbody>
+                                <tr id="TopHeader" style="font-size: 15px; text-align: center;">
+                                    <td>Ghacham Inc.</td>
+                                    <td style="text-align: center;">PLATINI JEANS CO.</td>
+                                    <td>PURCHASE ORDER # <span>@Model.OrdNum</span>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr id="ContactInfo" style="font-size: 13px; border: solid 1px #000;">
+                    <td colspan="2" style="text-align: center;">7340 Alondra Blvd. Paramount. CA 90723 / 562-602-0400 / FAX: 562-684-4679 <a target="_blank" style="color: blue;" href="http://platinijeans.com/">www.platinijeans.com</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="small">Date:@(Model.UserId > 0 ? DateTime.UtcNow.ToShortDateString() : "")</span></td>
+                    <td><span class="small">Buyer:</span>
+                        @Html.TextBoxFor(m => m.CartOwner.Buyer, new { @disabled = "disabled", @class = "cln" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="2" class="bline" style="vertical-align: top;"><span class="small" style="font-size: 10px;">Sold To:</span>
+                        @Html.TextBox("getCustomers", Model.CartOwner.CompanyName, new { @id = "getCustomers", @class = "cln", @style = "width:auto;", @disabled = "disabled" })
+                    </td>
+
+                    <td class="bline"><span class="small" style="font-size: 10px;">Ship To:</span>
+                        @Html.TextBoxFor(m => m.CartOwner.ShippingAddress.To, new { @maxlength = "50", @class = "cln", @disabled = "disabled" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bline">
+                        @Html.TextBoxFor(m => m.CartOwner.BillingAddress.Line1, new { @disabled = "disabled" })
+                    </td>
+                    <td class="bline">
+                        @Html.TextBoxFor(m => m.CartOwner.ShippingAddress.Line1, new { @maxlength = "50", @class = "cln", @disabled = "disabled" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bline">
+                        @Html.TextBoxFor(m => m.CartOwner.BillingAddress.Line2, new { @disabled = "disabled" })
+                    </td>
+                    <td class="bline">
+                        @Html.TextBoxFor(m => m.CartOwner.ShippingAddress.Line2, new { @maxlength = "50", @class = "cln", @style = "width: 62%", @disabled = "disabled" })
+                        Zip Code:
+                        @Html.TextBoxFor(m => m.CartOwner.ShippingAddress.ZipCode, new { @maxlength = "50", @class = "cln", @style = "width: 20%", @disabled = "disabled" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <table class="inTable">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 34%">
+                                        <span class="small" style="font-size: 10px;">Tel:</span>
+                                        @Html.TextBoxFor(m => m.CartOwner.Phone, new { @maxlength = "20", @class = "cln", @disabled = "disabled" })
+                                    </td>
+                                    <td style="width: 33%"><span class="small" style="font-size: 10px;">Fax:</span>
+                                        @Html.TextBoxFor(m => m.CartOwner.Fax, new { @maxlength = "20", @class = "cln", @disabled = "disabled" })</td>
+                                    <td style="width: 33%"><span class="small" style="font-size: 10px;">Email:</span>
+                                        @Html.TextBoxFor(m => m.CartOwner.Email, new { @maxlength = "50", @class = "cln", @disabled = "disabled" })</td>
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        <span class="small" style="font-size: 10px;">Terms:</span>
+                                        @Html.DropDownListFor(m => m.CartOwner.TermId, new SelectList(Model.Terms, "Id", "Value", 0), "Select Term", new { @disabled = "disabled" })
+                                    </td>
+
+                                    <td><span class="small" style="font-size: 10px;">Sales Person:</span>
+
+                                        <input type="text" class="cln" value="@Model.CartOwner.SalesPerson" disabled="disabled" style="border: 1px solid #000000 !important; display: inline; width: 129px !important; position: relative;" autocomplete="off">
+                                    </td>
+
+                                    <td style="width: 34%"><span class="small" style="font-size: 10px;">Ship Via:</span>
+                                        @Html.DropDownListFor(m => m.CartOwner.ShipVia, new SelectList(Model.Shipping, "Id", "Value", 0), "--Select--", new { @disabled = "disabled" })
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <table class="inTable">
+                            <tbody>
+                                <tr>
+                                    <td>@*<span class="small" style="font-size: 10px;">New User:</span><input type="checkbox" style="vertical-align: middle; width: 16px;">*@
+                                    </td>
+                                    <td>&nbsp;&nbsp;&nbsp;<span style="color: red">Note:&nbsp;</span>
+                                        @Html.TextBoxFor(m => m.Note, new { @style = "width: 450px; border: 1px solid black !important", @disabled = "disabled" })
+                                    </td>
+                                    <td style="text-align: right;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table id="tableShoping" style="border-collapse: collapse; margin-top: 10px; width: 100%; text-align: center;">
+            <tr class="headerText">
+                <td style="width: 40px;">
+                    <a href="javascript:void(0);" class="achorshowhide" style="margin: 0px;">Hide Image</a>
+                </td>
+                <td>Style</td>
+                <td>Delivery</td>
+                <td>Scale</td>
+                <td>Scales</td>
+                <td>Inseam</td>
+                <td>Available Open Sizes</td>
+                @if (!hP)
+                {<td>Price</td>}
+                <td>Qty</td>
+                @if (!hP)
+                {<td>Total</td>}
+            </tr>
+            @for (int i = 0; i < Model.Clothes.Count; ++i)
+            {
+                bool first = false;
+                for (int j = 0; j < Model.Clothes[i].Contents.Count; ++j)
+                {
+                    first = j == 0;
+                <tr style="@(first ? "border-top: 1px solid #BFBF8E !important;" : "")">
+                    <td style="width: 10px;">
+                        @if (first)
+                        {
+                            <label style="margin: 0px; font-size: 12px;">@Model.Clothes[i].GroupName</label>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Clothes[i].Contents[j].Image))
+                        {
+                            <img src="@Url.Content("~/Library/Uploads/WebThumb/" + Model.Clothes[i].Contents[j].Image)" width="72" class="ClothImg" />
+                        }
+                        else
+                        {
+                            <img src="@Url.Content("~/Library/Uploads/WebThumb/NO_IMAGE.jpg")" width="72" class="ClothImg" />
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Detail", new { @id = Model.Clothes[i].Contents[j].StyleNumber })"style="color:#000;" target="_blank">@Model.Clothes[i].Contents[j].StyleNumber</a>
+
+                    </td>
+                    <td>@Model.Clothes[i].Contents[j].Delivery</td>
+                    <td colspan="@(hP ? 5 : 7)">
+                        <table id="packTable" style="width: 100%;">
+                            @for (int k = 0; k < Model.Clothes[i].Contents[j].SPs.Count; ++k)
+                            {
+                                bool wasFitShown = false;
+                                <tr>
+                                    @if (Model.Clothes[i].Contents[j].SPs[k].Pack != null || Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count > 0)
+                                    {
+                                        <td style="width: 10%">
+                                            @if (Model.Clothes[i].Contents[j].SPs[k].Pack != null)
+                                            {
+                                                if (Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesScaleId > 0 && Model.Clothes[i].Contents[j].SPs[k].Pack.ClothesId > 0 && Model.Clothes[i].Contents[j].SPs[k].Pack.OrderSSId != Guid.Empty)
+                                                {
+                                                <b>@Model.Clothes[i].Contents[j].SPs[k].Pack.Name</b>
+                                                <div>
+                                                    @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].SPs[k].Pack.PurchasedQty, new { @class = "effect opCal_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k, @style = "border-radius:4px;background:#fff; border:2px solid black", @disabled = "disabled" })
+
+                                                </div>
+                                                }
+                                            }
+                                        </td>
+                                            if (!string.IsNullOrEmpty(Model.Clothes[i].Contents[j].SPs[k].Fit))
+                                            {
+                                                wasFitShown = true;
+                                        <td style="">
+                                            <select disabled="disabled" style="font-weight: normal; margin-top: 1em;">
+                                                <option>@Model.Clothes[i].Contents[j].SPs[k].Fit</option>
+                                            </select>
+                                        </td>
+                                            }
+                                            else
+                                            {
+                                        <td style="width: 10%"></td>
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Model.Clothes[i].Contents[j].SPs[k].Inseam))
+                                            {<td style="">
+                                                <select disabled="disabled" style="font-weight: normal; margin-top: 1em;">
+                                                    <option>@Model.Clothes[i].Contents[j].SPs[k].Inseam</option>
+                                                </select>
+                                            </td>
+                                            }
+                                            else
+                                            {
+                                        <td style="@(wasFitShown ? "width: 4%" : "width: 10%")"></td>
+                                            }
+                                    
+                                        <td style="width: @(hP ? "48" : "40")%;">
+                                            @if (Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count > 0)
+                                            {
+                                                <ul>
+                                                    @for (int l = 0; l < Model.Clothes[i].Contents[j].SPs[k].OpenSizes.Count; l++)
+                                                    {
+                                                        <li style="float: left; list-style: none; text-align: center; padding: 3px 5px;">
+                                                            <b>@Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].SizeName</b>
+                                                            <div>
+                                                                @if ((Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity.HasValue ? Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity.Value > 0 : false) || (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity.HasValue ? Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity.Value > 0 : false))
+                                                                {
+                                                                    @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].PurchasedQuantity, new { @class = "effect opCal2_" + Model.Clothes[i].Contents[j].ClothesId + "_" + k + (Model.Clothes[i].Contents[j].SPs[k].OpenSizes[l].Quantity <= 0 ? " lackClass" : ""), @style = "border-radius:4px;background:#fff;border:2px solid black", @disabled = "disabled" })
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBox("txtEmpty", "X", new { @class = "effect", @style = "border-radius:4px;background:#fff", @disabled = "disabled" })
+                                                                }
+                                                            </div>
+                                                        </li>
+                                                    }
+
+                                                </ul>
+                                            }
+                                        </td>
+                                            if (!hP)
+                                            {
+                                        <td style="width: 10%;">
+                                            <label style="margin-top: 1.5em;">$ @Html.TextBoxFor(m => Model.Clothes[i].Contents[j].Price, Model.Clothes[i].Contents[j].Price.ToString("F2"), new { @style = "width: 50px;", @disabled = "disabled" })</label>
+                                        </td>
+                                            }
+                                        <td style="width: 10%;">
+                                            <label class="opCalQty" id="qty_@(Model.Clothes[i].Contents[j].ClothesId + "_" + k)" style="margin-top: 1.5em;@(hP && Model.Clothes[i].Contents[j].SPs[k].isConfirmed ? "background-color:yellow;padding:5px" : "")">@Model.Clothes[i].Contents[j].SPs[k].Quantity</label>
+                                        </td>
+                                            if (!hP)
+                                            {
+                                        <td style="width: 10%;">$<label class="opCalTot" id="tot_@(Model.Clothes[i].Contents[j].ClothesId + "_" + k)" style="margin-top: 1.5em;">@Model.Clothes[i].Contents[j].SPs[k].Total.ToString("F2")</label>
+                                        </td>
+                                            }
+
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </td>
+
+                </tr>
+                }
+            }
+        </table>
+
+        <div class="bottomBar" style="position: inherit; width: 100%;">
+
+            <div class="totals" style="width: auto; float: right;">
+                <label style="margin: 0; padding-right: 0.5em; font-size: 13px;">Total Qty: <span id="tQty" style="font-size: 13px;">@Model.TotalQty</span></label>
+                @if (!hP)
+                {
+                    <label style="margin: 0; padding-right: 0.5em; font-size: 13px;">Grand Total: $<span id="tGrand" style="font-size: 13px;">@Model.GrandTotal.ToString("F2")</span></label>
+                    if (Model.Discount > 0)
+                    {
+                    <label style="margin: 0; padding-right: 0.5em; font-size: 13px;">DISC(%): @Model.Discount</label>
+                    }
+                    <label style="margin: 0; font-size: 13px;">Final Amount: $<span id="tFinal" style="font-size: 13px;">@Model.FinalAmount.ToString("F2")</span></label>
+                }
+            </div>
+
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+
+
+
+</body>
+</html>

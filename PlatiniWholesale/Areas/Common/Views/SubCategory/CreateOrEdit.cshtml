@@ -1,0 +1,101 @@
+﻿@model Platini.Models.CategoryClass
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div id="errorMsgName" class="box_error" style="display: none;">
+        <label id="errormsg"></label>
+    </div>
+    <div class="deshboardpanal">
+        <div class="adminright_panal">
+            <div class="nameheadingbg">
+                <span class="sucmsghead">
+                    <h1>Sub Category</h1>
+                </span><span class="sucmsg"></span>
+            </div>
+            <div class="admincontent">
+                <div class="registration">
+                    @Html.ValidationSummary(true)
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            Name <span class="forStar">*</span>
+                        </label>
+                        <div class="field">
+                            @Html.EditorFor(model => model.Name)
+                            @Html.ValidationMessageFor(model => model.Name)
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            Category
+                        </label>
+                        <div class="field">
+                            @if (ViewBag.CatId!=null)
+                            {
+                               @:@Html.DropDownListFor(model => model.ParentId, new SelectList(Model.parentCategory, "Id", "Name", Model != null ? Model.ParentId : 0), "-- Category --", new { @class = "dropDown", disabled = "disabled" })
+                               @:@Html.HiddenFor(model=>model.ParentId)
+                            }
+                            else
+                            {
+                                @:@Html.DropDownListFor(model => model.ParentId, new SelectList(Model.parentCategory, "Id", "Name", Model != null ? Model.ParentId : 0), "-- Category --")
+                            }                            
+                            @Html.ValidationMessageFor(model => model.ParentId)
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            Sort Order <span class="forStar">*</span>
+                        </label>
+                        <div class="field">
+                            @Html.EditorFor(model => model.SortOrder)
+                            @Html.ValidationMessageFor(model => model.SortOrder)
+
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <label runat="server" class="fieldLabel" for="contact_name">
+                            Active</label>
+
+                        <div class="comn">
+                            @if (Model == null)
+                            {
+                                <div class="comn2" style="width: 90px">
+                                    @Html.RadioButtonFor(model => model.IsActive, "true", new { @checked = "checked" }) Yes
+                                </div>
+                                <div class="comn2" style="width: 90px">
+                                    @Html.RadioButtonFor(model => model.IsActive, "false") No
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="comn2" style="width: 90px">
+                                    @Html.RadioButtonFor(model => model.IsActive, "true") Yes
+                                </div>
+                                <div class="comn2" style="width: 90px">
+                                    @Html.RadioButtonFor(model => model.IsActive, "false") No
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            &nbsp;</label>
+                        <div class="field">
+                            @Html.HiddenFor(model => model.CategoryId)
+                            @Html.HiddenFor(model => model.DateCreated)
+                            <button id="updbtn" type="submit" class="save-btn" value="Save">Save</button>
+                            <button id="cncbtn" type="button" class="save-btn" value="Cancel" onclick="window.location.href='@Url.Action("Index", "SubCategory", new { @CatId = ViewBag.CatId }))'">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+

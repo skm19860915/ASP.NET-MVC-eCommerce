@@ -1,0 +1,116 @@
+﻿@model Platini.Areas.Common.Models.RolesContainerClass
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .div-permision {
+        background-color: #e5e5e5;
+        color: #66523E;
+        /*margin-left: 305px;*/
+        padding: 30px;
+        width: 678px;
+    }
+
+        .div-permision th {
+            text-align: left;
+        }
+
+    /*.chooserole {
+        color: #66523E;
+        font-size: 14px;
+        margin-left: 10px;
+        margin-top: 130px;
+    }*/
+
+    .save-cancel {
+        padding-top: 25px;
+        /*float: left;*/
+        margin-right: 10px;
+        margin-top: 20px;
+        cursor: pointer;
+        margin-left: 305px;
+    }
+
+
+    /*.drpdwn {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+        background: none repeat scroll 0 0 #eeeeee;
+    }*/
+
+    .drpdwn {
+        /*border: 1px solid #ccc;
+        background: none repeat scroll 0 0 #eeeeee;
+        margin-left: 300px;
+        margin-top: 107px;*/
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+    }
+
+    .page-title {
+        background: linear-gradient(to bottom, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        font-size: 15px;
+        height: 45px;
+        top: 0;
+        position: absolute;
+        text-align: left;
+        width: 738px;
+        margin-left: 306px;
+        margin-top: 95px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+        .page-title h3 {
+            padding-left: 10px;
+            font-size: 16px;
+        }
+
+    .margin-top {
+        margin-left: -118px;
+        margin-top: -22px;
+        background-color: #e5e5e5;
+        width: 738px;
+    }
+
+    .width {
+        width: 740px;
+    }
+
+</style>
+
+
+<br />
+<br />
+
+<div class="page-title nameheadingbg">
+    <h3>Edit Permissions</h3>
+</div>
+
+<table style="margin-left:306px;margin-top:110px;background-color: #e5e5e5;border: 1px solid #ccc;" class="fl div-permision width">
+    <tr>
+        <td style="text-align:center; padding-top:7px;">Select Role : </td>
+        <td>
+            @using (Ajax.BeginForm("GetPermissionsWithRolePermission", "Permission", new AjaxOptions
+                {
+                    HttpMethod = "Get",
+                    UpdateTargetId = "SearchResults",
+                    InsertionMode = System.Web.Mvc.Ajax.InsertionMode.Replace
+                }, new { @class = "drpdwn" }))
+            {
+                @Html.DropDownListFor(m => m.RoleId, new SelectList(Model.Roles, "RoleId", "RoleName"), "---Select---", new { onchange = "$(this.form).submit()", Id = Model.RoleId })
+            }
+        </td>
+    </tr>
+    <tr>
+        <td id="SearchResults" colspan="2">
+            @Html.Partial("_PermissionsTable", Model.rolesPermission)
+        </td>
+    </tr>
+</table>
+
+

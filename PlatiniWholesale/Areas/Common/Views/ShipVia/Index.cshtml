@@ -1,0 +1,103 @@
+﻿@using MvcPaging;
+@using Platini.Models;
+@model IPagedList<Platini.Models.CommonClass>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-6 col-lg-6 col-sm-6">
+    @using (Html.BeginForm("Index", "ShipVia", new { area = "Common" }, FormMethod.Post))
+    {         
+        <div class="filter-block">
+            <div class="formblock">
+                <div class="block">
+                    <div class="formrow">
+                        Search by Name
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            @*<input id="searchText" name="searchText" type="text" class="input" autocomplete="off" value="" />*@
+                            @Html.TextBox("searchString")
+                        </div>
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            <input id="searchBtn" class="cobtn" value="GO" type="submit" style="height: 22px;" onclick="@Url.Action("Index", "ShipVia", new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, @searchString = ViewBag.searchStringParam })" />
+                            <span style="float: left;">&nbsp;&nbsp;</span><input id="clearSearchBtn" class="cobtn" value="Clear" type="button" style="height: 22px;" onclick="javascript: window.location = window.location.href;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="col-md-6 col-lg-6 col-sm-6">
+    <div class="navigationlist">
+        <ul>
+
+                <li>
+                    <a ID="Addbtn" href="@Url.Action("Create", "ShipVia")" class="addlisting">
+                        <img id="addIcon" src="@Url.Content("~/Styles/images/addlistIcon.png")" />Add New</a>
+                </li>
+
+            <li>
+                <a href="@Url.Action("Index", "ShipVia")" id="resetsearch">
+                    <img src="@Url.Content("~/Styles/images/listIcon.png")" alt="">Refresh</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="minContainer">
+        <div class="listmanager">
+            <div class="head">
+                ShipVia List
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        <td>#</td>
+                        <td class="col-lg-5">@Html.ActionLink("Name", "Index", "ShipVia", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "Name", searchString = ViewBag.searchStringParam }, null)</td>
+                        <td class="col-lg-2" style="text-align: center;">@Html.ActionLink("Sort Order", "Index", "ShipVia", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "SortOrder", searchString = ViewBag.searchStringParam }, null)</td>
+                        <td class="col-lg-2" style="text-align: center;">@Html.ActionLink("Active", "Index", "ShipVia", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "IsActive", searchString = ViewBag.searchStringParam }, null)</td>
+                        <td style="text-align: right;">#</td>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                    <a href="@Url.Action("Edit", "ShipVia", new { Id = item.Id })">Edit</a>
+                               
+                            </td>
+                            <td class="col-lg-5">
+
+                                
+                                    <a href="@Url.Action("Edit", "ShipVia", new { Id = item.Id })">@item.Name</a>
+                                
+                            </td>
+                            <td class="col-lg-2" style="text-align: center;">
+                                @Html.DisplayFor(modelItem => item.SortOrder)
+                            </td>
+                            <td class="col-lg-2" style="text-align: center;">
+                                @Html.CheckBox("check", item.IsActive, new { @disabled = "disabled" })
+                            </td>
+                            <td style="text-align: right;">
+                                @if (SiteConfiguration.Mode.ToLower() == "edit")
+                                {
+                                    <a href="@Url.Action("Delete", "ShipVia", new { Id = item.Id })" onclick = "return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+                <div class="pagingContainer"></div>
+
+                @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, searchString = ViewBag.searchStringParam })
+            </div>
+        </div>
+    </div>
+</div>
+

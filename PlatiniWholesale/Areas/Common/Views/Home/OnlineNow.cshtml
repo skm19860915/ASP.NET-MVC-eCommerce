@@ -1,0 +1,62 @@
+﻿@using Platini.Models;
+@using MvcPaging;
+@model IPagedList<OnlineCustomers>
+@{
+    ViewBag.Title = "Online Customers";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="minContainer">
+        <div class="listmanager">
+            <div class="head">
+                User List
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        @if (SiteConfiguration.Mode.ToLower() == ModeEnum.Order.ToString().ToLower())
+                        {
+                            <td style="width: 40px;">&nbsp;</td>
+                        }
+                        <td>Name</td>
+                        <td>Session</td>
+                        <td>Email</td>
+                        <td>Phone</td>
+                        <td>City</td>
+                        <td>State</td>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            @if (SiteConfiguration.Mode.ToLower() == ModeEnum.Order.ToString().ToLower())
+                            {
+                                <td style="width: 40px;">&nbsp;</td>
+                            }
+                            <td>
+                                @if (item.AccountId > 0)
+                                {
+                                    <a href="@Url.Action("Edit", "Customer", new { @area = "Common", @id = item.AccountId })">@item.Name</a>
+                                }
+                                else
+                                {
+                                    @item.Name
+                                }
+                            </td>
+                            <td>
+                                @item.SessionId
+                            </td>
+                            <td>@item.Email</td>
+                            <td>@item.Phone</td>
+                            <td>@item.City</td>
+                            <td>@item.State</td>
+                        </tr>
+                    }
+                </table>
+                <div class="pagingContainer"></div>
+
+                @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount)
+            </div>
+        </div>
+    </div>
+</div>

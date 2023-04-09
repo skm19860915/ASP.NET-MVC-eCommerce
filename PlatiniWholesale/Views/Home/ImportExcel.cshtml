@@ -1,0 +1,30 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Import Excel</title>
+</head>
+<body>
+    <div>
+        <h2>Import</h2>
+        @using (Html.BeginForm("ImportExcel", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <table>
+                <tr>
+                    <td>Excel file</td>
+                    <td><input type="file" id="FileUpload1" name="FileUpload1"  /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" id="Submit" name="Submit" value="Submit" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+</body>
+</html>

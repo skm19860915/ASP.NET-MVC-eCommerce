@@ -1,0 +1,136 @@
+﻿@using MvcPaging
+@using Platini.Models;
+@model IPagedList<Platini.Areas.Common.Models.Roles>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .bg-role {
+        background-color: #e8e8e8;
+        border: hidden;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+
+    .bg-role {
+        text-align: left;
+    }
+
+    .width700 {
+        width: 750px;
+        margin: 5px;
+    }
+
+    .bg-role img {
+        margin-left: 22px;
+    }
+
+    .header_template {
+        /*background: #424240;*/
+        background: linear-gradient(to bottom, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        margin-bottom: 5px;
+        padding: 5px;
+        font-size: 14px;
+        /*color: #FFFFFF;*/
+        border-radius: 5px 5px 5px 5px;
+    }
+
+    .page-title1 {
+        /*background: none repeat scroll 0 0 #424240;
+        color: #D7D7D7;*/
+        background: linear-gradient(to bottom, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        font-size: 15px;
+        height: 45px;
+        text-align: left;
+        width: 810px;
+        margin-left: 300px;
+        margin-top: 95px;
+    }
+
+        .page-title1 h3 {
+            /*padding-left: 10px;
+            padding-top: 10px;
+            color: #ffffff;*/
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+    .marginT {
+        margin-top: 20px;
+    }
+</style>
+
+<div class="page-title1 nameheadingbg" style="border: 1px solid #ccc; width: 60%; margin: 0px auto; padding-left: 20px;">
+    <h3>User Permissions</h3>
+    @*<span style="float: right;margin-top: -30px;padding-right: 10px;"><a href="@Url.Action("Edit","Permission")">Edit Permissions</a></span>*@
+</div>
+<div class="wrapper marginT">
+    <div style="width: 60%; margin: 0px auto; padding: 7px; padding-left: 20px; border: 1px solid #ccc; border-radius: 5px;">
+        @foreach (var item in Model)
+        {   
+            <div class="header_template wrapper marginT">
+                Role : @item.RoleName
+                <span style="float: right; margin-top: -30px; padding-right: 10px; padding-top: 31px;">
+                    @if (SiteConfiguration.Mode.ToLower() == "edit")
+                    {
+                        <a href="@Url.Action("Edit", "Permission", new { Id = @item.RoleId })">Edit Permissions</a>
+                    }
+                </span>
+
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        <td class="col-lg-3">Permissions</td>
+                        <td class="col-lg-3" style="text-align: center;">Can View</td>
+                        <td class="col-lg-2" style="text-align: center;">Can Edit</td>
+                        <td class="col-lg-2" style="text-align: center;">Can Order</td>
+                    </tr>
+                    @foreach (var per in item.RolePermissions.RolesPermisionList)
+                    {
+                        <tr class="bg-role">
+                            <td class="col-lg-3">@per.Permission.PermissionPage
+                            </td>
+                            <td class="col-lg-3" style="text-align: center;">
+                                @if (per.CanView.HasValue && per.CanView == true)
+                                {
+                                    <img src="@Url.Content("~/Styles/images/tick.png")" />
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Styles/images/cross.png")" />
+                                }
+                            </td>
+                            <td class="col-lg-2" style="text-align: center;">
+                                @if (per.CanEdit.HasValue && per.CanEdit == true)
+                                {
+                                    <img src="@Url.Content("~/Styles/images/tick.png")" />
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Styles/images/cross.png")" />
+                                }
+                            </td>
+                            <td class="col-lg-2" style="text-align: center;">
+                                @if (per.CanOrder.HasValue && per.CanOrder == true)
+                                {
+                                    <img src="@Url.Content("~/Styles/images/tick.png")" />
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Styles/images/cross.png")" />
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+    </div>
+</div>
+<div style="height: 100px;"></div>
+
+

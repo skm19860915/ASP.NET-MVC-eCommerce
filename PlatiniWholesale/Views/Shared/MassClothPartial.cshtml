@@ -1,0 +1,94 @@
+﻿@using Platini.Models
+@model ClothImgUpload
+<div class="marginBot prodList" style="border: 1px solid;" data-id="@Model.ClothesId">
+    <div class="botBorder text-center marginBot" style="padding: 1em; min-height:50px" >
+        DROP UPLOADED IMAGES ANYWHERE INSIDE THIS BOX
+    </div>
+    <div class="text-center marginBot">
+
+        <label id="style@(Model.ClothesId)">@Model.StyleNumber</label>
+        @Html.HiddenFor(m => m.ClothesId)
+        @if (!Model.Images.Any())
+        {
+            <img id="bigImage@(Model.ClothesId)" style="border: 1px solid black; display: block; float: none; margin: 0 auto;" src="/Styles/Images/BlankImage.png" />
+        }
+        else
+        {
+            <img id="bigImage@(Model.ClothesId)" style="border: 1px solid black; display: block; float: none; margin: 0 auto;"width="64" src="/Library/Uploads/WebThumb/@(Model.Images.First().Path)" />
+        }
+    </div>
+    <div style="min-height:8.2em;">
+
+        <ul id="childGallery@(Model.ClothesId)" class="list-inline childGal" style="margin: 0;">
+            @foreach (var li in Model.Images)
+            {
+                <li class="sortList@(Model.ClothesId)" id="@(li.aId)">
+                    <img src="/Library/Uploads/WebThumb/@(li.Path)" width="32" title="@(li.Name)" data-id="@(li.Id)" data-so="@(li.SO)" /></li>
+            }
+        </ul>
+    </div>
+    <div style="float: right; padding: 10px 0px; display: none;">
+        <button id="saveOrder@(Model.ClothesId)" onclick="saveSort('@(".sortList" + Model.ClothesId)','@(Model.isLast ? "1" : "0")');" class="btn-Popup sortButton">Save</button>
+    </div>
+</div>
+<script>
+    var dropCount = 0;
+    $(function () {
+
+        $("ul.childGal").sortable();
+        
+        $("div.prodList").droppable({
+            accept: "ul#bigGallery li",
+            hoverClass: "ui-state-hover",
+            drop: function (ev, ui) {
+                //$(ui.item).removeClass("selected");
+                ui.draggable.remove();
+                var elm = $(this);
+                elm.find(".botBorder").empty().html("Assigning Images...");
+                elm.find(".botBorder").addClass("bgClass3");
+                $.post('@Url.Action("AssignImages")', { Ids: arr.join(','), Id: elm.attr('data-id') }).done(function (data) {
+                    elm.find(".botBorder").removeClass("bgClass3");
+                    if (data != null) {
+                        if (data != 'Error') {
+                            elm.find(".botBorder").empty().html("Displaying...");
+                            $("ul#childGallery" + elm.attr('data-id')).empty();
+                            $.each(data.Images, function (id, option) {
+                                buildLi(option, elm.attr('data-id'), data.StyleNumber);
+                            });
+                            $("#style" + elm.attr('data-id')).text(data.StyleNumber);
+                            elm.find(".botBorder").empty().html("DROP UPLOADED IMAGES ANYWHERE INSIDE THIS BOX");
+                        }
+                        else {
+                            elm.find(".botBorder").empty().html("DROP UPLOADED IMAGES ANYWHERE INSIDE THIS BOX");
+                            alert("An error occured");
+                        }
+                    }
+                });
+            }
+        });
+    });
+    function buildLi(resp, i, style) {
+        $("ul#childGallery" + i).append(
+            $('<li>').attr('id', resp.aId).append(
+                $('<img>').attr('src', '/Library/Uploads/WebThumb/' + resp.Path).attr('title', resp.Name).attr('data-id', resp.aId).attr('data-so', resp.SO).attr('width', '32')));
+        if (resp.Name == style) {
+            $("img#bigImage" + i).attr('src', '/Library/Uploads/WebThumb/' + resp.Path).attr('width', '64');
+        }
+    }
+    function saveSort(name, redirect) {
+        var ids = [];
+        $(name).each(function (index, value) {
+            var item = {};
+            item.id = $(this).prop('id');
+            item.so = index + 1;
+            ids.push(item);
+        });
+        $.post(
+            '@Url.Action("SaveSort", "Clothes", new { @area = "Common" })',
+                { NewOrders: JSON.stringify(ids) }).done(function () {
+                    if (redirect == '1') {
+                        window.location.href = $("#backButton").attr('href');
+                    }
+                });
+        }
+</script>

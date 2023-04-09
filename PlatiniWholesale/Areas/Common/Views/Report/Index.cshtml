@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .mainnav_bar {
+        top: 0;
+    }
+
+    a {
+        color: black;
+        text-decoration: none;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    .label {
+        font-size: 13px;
+    }
+
+    .box {
+        background: none repeat scroll 0 0 #EEEEEE;
+        border-radius: 6px 6px 6px 6px;
+        color: #000000;
+        font-size: 13px;
+        margin-top: 20px;
+        width:97%;
+    }
+
+    .black {
+        background: #000;
+        color: #fff;
+        height: 70px;
+    }
+
+    .Row {
+        background: #E8E8E8;
+    }
+
+        .Row:hover {
+            background: #DDDDDD;
+        }
+
+    .AltRow {
+        background: #fff;
+    }
+
+        .AltRow:hover {
+            background: #DDDDDD;
+        }
+
+
+
+    TABLE.tabulardata TH {
+        background-color: #000000;
+        color: #FFFFFF;
+        height: 28px;
+        padding: 4px 60px 4px 13px;
+    }
+
+    TABLE.tabulardata TD {
+        PADDING: 10px;
+    }
+
+    .left span {
+        /*color: #252523;*/
+    }
+
+    .mainepage {
+        width: 80%;
+        margin-left: 130px;
+        margin-top: -50px;
+    }
+
+    .page-title {
+        /*background: none repeat scroll 0 0 #424240;
+        color: #D7D7D7;*/
+        background: linear-gradient(to bottom, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        font-size: 15px;
+        font-weight:bold;
+        height: 48px;
+        top: 140px;
+        position: relative;
+        text-align: left;
+        width: 993px;
+        z-index: -1;
+    }
+
+        .page-title h3 {
+            font-size:15px;
+            /*padding-left: 10px;
+            padding-top: 10px;*/
+        }
+</style>
+<div class="mainepage">
+    <div class="page-title nameheadingbg" style="border:1px solid #ccc;">
+        <h3>Report List</h3>
+    </div>
+
+    <div id="updpanel" class="box">
+        <div class="left" style="margin-top: 150px;">
+            <table id="main" style="text-align:center; width:100%;">
+                <tr>
+                    <td width="100%" style="padding: 30px 12px 12px;">
+                        <div>
+                            <ol style="list-style: disc inside none;">
+                                <li style="line-height: 32px"><a href="@Url.Action("Report_SalesByCustomer","Report")">Sales by customer</a></li>
+                                <li style="line-height: 32px"><a href="@Url.Action("Report_SalesByProduct","Report")">Sales by product</a></li>
+                                <li style="line-height: 32px"><a href="@Url.Action("Report_SalesByTag","Report")">Sales by tag</a></li>
+                                <li style="line-height: 32px"><a href="@Url.Action("Report_SalesByInventory","Report")">Inventory Report</a></li>
+
+                            </ol>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="height: 100px;">&nbsp;</div>
+    </div>
+</div>

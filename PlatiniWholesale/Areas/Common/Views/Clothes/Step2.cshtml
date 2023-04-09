@@ -1,0 +1,421 @@
+﻿@model Platini.Models.StepTwoClass
+@{
+    ViewBag.Title = "Add Product";
+    Layout = "~/Areas/Common/Views/Shared/_Layout1.cshtml";
+}
+@using (Html.BeginForm())
+{
+    <style>
+        .ui-dialog {
+            z-index: 99999 !important;
+        }
+        .ui-accordion .ui-accordion-content {
+            padding: 0.2em 0.2em;
+        }
+    </style>
+    <div class="deshboardpanal">
+        <div class="adminright_panal">
+            <div class="nameheadingbg">
+                <h1>Step Two</h1>
+            </div>
+            <div class="row">
+                <div class="registration">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="navigationlist">
+                            <ul>
+                                <li>
+                                    <a id="ImageButton" href="javascript:void(0);">Multiple Images</a>
+                                </li>
+
+                                <li>
+                                    <a id="RelatedProductButton" href="javascript:void(0);" onclick="openRelatedProduct();">Related Clothes</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Step1", "Clothes", new { id = Model.ClothesId })">Back to Step One</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div id="RelatedProductDialog" title="Related Product" style="display: none">
+                        </div>
+                        @Html.Hidden("ClothIdForRelatedProduct", Model.ClothesId)
+                        <h4>Scales</h4>
+                        <div id="AvailablePrePackContainer">
+                            <div class="row" style="vertical-align: top; text-align: left; margin-bottom: 5px;">
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Scale</div>
+                                @if (Model.AvailablePrePacks.Count() > 0)
+                                {
+                                    if (Model.AvailablePrePacks[0].selectedFitId != 0)
+                                    { <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                        <div id="FitExist">Fits</div>
+                                    </div> }
+                                    if (Model.AvailablePrePacks[0].selectedInseamId != 0)
+                                    { <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+                                        <div id="InseamExist">Inseam</div>
+                                    </div>}
+                                    for (var j = 0; j < Model.AvailablePrePacks[0].ClothesScaleSizeClass.Count(); j++)
+                                    {
+                                    <div style="width: 45px; float: left; text-align: center;">@Html.DisplayFor(x => Model.AvailablePrePacks[0].ClothesScaleSizeClass[j].SizeName)</div>
+                                    }
+                                    <div style="width: 45px; float: left; text-align: center;">
+                                        Inv Qty
+                                    </div>  
+                                }
+                            </div>
+
+                            @for (var i = 0; i < Model.AvailablePrePacks.Count(); i++)
+                            {
+                                <div class="row" style="vertical-align: top; text-align: left; margin-bottom: 5px;">
+                                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                        @Html.TextBoxFor(x => Model.AvailablePrePacks[i].Name, new { style = "width:100%;", @class = "scaleText" })
+                                    </div>
+                                    @if (Model.AvailablePrePacks[i].selectedFitId != 0)
+                                    { <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                        @Html.DropDownListFor(x => Model.AvailablePrePacks[i].selectedFitId, new SelectList(Model.FitList, "Id", "Value", Model.AvailablePrePacks[i].selectedFitId), null, new { @disabled = "disabled", @class = "dropDown", style = "width:100%;height:30px;" })
+                                    </div> }
+                                    @if (Model.AvailablePrePacks[i].selectedInseamId != 0)
+                                    { <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+                                        @Html.DropDownListFor(x => Model.AvailablePrePacks[i].selectedInseamId, new SelectList(Model.InseamList, "Id", "Value", Model.AvailablePrePacks[i].selectedInseamId), null, new { @disabled = "disabled", @class = "dropDown", style = "width:100%;height:30px;" })
+                                    </div>}
+                                    @for (var j = 0; j < Model.AvailablePrePacks[i].ClothesScaleSizeClass.Count(); j++)
+                                    {
+                                        <div style="width: 45px; float: left; text-align: center;">@Html.TextBoxFor(x => Model.AvailablePrePacks[i].ClothesScaleSizeClass[j].Quantity, new { @class = "scaleText" })</div>
+                                      
+                                        @Html.HiddenFor(x => Model.AvailablePrePacks[i].ClothesScaleSizeClass[j].SizeId)                                       
+                                        @Html.HiddenFor(x => Model.AvailablePrePacks[i].ClothesScaleSizeClass[j].ClothesScaleId)
+                                        @Html.HiddenFor(x => Model.AvailablePrePacks[i].ClothesScaleSizeClass[j].ClothesScaleSizeId)                                        
+                                    }
+                                    @Html.HiddenFor(x => Model.AvailablePrePacks[i].ClothesId)
+                                    @Html.HiddenFor(x => Model.AvailablePrePacks[i].ClothesScaleId)
+                                    @Html.HiddenFor(x => Model.AvailablePrePacks[i].FitId)
+                                    @Html.HiddenFor(x => Model.AvailablePrePacks[i].InseamId)
+                                    @Html.HiddenFor(x => Model.AvailablePrePacks[i].IsOpenSize)
+                                    <div style="width: 45px; float: left; text-align: center;">
+                                        @Html.TextBoxFor(x => Model.AvailablePrePacks[i].InvQty, new { @class = "scaleText" })
+                                    </div>
+                                    @*<div style="height:30px;padding-top:5px;">@Ajax.ActionLink("Remove", "RemoveScale", new{ id=, clothId= Model.Id} ,new AjaxOptions { HttpMethod="POST"})</div>*@
+                                </div>
+                            }
+                            @Html.Hidden("TotalAvailablePrepack", Model.AvailablePrePacks.Count())
+                            @*  @Ajax.ActionLink("Add more...", "AddNewScale", "Clothes", new { @id = Model.Id, @ContainsFit = 1, @ContainsInseam = 1 }, new AjaxOptions()
+            {
+                InsertionMode = InsertionMode.InsertAfter,
+                UpdateTargetId = "AvailablePrePackContainer"
+            }, new { @class = "btn btn-default" })*@
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><a onclick="javascript:addScaleRow();" style="cursor: pointer;">Add Scale</a></div>
+                        </div>
+                        <br />
+                        <br />
+                        <h4>Available Open Sizes</h4>
+                        <div class="row">
+                            @if (Model.AvailableOpenSizes.Count() > 0)
+                            {
+                                if (Model.AvailableOpenSizes.Count() > 0 && Model.AvailableOpenSizes[0].Name != null)
+                                { <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                </div> }
+                                if (Model.AvailableOpenSizes.Count() > 0 && Model.AvailableOpenSizes[0].FitName != null)
+                                { <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                </div> }
+                                if (Model.AvailablePrePacks.Count() > 0 && Model.AvailableOpenSizes[0].InseamName != null)
+                                { <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+                                </div>}
+                                for (var j = 0; j < Model.AvailableOpenSizes[0].ClothesScaleSizeClass.Count(); j++)
+                                {                                                                                                           
+                                <div style="width: 45px; float: left; text-align: center;">
+                                    @Html.DisplayFor(x => Model.AvailableOpenSizes[0].ClothesScaleSizeClass[j].SizeName)
+                                </div>  
+                                }
+                            }
+                        </div>
+                        @for (var i = 0; i < Model.AvailableOpenSizes.Count(); i++)
+                        {
+                            <div class="row">
+                                @if (Model.AvailableOpenSizes[i].Name != null)
+                                { <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding-top: 5px;">
+                                    @Html.DisplayFor(x => Model.AvailableOpenSizes[i].Name)
+                                </div> }
+                                @if (Model.AvailableOpenSizes[i].FitName != null)
+                                { <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding-top: 5px;">
+                                    @Html.DisplayFor(x => Model.AvailableOpenSizes[i].FitName)
+                                </div> }
+                                @if (Model.AvailableOpenSizes[i].InseamName != null)
+                                { <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1" style="padding-top: 5px;">
+                                    @Html.DisplayFor(x => Model.AvailableOpenSizes[i].InseamName)
+                                </div>}
+                                @for (var j = 0; j < Model.AvailableOpenSizes[i].ClothesScaleSizeClass.Count(); j++)
+                                {                                                                                                          
+                                    <div style="width: 45px; float: left; text-align: center;">
+                                        @Html.TextBoxFor(x => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity, new { @class = "scaleText" })
+                                    </div>                                                                        
+                                    @Html.HiddenFor(x => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].SizeId)                                 
+                                    @Html.HiddenFor(x => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleId)    
+                                    @Html.HiddenFor(x => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleSizeId)                 
+                                }
+                                @Html.HiddenFor(x => Model.AvailableOpenSizes[i].ClothesId)
+                                @Html.HiddenFor(x => Model.AvailableOpenSizes[i].ClothesScaleId)
+                                @Html.HiddenFor(x => Model.AvailableOpenSizes[i].FitId)
+                                @Html.HiddenFor(x => Model.AvailableOpenSizes[i].InseamId)
+                                @Html.HiddenFor(x => Model.AvailableOpenSizes[i].InvQty)
+                                @Html.HiddenFor(x => Model.AvailableOpenSizes[i].IsOpenSize)
+                            </div>
+                        }
+                        <br />
+                        <br />
+                        <div class="row">
+                            @*<div class="col-sm-2 col-md-3 col-lg-3"></div>*@
+                            <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
+                                @Html.HiddenFor(model => model.ClothesId)
+                                <button type="submit" class="blackBtn width14">Save/View Item</button>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
+                                <input id="hNew" name="hNew" type="hidden" value="0" />
+                                <button type="submit" class="blackBtn width14" onclick="AddNewClothes();">Save/Add Another</button>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
+                                <button type="button" class="blackBtn width14" onclick="window.location.href='@Url.Action("Index", "Clothes")'">Cancel Add Product</button>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+}
+
+@if (Model != null && Model.ClothesId != 0)
+{
+    <script src="@Url.Content("~/Scripts/jquery.filedrop.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            $("#accordion").accordion({
+                collapsible: true
+            });
+            $("ul#gallery").sortable({ placeholder: "placeHolder" });
+
+            var hgt = ($(window).height() - ($(window).height() * 27 / 100));
+            var inhgt = hgt - 15;
+            hgt = hgt + 'px';
+            inhgt = inhgt + 'px';
+            $("#my_popup").height(hgt);
+            $("#my_popup").dialog({
+                autoOpen: false,
+                modal: true, width: '35%',
+                open: function () {
+                    $(".upProgress").removeClass("upDone");
+                    $('#dropLabel').empty().append('Drop files below!');
+                }
+            });
+            function buildLis() {
+                $.get('@Url.Action("GetImages")', { clothesId: '@Model.ClothesId' }).done(function (data) {
+                    if (data === undefined || data === null) {
+                    }
+                    else {
+                        $("ul#gallery").empty();
+                        for (var x = 0; x < data.length; ++x) {
+                            $("ul#gallery").append('<li class="sortList" id="' + data[x].ClothesImageId + '"><div style="cursor: pointer;"><img id="imgpic' + data[x].ClothesImageId + '" class="ui-draggable dropped" src="/Library/Uploads/WebThumb/' + data[x].ImagePath + '" style="height:50px;width:45px;border-width:0px;"></div><div class="closeDiv" style="cursor: pointer;"><img id="img' + data[x].ClothesImageId + '" src="@Url.Content("~/Styles/image/IsNotActive.png")" onclick="DeleteThis(' + data[x].ClothesImageId + ')"/></div><input type="hidden" name="hId" value="' + data[x].ClothesImageId + '" id="hid' + data[x].ClothesImageId + '"/> </li>');
+                        }
+                    }
+                });
+            }
+            $("#upProgressHolder").progressbar({
+                value: false, complete: function () {
+                    $(".upProgress").addClass("upDone");
+                    $("#upProgressHolder").progressbar("value", 0);
+                }
+            });
+
+            $('#dropZone').filedrop({
+                url: '@Url.Action("FileUpload")',
+                paramname: 'files',
+                data: {
+                    clothesId: '@Model.ClothesId',
+                    StyleNumber: '@Model.StyleNumber'
+                },
+                error: function (err, file) {
+                    switch (err) {
+                        case 'BrowserNotSupported':
+                            alert('browser does not support HTML5 drag and drop');
+                            buildLis();
+                            $(".upProgress").addClass("upDone");
+                            break;
+                        case 'TooManyFiles':
+                            alert('file limit exceeded');
+                            buildLis();
+                            $(".upProgress").addClass("upDone");
+                            break;
+                        case 'FileTooLarge':
+                            alert(file.name + ", file size too large");
+                            buildLis();
+                            $(".upProgress").addClass("upDone");
+                            break;
+                        case 'FileTypeNotAllowed':
+                            alert("upload image files only");
+                            buildLis();
+                            $(".upProgress").addClass("upDone");
+                            break;
+                        case 'FileExtensionNotAllowed':
+                            alert("upload image files only");
+                            buildLis();
+                            $(".upProgress").addClass("upDone");
+                            break;
+                        default:
+                            alert("Error");
+                            buildLis();
+                            $(".upProgress").addClass("upDone");
+                            break;
+                    }
+                },
+                queuefiles: 1,
+                allowedfiletypes: ['image/jpeg', 'image/png', 'image/gif'],
+                allowedfileextensions: ['.jpg', '.jpeg', '.png', '.gif'],
+                afterAll: function () {
+                    $('#dropLabel').empty().append('The file(s) have been uploaded successfully!');
+                    setName('@Model.ClothesId');
+
+                },
+                uploadStarted: function (i, file, len) {
+                    $("#upProgressHolder").progressbar("value", 0);
+                },
+                progressUpdated: function (i, file, progress) {
+                    $("#upProgressHolder").progressbar("value", progress);
+                },
+                uploadFinished: function (i, file, response) {
+                    $('#dropLabel').empty().append('Uploading next file...');
+                }
+            });
+            function setName(Id) {
+                $.post('@Url.Action("SetStyleNumber", "Clothes", new { @area = "Common" })', { clothesId: Id }).done(function () {
+                    buildLis();
+                });
+            }
+        });
+        
+
+
+        $("#ImageButton").click(function () {
+            $("#my_popup").dialog("open");
+            $("ul#gallery").sortable();
+        });
+        function DeleteThis(Id) {
+            if (confirm("Are you sure you want to delete this image?")) {
+                if (isFinite(Id) && Id > 0) {
+                    $.post('@Url.Action("DeleteImage")', { ClothesId: Id }, function (data) {
+                        if (data === undefined || data === null) {
+
+                            alert("Error");
+                        }
+                        else {
+                            $("ul#gallery").empty();
+                            for (var x = 0; x < data.length; ++x) {
+                                $("ul#gallery").append('<li class="sortList" id="' + data[x].ClothesImageId + '"><div style="cursor: pointer;"><img id="imgpic' + data[x].ClothesImageId + '" class="ui-draggable dropped" src="/Library/Uploads/WebThumb/' + data[x].ImagePath + '" style="height:50px;width:45px;border-width:0px;"></div><div class="closeDiv" style="cursor: pointer;"><img id="img' + data[x].ClothesImageId + '" src="@Url.Content("~/Styles/image/IsNotActive.png")" onclick="DeleteThis(' + data[x].ClothesImageId + ')" /></div><input type="hidden" name="hId" value="' + data[x].ClothesImageId + '" id="hid' + data[x].ClothesImageId + '"/> </li>');
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        function saveSort() {
+            var ids = [];
+            $('.sortList').each(function (index, value) {
+                var item = {};
+                item.id = $(this).prop('id');
+                item.so = index + 1;
+                ids.push(item);
+            });
+            $.post(
+                '@Url.Action("SaveSort")',
+                { NewOrders: JSON.stringify(ids) },
+                function (response) {
+                    $("#my_popup").dialog("close");
+                }
+            );
+        }
+
+        function closeUpload() {
+            $("#my_popup").dialog("close");
+        }
+
+    </script>
+
+    <div id="my_popup" title="Drag image(s) to upload">
+
+        <div id="accordion" style="width: 100%;">
+
+            <h3>Style Number: @Model.StyleNumber</h3>
+            <div>
+                <div id="dropZonediv" style="height: 340px; border-bottom: #D3D3D3 1px solid; overflow: auto;">
+                    
+                    <div id="dropLabel" style="height:5%;">Drop files below!</div>
+                    <div id="dropZone" style="height:85%; border:1px dashed blue"></div>
+                    <div id="upProgressHolder" style="height:5%; ">
+                        <div class="upProgress"></div>
+                    </div>
+                </div>
+                <div style="padding-top: 5px;">
+                    <ul id="gallery" data-listidx="0">
+                        @if (Model.Images != null)
+                        {
+                            foreach (var image in Model.Images)
+                            {
+                        
+                            <li class="sortList" id="@(image.ClothesImageId)">
+                                <div style="cursor: pointer;">
+                                    <img id="imgpic@(image.ClothesImageId)" class="ui-draggable dropped" src="@Url.Content("~/Library/Uploads/WebThumb/" + image.ImagePath)" style="height:50px;width:45px;border-width:0px;">
+                                </div>
+                                <div class="closeDiv" style="cursor: pointer;">
+                                    <img id="img@(image.ClothesImageId)" src="@Url.Content("~/Styles/image/IsNotActive.png")" onclick="DeleteThis(@image.ClothesImageId);"/>
+                                    @Html.Hidden("hId", image.ClothesImageId, new { @id = "hid" + image.ClothesImageId, value = image.ClothesImageId })
+                                </div>
+
+                            </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div style="float: right; padding: 10px 0px;">
+            <button id="saveOrder" onclick="saveSort();" class="btn-Popup">Save</button>
+            <button id="closeUpload" onclick="closeUpload();" class="btn-Popup">Cancel</button>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    var addScaleRow = function () {
+        var id = $("#ClothIdForRelatedProduct").val();
+        var n = $("#FitExist").length;
+        var n1 = $("#InseamExist").length;
+
+        var exist = $("#scalediv").length;
+        var total = parseInt($("#TotalAvailablePrepack").val());
+        if (exist == 0) {
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("AddNewScale", "Clothes"))",
+                data: { "id": id, "fit": n, "inseam": n1, "gid": total },
+                success: function (data) {
+                    $("#AvailablePrePackContainer").append(data);
+                    $("#TotalAvailablePrepack").val( total + 1);
+                },
+                error: function () { }
+            });
+        }
+        else if (exist == 1) {
+        }
+    }
+    function AddNewClothes() {
+        $("#hNew").val("1");
+    }
+</script>
+
+

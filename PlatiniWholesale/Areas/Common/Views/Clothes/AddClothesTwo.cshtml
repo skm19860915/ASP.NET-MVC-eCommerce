@@ -1,0 +1,139 @@
+﻿@*@model Platini.Models.AddClothesTwoClass
+
+@{
+    ViewBag.Title = "Add Product";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@Html.Hidden("ClothIdForRelatedProduct", Model.ClothClass.Id)
+
+<div class="container tableHead">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">Step 2:</div>
+    </div>
+</div>
+<div class="container tableBody">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><a href="@(Url.Action("AddClothes", "Clothes", new { id = Model.ClothClass.Id }))">Edit</a></div>
+    </div>
+</div>
+<div class="container tableBody">
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">StyleNumber</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.StyleNumber)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">Price $</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.Price)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">Product Cost $</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.ProductCost)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">MSRP $</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.MSRP)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">Future Delivery Date</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.FutureDeliveryDate)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">Color</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.Color)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">Category</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.Categories.Single(y => y.Id == Model.ClothClass.CategoryId).Name)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">SubCategory</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.SubCategories.Single(y => y.Id == Model.ClothClass.SubCategoryId).Name)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">Type</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.Types.Single(y => y.Id == Model.ClothClass.SubCategoryTypeId).Name)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">Size Group</div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">@Html.DisplayFor(x => x.ClothClass.SizeGroups.Single(y => y.Id == Model.ClothClass.SizeGroupId).Name)</div>
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8"></div>
+    </div>
+</div>
+<div class="container tableBody">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <button id="RelatedProductButton" onclick="openRelatedProduct()">RelatedProduct</button>
+            <br />
+            <div id="RelatedProductDialog" title="Related Product" style="display: none">
+            </div>
+        </div>
+    </div>
+</div>
+<div class=" container tableBody">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="container" id="ScaleDiv">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">@Ajax.ActionLink("Add New", "AddNewScale", new{id = Model.ClothClass.Id}, new AjaxOptions { InsertionMode=InsertionMode.InsertAfter, UpdateTargetId="AvailablePrePackContainer", HttpMethod = "GET"})</div>
+                </div>
+                <div id="AvailablePrePackContainer">
+                @foreach (var availablePrePack in Model.AvailablePrePackList)
+                {
+                    <div id="AvailablePrePackRow" class="row">
+                        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-1">Scale<br />@Html.TextBoxFor(x => availablePrePack.ScaleName, new { style = "width:70px;" })</div>
+                        @foreach (var item in availablePrePack.SizeValueClassList)
+                        {
+                        <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1">@Html.DisplayFor(x => item.Name)<br />@Html.TextBoxFor(x => item.Quantity, new { id = item.Id, @class = "quantityBox" })</div>
+                        }
+                        <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1 ">InvQty<br />@Html.TextBoxFor(x => availablePrePack.InvQty, new { @class = "quantityBox" })</div>
+                        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <br />
+                            <button type="button">Save</button>
+                            <button id="CancelAvailablePrePackRowBtn" type="button" onclick="cancelAvailablePrePackRow()">Cancel</button>
+                        </div>
+                    </div>
+                }
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <span>Available Open Sizes</span>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-1 col-md-1 col-lg-1"></div>
+                    @foreach (var sizeList in Model.AvailableOpenSizeList)
+                    {
+                        foreach (var item in sizeList.SizeValueClassList)
+                        {
+                        <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1 ">@Html.DisplayFor(x => item.Name)<br />@Html.TextBoxFor(x => item.Quantity, new { id = item.Id, @class = "quantityBox" })</div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 col-md-3 col-lg-3"></div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
+            <button type="button" class="blackBtn width14">Save/View Item</button></div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
+            <button type="button" class="blackBtn width14">Save/Add Another</button></div>
+        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
+            <button type="button" class="blackBtn width14">Cancel Add Product</button></div>
+    </div>
+</div>
+<br />
+<br />
+<br />
+<br />*@

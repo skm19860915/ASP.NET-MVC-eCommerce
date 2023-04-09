@@ -1,0 +1,61 @@
+﻿@model Platini.DB.TagMapping
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Common/Views/Shared/_Layout1.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div id="errorMsgName" class="box_error" style="display: none;">
+        <label id="errormsg"></label>
+    </div>
+    <div class="deshboardpanal">
+        <div class="adminright_panal">
+            <div class="nameheadingbg">
+                <span class="sucmsghead">
+                    <h1>Map</h1>
+                </span><span class="sucmsg"></span>
+            </div>
+            <div class="admincontent">
+                <div class="registration">
+                    @Html.ValidationSummary(true)
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            Singular <span class="forStar">*</span>
+                        </label>
+                        <div class="field">
+                            @Html.HiddenFor(model => model.MappingId)
+                            @Html.TextBoxFor(model => model.Singular)
+                            @Html.ValidationMessageFor(model => model.Singular)
+
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            Mapping <span class="forStar">*</span>
+                        </label>
+                        <div class="field">
+                            
+                            @Html.TextAreaFor(model => model.Plurals)
+                            @Html.ValidationMessageFor(model => model.Plurals)
+                            <br />
+                            Add appropriate mapping words separated by commas.
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            &nbsp;
+                        </label>
+                        <div class="field">
+                            <button id="updbtn" type="submit" class="save-btn" value="Save">Save</button>
+                            <button id="cncbtn" type="button" class="save-btn" value="Cancel" onclick="window.location.href='@Url.Action("TagMaps", "Clothes")'">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,445 @@
+﻿@model Platini.Areas.Admin.Models.ProcessModel
+
+@{
+    ViewBag.Title = "ProcessOrder";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ProcessOrder</h2>
+<style type="text/css">
+    .txtbox {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+    }
+    #divFooter {
+    position: fixed;
+    bottom: 42px;
+    width: 100%;
+}
+</style>
+<script type="text/javascript">
+    function openPackingInfo() {
+        $("#dialog").dialog();
+        $("#dialog").dialog("option", "height", 500);
+        $("#dialog").dialog("option", "width", 600);
+
+        var id = $("#hdnOrderId").val();
+        var updateHolder = $("#ddlShipVia");
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetPackingInfo", "Order")",
+            data: { "orderId": id },
+            success: function (result) {
+                debugger;
+                var data = JSON.parse(result);
+                $("#lblCustomerName").text(data.CustomerName);
+                $("#lblShippingAddress").val(data.ShippingAddress);
+                updateHolder.html('');
+                updateHolder.append($('<option>Select</option>'));
+                $.each(data.ShipViaList, function (id, option) {
+                    updateHolder.append($('<option></option>').val(option.Id).html(option.Name));
+                });
+            },
+            error: function () {
+            }
+        });
+    }
+
+    $(function () {
+
+        $("#btnAdd").click(function () {
+            $("#tblBox tr td").remove();
+            $("#tblBag tr td").remove();
+            $("#trSubmit").show();
+            var selectedValue = $("#ddlShipVia option:selected").html();
+
+            if (selectedValue.toLowerCase() == "ups") {
+                var noOfBoxes = $("#txtBox").val();
+                if (noOfBoxes == null || noOfBoxes < 1) {
+                    confirm("Please enter valid number of boxes.");
+                }
+                else {
+                    for (var i = 0; i < noOfBoxes; i++) {
+                        $("#tblBox").show();
+                        var row = $("<tr />")
+                        $("#tblBox").append(row);
+                        row.append($("<td><input type=" + "text" + " style="+"width:40px;"+ " id=length" + i + "</td>"));
+                        row.append($("<td><input type=" + "text" + " style=" + "width:40px;" + " id=breadth" + i + "</td>"));
+                        row.append($("<td><input type=" + "text" + " style=" + "width:40px;" + " id=height" + i + "</td>"));
+                        row.append($("<td><input type=" + "text" + " style=" + "width:40px;" + " id=weight" + i + "</td>"));
+
+                    }
+                }
+            }
+            else {
+                var noOfBoxes = $("#txtBox").val();
+                var noOfBags = $("#txtBag").val();
+                if (noOfBoxes == null || noOfBags == null || noOfBoxes < 1 || noOfBags < 1) {
+                    confirm("Please enter valid number of boxes and bags.");
+                }
+                else {
+                    for (var i = 0; i < noOfBoxes; i++) {
+                        $("#tblBox").show();
+                        var row = $("<tr />")
+                        $("#tblBox").append(row);
+                        row.append($("<td><input type=" + "text" + " style=" + "width:40px;" + " id=length" + i + "</td>"));
+                        row.append($("<td><input type=" + "text" + " style=" + "width:40px;" + " id=breadth" + i + "</td>"));
+                        row.append($("<td><input type=" + "text" + " style=" + "width:40px;" + " id=height" + i + "</td>"));
+                        row.append($("<td><input type=" + "text" + " style=" + "width:40px;" + " id=weight" + i + "</td>"));
+
+                    }
+                    for (var i = 0; i < noOfBags; i++) {
+                        $("#tblBag").show();
+                        var row = $("<tr />")
+                        $("#tblBag").append(row);
+                        row.append($("<td><input type=" + "text" + " style=" + "width:40px;" + " id=weight" + i + "</td>"));
+
+                    }
+                }
+            }
+        });
+
+        $("#ddlShipVia").change(function () {
+            $("#txtBox").val("");
+            $("#txtBag").val("");
+            $("#trSubmit").hide();
+            $("#tblBox").hide();
+            $("#tblBag").hide();
+            $("#tblBox tr td").remove();
+            $("#tblBag tr td").remove();
+            var selectedValue = $("#ddlShipVia option:selected").html();
+
+            if (selectedValue.toLowerCase() == "ups") {
+                $("#trBox").show();
+                $("#trBag").hide();
+                $("#trAdd").show();
+            }
+            else {
+                $("#trBox").show();
+                $("#trBag").show();
+                $("#trAdd").show();
+            }
+        });
+
+        $("#btnSubmit").click(function () {
+            debugger;
+            var noOfBoxes = $("#txtBox").val();
+            var noOfBags = $("#txtBag").val();
+            var id = $("#hdnOrderId").val();
+
+            var boxesValues = [];
+            var bagsValues = [];
+
+            var table = $('#tblBox');
+            table.find('tr').each(function (index, row) {
+                var allCells = $(row).find('td');
+                if (allCells.length > 0) {
+                    var str = "";
+                    allCells.each(function (index, td) {
+                        str = str + $(this).find("input[type=text]").val() + ":"
+                    });
+                    str = str.slice(0, -1);
+                    boxesValues.push(str);
+                }
+            });
+
+            var table = $('#tblBag');
+            table.find('tr').each(function (index, row) {
+                var allCells = $(row).find('td');
+                if (allCells.length > 0) {
+                    allCells.each(function (index, td) {
+                        bagsValues.push($(this).find("input[type=text]").val());
+                    });
+                    
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                traditional: true,
+                url: "@Url.Action("PackSubmit","Order")",
+                data: { "orderId": id, "numberOfBoxes": noOfBoxes, "numberOfBags": noOfBags, "boxes": boxesValues, "bags": bagsValues},
+                success: function () {
+                    $("#txtBox").val("");
+                    $("#txtBag").val("");
+                    $("#tblBox tr td").remove();
+                    $("#tblBag tr td").remove();
+                    $("#tblBox").hide();
+                    $("#tblBag").hide();
+                    $("#trBox").hide();
+                    $("#trBag").hide();
+                    $("#trAdd").hide();
+                    $("#trSubmit").hide();
+                    $("#dialog").dialog('close');
+                },
+                error: function () {
+                    alert("Failure");
+                }
+            });
+
+        });
+
+        $("#btnSave").click(function () {
+            var id = $("#hdnOrderId").val();
+            var noteValue = $("#txtNote").val();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SaveClose","Order")",
+                data: { "orderId": id , "note": noteValue },
+                success: function () {
+                    window.location.href = "@Url.Action("Index","Order")";
+                },
+                error: function () {
+                }
+            });
+        });
+
+        $("#btnPrint").click(function () {
+            var id = $("#hdnOrderId").val();
+            
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SavePrint","Order")",
+                data: { "orderId": id},
+                success: function (result) {
+                },
+                error: function () {
+                }
+            });
+        });
+
+        $("#btnShip").click(function () {
+            var id = $("#hdnOrderId").val();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Ship","Order")",
+                data: { "orderId": id },
+                success: function (result) {
+                    $("#txtBox").val("");
+                    $("#txtBag").val("");
+                    $("#tblBox tr td").remove();
+                    $("#tblBag tr td").remove();
+                    $("#tblBox").hide();
+                    $("#tblBag").hide();
+                    $("#trBox").hide();
+                    $("#trBag").hide();
+                    $("#trAdd").hide();
+                    $("#trSubmit").hide();
+                    $("#dialog").dialog('close');
+                },
+                error: function () {
+                }
+            });
+        });
+
+    });
+</script>
+<div>
+    @Html.HiddenFor(m => m.OrderId, new { @id = "hdnOrderId" })
+</div>
+
+@if (Model.POMs.Any())
+{
+    <div class="main-listing-box">
+        <table>
+            @foreach (var item in Model.POMs)
+            {
+                <tr class="title-pannel">
+                    <th class="col-lg-1" style="text-align: center">
+                        @item.CategoryName
+                    </th>
+                    <th class="col-lg-1" style="text-align: center">Style Number
+                    </th>
+                    <th class="col-lg-1" style="text-align: center">Delivery
+                    </th>
+                    <th class="col-lg-1" style="text-align: center">Scale
+                    </th>
+                    <th class="col-lg-1" style="text-align: center">Scales
+                    </th>
+                    <th class="col-lg-1" style="text-align: center">Inseam
+                    </th>
+                    <th class="col-lg-2" style="text-align: left">Ordered Sizes
+                    </th>
+                    <th class="col-lg-1" style="text-align: center">Qty
+                    </th>
+                </tr>
+                <tr>
+                    <td class="col-lg-1" style="text-align: center">
+                        <input type="image" src="@item.ImagePath" />
+                    </td>
+                    <td class="col-lg-1" style="text-align: center">
+                        @item.StyleNumber
+                    </td>
+                    <td class="col-lg-1" style="text-align: center">
+                        @item.Delivery
+                    </td>
+                    <td class="col-lg-1" style="text-align: center">
+                        @item.Scale
+                    </td>
+                    <td class="col-lg-1" style="text-align: center">
+                        @item.Scales
+                    </td>
+                    <td class="col-lg-1" style="text-align: center">
+                        @item.Inseam
+                    </td>
+                    <td class="col-lg-2" style="text-align: center">
+                        <table>
+                            <tr>
+                                @foreach (var size in item.SizeList)
+                                {
+                                    <td>
+                                        @size.SizeName
+                                    </td> 
+                                }
+                            </tr>
+                            <tr>
+                                @foreach (var size in item.SizeList)
+                                {
+                                    <td>
+                                        <input type="text" class="effect qty opcal" value="@size.Quantity" />
+                                    </td> 
+                                }
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="col-lg-1" style="text-align: center">
+                        @item.Quantity
+                    </td>
+                </tr>
+            }
+            <tr style="border-top:0px">
+                <td colspan="8" style="height:30px;"></td>
+            </tr>
+        </table>
+    </div>
+    <div id="divFooter" class="main-listing-box">
+        <table>
+            <tr class="title-pannel">
+                <td class="col-lg-1" >
+                    <a href="javascript:openPackingInfo();">Packing Info</a>
+                </td>
+                <td class="col-lg-4"  colspan="3">Note:&nbsp;@Html.TextBox("txtNote", "", new { @class = "txtbox" })
+                </td>
+                <td class="col-lg-1"  colspan="3">&nbsp;
+                </td>
+                <td class="col-lg-2">
+                    <input type="submit" id="btnSave" value="Save/Close" class="save-btn" style="width: 100px; float:right;" />&nbsp;&nbsp;
+                    <input type="submit" id="btnPrint" value="Save/Print" class="save-btn" style="width: 100px; float:right;" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="dialog" hidden="hidden" style="width: 500px;">
+        <table style="width:100%;">
+            <tr>
+                <td style="width:30%;">Customer Name :
+                </td>
+                <td style="width:25%;">
+                    <label id="lblCustomerName"></label>
+                </td>
+                <td style="width:25%;"></td>
+                <td style="width:20%;"></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="height: 10px;"></td>
+            </tr>
+            <tr>
+                <td>Shipping Address :
+                </td>
+                <td colspan="2">
+                    <label id="lblShippingAddress"></label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="height: 10px;"></td>
+            </tr>
+            <tr>
+                <td>Ship Via :
+                </td>
+                <td>
+                    @Html.DropDownList("ddlShipVia", new SelectList(new[] { "" }))
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="height: 10px;"></td>
+            </tr>
+            <tr id="trBox" hidden="hidden">
+                <td>Enter No.of Boxes : 
+                </td>
+                <td>
+                    @Html.TextBox("txtBox", "", new { @style = "width:40px;" })
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="height: 10px;"></td>
+            </tr>
+            <tr id="trBag" hidden="hidden">
+                <td>Enter No. of Bags : 
+                </td>
+                <td>
+                    @Html.TextBox("txtBag", "", new { @style = "width:40px;" })
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="height: 10px;"></td>
+            </tr>
+            <tr id="trAdd" hidden="hidden">
+                <td></td>
+                <td>
+                    <input id="btnAdd" value=" Add " class="save-btn" />
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="height: 10px;"></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <table id="tblBox" style="width:90%" hidden="hidden">
+                        <tr>
+                            <th colspan="4">Box Details : </th>
+                        </tr>
+                        <tr>
+                            <th>Length</th>
+                            <th>Breadth</th>
+                            <th>Height</th>
+                            <th>Weight</th>
+                        </tr>
+                    </table>
+                    <table id="tblBag" style="width:90%" hidden="hidden">
+                        <tr>
+                            <th>Bag Details : </th>
+                        </tr>
+                        <tr>
+                            <th>Weight</th>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="height: 20px;"></td>
+            </tr>
+            <tr id="trSubmit" hidden="hidden">
+                <td></td>
+                <td>
+                    <input id="btnSubmit" value="Submit" class="save-btn" style="width:70px;" />
+                </td>
+                <td>
+                    <input id="btnShip" value="Ship" class="save-btn" />
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+}

@@ -1,0 +1,74 @@
+@font-face {
+    font-family: 'MyriadProRegular';
+    src: url('../Styles/fonts/myriadpro-regular_0-webfont.eot');
+    src: url('../Styles/fonts/myriadpro-regular_0-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Styles/fonts/myriadpro-regular_0-webfont.woff') format('woff'),
+         url('../Styles/fonts/myriadpro-regular_0-webfont.ttf') format('truetype'),
+         url('../Styles/fonts/myriadpro-regular_0-webfont.svg#MyriadProRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'MyriadProSemibold';
+    src: url('../Styles/fonts/myriadpro-semibold_0-webfont.eot');
+    src: url('../Styles/fonts/myriadpro-semibold_0-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Styles/fonts/myriadpro-semibold_0-webfont.woff') format('woff'),
+         url('../Styles/fonts/myriadpro-semibold_0-webfont.ttf') format('truetype'),
+         url('../Styles/fonts/myriadpro-semibold_0-webfont.svg#MyriadProSemibold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'MyriadProBold';
+    src: url('../Styles/fonts/myriadpro-bold_0-webfont.eot');
+    src: url('../Styles/fonts/myriadpro-bold_0-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Styles/fonts/myriadpro-bold_0-webfont.woff') format('woff'),
+         url('../Styles/fonts/myriadpro-bold_0-webfont.ttf') format('truetype'),
+         url('../Styles/fonts/myriadpro-bold_0-webfont.svg#MyriadProBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+@font-face {
+    font-family: 'MyriadProLight';
+    src: url('../Styles/fonts/myriadpro-light-webfont.eot');
+    src: url('../Styles/fonts/myriadpro-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Styles/fonts/myriadpro-light-webfont.woff') format('woff'),
+         url('../Styles/fonts/myriadpro-light-webfont.ttf') format('truetype'),
+         url('../Styles/fonts/myriadpro-light-webfont.svg#MyriadProLight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+@font-face {
+    font-family: 'HelveticaLTStdBold';
+    src: url('../Styles/fonts/helveticaltstd-bold-webfont.eot');
+    src: url('../Styles/fonts/helveticaltstd-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Styles/fonts/helveticaltstd-bold-webfont.woff') format('woff'),
+         url('../Styles/fonts/helveticaltstd-bold-webfont.ttf') format('truetype'),
+         url('../Styles/fonts/helveticaltstd-bold-webfont.svg#HelveticaLTStdBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+@font-face {
+    font-family: 'HelveticaLTStdRoman';
+    src: url('../Styles/fonts/helveticaltstd-roman-webfont.eot');
+    src: url('../Styles/fonts/helveticaltstd-roman-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Styles/fonts/helveticaltstd-roman-webfont.woff') format('woff'),
+         url('../Styles/fonts/helveticaltstd-roman-webfont.ttf') format('truetype'),
+         url('../Styles/fonts/helveticaltstd-roman-webfont.svg#HelveticaLTStdRoman') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

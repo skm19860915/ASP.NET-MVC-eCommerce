@@ -1,0 +1,599 @@
+﻿@model Platini.Areas.Admin.Models.OrdersModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .drpdwn {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 200px;
+        background: none repeat scroll 0 0 #eeeeee;
+    }
+    .txtbox {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+    }
+    .txtbx {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+    }
+</style>
+
+<script type="text/javascript">
+    function editOrd(id) {
+        window.location = window.location.href;
+    }
+
+    function packOrd(id) {
+        window.location = window.location.href +"ProcessOrder?orderId="+id;
+    }
+
+    function submitOrd(id) {
+        $.ajax({
+            type: "GET",
+            traditional: true,
+            url: "@Url.Action("Submit","Order")",
+            data: { "orderId": id },
+            success: function (result) {
+                //alert(result);
+                displayOrder($("#hdnSelectedTab").val());
+            },
+            error: function () { }
+        });
+    }
+
+    function printOrd(id) {
+        debugger;
+        var b = false;
+        var accountId = $("#ddlSalesPersons option:selected").val();
+        var st = $("#hdnSelectedTab").val();
+        if (st == "Shipped") {
+           b = true;
+        }
+        else {
+           b = false;
+        }
+        $.ajax({
+            type: "GET",
+            traditional: true,
+            url: "@Url.Action("PrintView","Order")",
+                data: { "orderId": id, "accountId": accountId, "status": st, "isPackingPrint": b },
+                success: function (result) {
+                    //alert(result);
+                    displayOrder($("#hdnSelectedTab").val());
+                },
+                error: function () { }
+        });
+    }
+
+    function deleteOrd(id) {
+        debugger;
+        if (confirm("Are u sure u want to delete this order ?")) {
+            var selectedIds = [];
+            selectedIds.push(id);
+
+            $.ajax({
+                type: "GET",
+                traditional: true,
+                url: "@Url.Action("DeleteOrder","Order")",
+                data: { "ids": selectedIds },
+                success: function (result) {
+                    //alert(result);
+                    displayOrder($("#hdnSelectedTab").val());
+                },
+                error: function () { }
+            });
+        }
+    }
+
+    function moveToWarehouseOrd(id) {
+        var selectedIds = [];
+        selectedIds.push(id);
+        $.ajax({
+            type: "GET",
+            traditional: true,
+            url: "@Url.Action("MoveToWareHouse","Order")",
+                data: { "ids": selectedIds },
+                success: function (result) {
+                    //alert(result);
+                    displayOrder($("#hdnSelectedTab").val());
+                },
+                error: function () { }
+        });
+    }
+
+    function Check() {
+        var flag = false;
+        $('tr td input:checkbox').each(function () {
+
+            if ($(this).is(':checked')) {
+                flag = true;
+            }
+        });
+        if (flag) {
+            return true;
+        }
+        else {
+            alert('Please select any order first');
+            return false;
+        }
+    }
+
+    function deleteOrder()
+    {
+        var flag = Check();
+        if (flag) {
+            var selectedIds = [];
+            $('tr td input:checkbox').each(function () {
+                if ($(this).is(':checked')) {
+                    selectedIds.push(parseInt($(this).attr('id')));
+                }
+            });
+            $.ajax({
+                type: "GET",
+                traditional: true,
+                url: "@Url.Action("DeleteOrder","Order")",
+                data: { "ids": selectedIds },
+                success: function (result) {
+                    //alert(result);
+                    displayOrder($("#hdnSelectedTab").val());
+                },
+                error: function () { }
+            });
+        }
+
+    }
+
+    function quickShip() {
+        var flag = Check();
+        if (flag) {
+            var selectedIds = [];
+            $('tr td input:checkbox').each(function () {
+                if ($(this).is(':checked')) {
+                    selectedIds.push(parseInt($(this).attr('id')));
+                }
+            });
+            $.ajax({
+                type: "GET",
+                traditional: true,
+                url: "@Url.Action("QuickShip","Order")",
+                data: { "ids": selectedIds },
+                success: function (result) {
+                    //alert(result);
+                    displayOrder($("#hdnSelectedTab").val());
+                },
+                error: function () { }
+            });
+        }
+
+    }
+
+    function moveToWarehouse() {
+        var flag = Check();
+        if (flag) {
+            var selectedIds = [];
+            $('tr td input:checkbox').each(function () {
+                if ($(this).is(':checked')) {
+                    selectedIds.push(parseInt($(this).attr('id')));
+                }
+            });
+            $.ajax({
+                type: "GET",
+                traditional: true,
+                url: "@Url.Action("MoveToWareHouse","Order")",
+                data: { "ids": selectedIds },
+                success: function (result) {
+                    //alert(result);
+                    displayOrder($("#hdnSelectedTab").val());
+                },
+                error: function () { }
+            });
+        }
+
+    }
+
+    function searchTable(inputVal) {
+        var table = $('#records_table');
+        table.find('tr').each(function (index, row) {
+            var allCells = $(row).find('td');
+            if (allCells.length > 0) {
+                var found = false;
+                allCells.each(function (index, td) {
+                    var regExp = new RegExp(inputVal, 'i');
+                    if (regExp.test($(td).text())) {
+                        found = true;
+                        return false;
+                    }
+                });
+                if (found == true) $(row).show(); else $(row).hide();
+            }
+        });
+    }
+
+    function displayOrder(data) {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetOrderList","Order")",
+            data: { "status": data },
+            success: function (result) {
+                $("#grid").show();
+                $("#records_table tr td").remove();
+                var obj = JSON.parse(result);
+                drawTable(obj);
+            },
+            error: function () { }
+        });
+    }
+
+    // Draw Table using json data
+    function drawTable(data) {
+        var total = 0;
+        for (var i = 0; i < data.length; i++) {
+            drawRow(data[i]);
+            total += parseFloat(data[i].FinalAmount);
+        }
+        $("#lblGrandTotal").text('Grand Total : $ ' + total);
+    }
+
+    // Append row data into the table
+    function drawRow(rowData) {
+        debugger;
+        var row = $("<tr />")
+        $("#records_table").append(row);
+        row.append($("<td style=" + "text-align:center;" + "><input type=" + "checkbox" + " id=" + rowData.OrderId + "</td>"));
+        if ($("#hdnSelectedTab").val() == "Shipped") {
+            row.append($("<td style=" + "text-align:center;" + "/>").html("<input id=" + rowData.OrderId + " type=" + "image" + " src='../../Styles/images/tick.png' value='Print' onclick='printOrd(this.id)' /><a id=" + rowData.OrderId + " href='javascript:void(0);' onclick='editOrd(this.id)'>Edit</a>"));
+        }
+        else if ($("#hdnSelectedTab").val() == "InProcess")
+        {
+            row.append($("<td style=" + "text-align:center;" + "/>").html("<input id=" + rowData.OrderId + " type=" + "image" + " title='Print/View' src='../../Styles/images/print_img.png' value='Print' onclick='printOrd(this.id)' /><a id=" + rowData.OrderId + " href='javascript:void(0);' onclick='packOrd(this.id)'>Pack</a>"));
+        }
+        else {
+            row.append($("<td style=" + "text-align:center;" + "/>").html("<input id=" + rowData.OrderId + " type=" + "image" + " title='Print/View' src='../../Styles/images/print_img.png' value='Print' onclick='printOrd(this.id)' /><a id=" + rowData.OrderId + " href='javascript:void(0);' onclick='editOrd(this.id)'>Edit</a>"));
+        }
+
+        if (rowData.OrderId != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.OrderId + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.Address != null) {
+            //row.append($("<td style=" + "text-align:center;" + ">" + rowData.Address + "</td>"));
+            row.append($("<td style=" + "text-align:center;" + "/>").html("<input type="+"image"+" src='../../Styles/images/icon_address.png' title=" + rowData.Address + " />"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.Date != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.Date + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.CompanyName != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.CompanyName + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.FirstName != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.FirstName + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.LastName != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.LastName + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.Email != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.Email + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.Phone != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.Phone + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.OriginalQuantity != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.OriginalQuantity + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.PackedQuantity != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.PackedQuantity + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.GrandTotal != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.GrandTotal + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.Discount != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.Discount + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if (rowData.FinalAmount != null) {
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.FinalAmount + "</td>"));
+        }
+        else {
+            row.append($("<td>" + " " + "</td>"));
+        }
+        if ($("#hdnSelectedTab").val() == "New") {
+            row.append($("<td style=" + "text-align:center;" + "/>").html("<input id="+ rowData.OrderId + " type=" + "button" + " value='MoveToWarehouse' onclick='moveToWarehouseOrd(this.id)' /><input id=" + rowData.OrderId + " type=" + "image" + " src='../../Styles/images/cross.png' value='Delete' onclick='deleteOrd(this.id)' />"))
+        }
+        else if ($("#hdnSelectedTab").val() == "Pending") {
+            row.append($("<td style=" + "text-align:center;" + "/>").html("<input id=" + rowData.OrderId + " type=" + "button" + " value='Submit' onclick='submitOrd(this.id)' /><input id=" + rowData.OrderId + " type=" + "image" + " src='../../Styles/images/cross.png' value='Delete' onclick='deleteOrd(this.id)' />"))
+        }
+        else {
+            row.append($("<td style=" + "text-align:center;" + "/>").html("<input id=" + rowData.OrderId + " type=" + "image" + " src='../../Styles/images/cross.png' value='Delete' onclick='deleteOrd(this.id)' />"))
+        }
+        //row.append($("<td style=" + "text-align:center;" + "/>").html("<a id=" + rowData.Id + "-" + rowData.Name + " class=" + "edit" + " href='javascript:void(0);' onclick='editSize(this.id);'> Edit </a>&nbsp;&nbsp;<a href='javascript:deleteSize(" + rowData.Id + ");'> Delete </a>"));
+    }
+
+    $(function () {
+
+        $("#btnSendEmail").click(function () {
+            var flag = Check();
+            if (flag) {
+                $("#dialog").dialog();
+                $("#dialog").dialog("option", "height", 350);
+                $("#dialog").dialog("option", "width", 500);
+            }
+        });
+
+        $("#btnSubmitEmail").click(function () {
+            var addr = $("#txtAddress").val();
+            var sub = $("#txtSubject").val();
+            var msg = $("#txtMessage").val();
+            var selectedIds = [];
+            $('tr td input:checkbox').each(function () {
+                if ($(this).is(':checked')) {
+                    selectedIds.push(parseInt($(this).attr('id')));
+                }
+            });
+            if (addr != null && addr != "" && sub != null && sub != "") {
+                $.ajax({
+                    type: "GET",
+                    traditional: true,
+                    url: "@Url.Action("SendEmail","Order")",
+                    data: { "emails": addr, "subject": sub, "message": msg, "ids": selectedIds },
+                    success: function (result) {
+
+                    },
+                    error: function () { }
+               });
+            }
+            else {
+                confirm("Please enter atleast one email address & subject.");
+            }
+        });
+
+        //Select all checkbox
+        $('th input:checkbox').click(function () {
+            if (this.checked) { // check select status
+                $('tr td input:checkbox').each(function () {
+                    this.checked = true;
+                });
+            } else {
+                $('tr td input:checkbox').each(function () {
+                    this.checked = false;
+                });
+            }
+        });
+
+        $("#btnSearch").click(function () {
+            var value = $(".txtbox").val();
+            searchTable(value);
+        });
+
+        $("#btnTabAll").click(function () {
+            $("#btnMoveToWarehouse").hide();
+            $("#btnQuickShip").hide();
+            $("#btnShip").hide();
+            var pass = "All";
+            $("#hdnSelectedTab").val(pass);
+            displayOrder(pass);
+        });
+
+        $("#btnTabNew").click(function () {
+            $("#btnMoveToWarehouse").show();
+            $("#btnQuickShip").hide();
+            $("#btnShip").hide();
+            var pass = "New";
+            $("#hdnSelectedTab").val(pass);
+            displayOrder(pass);
+        });
+
+        $("#btnTabInWarehouse").click(function () {
+            $("#btnMoveToWarehouse").hide();
+            $("#btnQuickShip").show();
+            $("#btnShip").hide();
+            var pass = "InProcess";
+            $("#hdnSelectedTab").val(pass);
+            displayOrder(pass);
+        });
+
+        $("#btnTabPacked").click(function () {
+            $("#btnMoveToWarehouse").hide();
+            $("#btnQuickShip").hide();
+            $("#btnShip").show();
+            var pass = "Packed";
+            $("#hdnSelectedTab").val(pass);
+            displayOrder(pass);
+        });
+
+        $("#btnTabBackOrder").click(function () {
+            $("#btnMoveToWarehouse").show();
+            $("#btnQuickShip").hide();
+            $("#btnShip").hide();
+            var pass = "Back Order";
+            $("#hdnSelectedTab").val(pass);
+            displayOrder(pass);
+        });
+
+        $("#btnTabShipped").click(function () {
+            $("#btnMoveToWarehouse").hide();
+            $("#btnQuickShip").hide();
+            $("#btnShip").hide();
+            var pass = "Shipped";
+            $("#hdnSelectedTab").val(pass);
+            displayOrder(pass);
+        });
+
+        $("#btnTabPendingOrders").click(function () {
+            $("#btnMoveToWarehouse").hide();
+            $("#btnQuickShip").hide();
+            $("#btnShip").hide();
+            var pass = "Pending";
+            $("#hdnSelectedTab").val(pass);
+            displayOrder(pass);
+        });
+
+        $("#ddlSalesPersons").change(function () {
+            var id = $("#ddlSalesPersons option:selected").val();
+            var data = $("#hdnSelectedTab").val();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetOrderList","Order")",
+            data: { "status": data, Id:id },
+            success: function (result) {
+                $("#grid").show();
+                $("#records_table tr td").remove();
+                var obj = JSON.parse(result);
+                drawTable(obj);
+            },
+            error: function () { }
+            });
+        });
+
+
+        $("#btnTabAll").trigger('click');
+    });
+
+</script>
+
+<div style="width:100%">
+    <table>
+        <tr>
+            <td>
+                <input id="btnTabAll" type="button" value="All" class="save-btn" style="margin:0px;" />
+                <input id="btnTabNew" type="button" value="New" class="save-btn" style="margin:0px;" />
+                <input id="btnTabInWarehouse" type="button" value="In Warehouse" class="save-btn" style="width:90px;margin:0px;" />
+                <input id="btnTabPacked" type="button" value="Packed" class="save-btn" style="margin:0px;" />
+                <input id="btnTabBackOrder" type="button" value="Back Order" class="save-btn" style="width:80px;margin:0px;" />
+                <input id="btnTabShipped" type="button" value="Shipped" class="save-btn" style="margin:0px;" />
+                @if(@Model.RoleId != 3)
+                {
+                <input id="btnTabPendingOrders" type="button" value="Pending Orders" class="save-btn" style="width:105px;margin:0px;" />
+                }
+                <label id="lblGrandTotal">Grand Total - $ @Model.GrandTotal</label>
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                @Html.DropDownListFor(m => m.SalesPersonId, new SelectList(Model.SalesPersons, "AccountId", "FirstName"), "--All Salesman--", new { @id="ddlSalesPersons", @class="drpdwn"})
+                &nbsp;
+                <input id="btnDelete" type="button" value="Delete" class="save-btn" style="margin:0px;" onclick="deleteOrder();" />
+                <input id="btnMoveToWarehouse" type="button" value="Move To Warehouse" class="save-btn" onclick="moveToWarehouse();" style="width:130px;margin:0px;" hidden="hidden" />
+                <input id="btnQuickShip" type="button" value="Quick Ship" class="save-btn" onclick="quickShip();" style="width:80px;margin:0px;" hidden="hidden" />
+                <input id="btnShip" type="button" value="Ship" class="save-btn" onclick="quickShip();" style="margin:0px;" hidden="hidden" />
+                <input id="btnSendEmail" type="button" value="Send Email" class="save-btn" style="width:80px;margin:0px;" />
+                &nbsp;
+                &nbsp;
+                <div style="float:right;">
+                    @Html.TextBox("Search", "", new { @class="txtbox"})
+                    <input id="btnSearch" type="button" value="Search" class="save-btn" />
+                </div>
+                <input type="hidden" id="hdnSelectedTab" value="" />
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="grid" class="main-listing-box" style="width: 100%;" hidden="hidden">
+    <table id="records_table" border="1">
+        <tr class="title-pannel">
+            <th class="col-lg-0" style="text-align: center">@Html.CheckBox("SelectAll")</th>
+            <th class="col-lg-1"></th>
+            <th class="col-lg-1" style="text-align: center">Order ID</th>
+            <th class="col-lg-1" style="text-align: center">Address</th>
+            <th class="col-lg-1" style="text-align: center">Date</th>
+            <th class="col-lg-1" style="text-align: center">Company</th>
+            <th class="col-lg-1" style="text-align: center">First Name</th>
+            <th class="col-lg-1" style="text-align: center">Last Name</th>
+            <th class="col-lg-1" style="text-align: center">Email</th>
+            <th class="col-lg-1" style="text-align: center">Phone</th>
+            <th class="col-lg-1" style="text-align: center">Original Qty</th>
+            <th class="col-lg-1" style="text-align: center">Packed Qty</th>
+            <th class="col-lg-1" style="text-align: center">Grand Total</th>
+            <th class="col-lg-1" style="text-align: center">Discount(%)</th>
+            <th class="col-lg-1" style="text-align: center">Final Amount</th>
+            <th class="col-lg-1" style="text-align:center">Action</th>
+        </tr>
+    </table>
+</div>
+<div id="dialog" hidden="hidden">
+    <table>
+        <tr>
+            <td colspan="2">Separate email address with comma(,)in the case of multiple email addresses.</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="height:20px;"></td>
+        </tr>
+        <tr>
+            <td>
+                Address
+            </td>
+            <td>
+                <input type="text" id="txtAddress" class="txtbx" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="height:10px;"></td>
+        </tr>
+        <tr>
+            <td>
+                Subject
+            </td>
+            <td>
+                <input type="text" id="txtSubject" class="txtbx" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="height:10px;"></td>
+        </tr>
+        <tr>
+            <td>
+                Message
+            </td>
+            <td>
+                <textarea rows="4" id="txtMessage" class="txtbx"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="height:20px;"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td><input id="btnSubmitEmail" type="submit" value=" Send Email " class="save-btn" style="width:110px;float:right;margin-right:60px;" /></td>
+        </tr>
+    </table>
+</div>

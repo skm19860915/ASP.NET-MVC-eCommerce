@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+@*<div class="deshboardpanal">
+    <div class="adminright_panal">
+        <div class="nameheadingbg">
+            <span class="sucmsghead">
+                <h1>Dashboard</h1>
+            </span>
+        </div>
+        <div class="admincontent">
+            <div class="registration" style="min-height: 200px;">
+            </div>
+        </div>
+    </div>
+</div>*@
+@Html.Action("Dashboard", "Home", new { area = "" })

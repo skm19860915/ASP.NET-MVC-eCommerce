@@ -1,0 +1,632 @@
+﻿@using MvcPaging
+@using Platini.Models
+@model IPagedList<DetailViewClass>
+
+@{var colors = new string[] { "Blue", "Red", "GoldenRod" };
+  int colorIndex = 0;
+  bool EditMode = SiteConfiguration.Mode.ToLower() == ModeEnum.Edit.ToString().ToLower();}
+<div style="padding-top: 20px;"></div>
+@Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, searchString = ViewBag.searchStringParam })
+@if (!EditMode)
+{
+    using (Html.BeginForm())
+    {
+    <table style="width: 100%;">
+        @for (int i = 0; i < Model.Count; ++i)
+        {
+            <tr>
+                <td style="">
+                    <div style="background: none repeat scroll 0 0 #cdcdcd; border: 1px solid gray; border-bottom: 0; border-radius: 10px 10px 0 0; padding: 10px;">
+                        <div style="display: inline-block; margin: 0 auto; width: 2%;">
+                            @Html.CheckBoxFor(m => Model[i].isSelected, new { @class = "topBarCheck" })
+                        </div>
+                        <div style="display: inline-block; width: 25%; vertical-align: middle">
+                            <label>Style @Html.TextBoxFor(m => Model[i].StyleNumber, new { @class = "topDivInput", @style = "width:10em", @disabled = "disabled" })</label>
+                        </div>
+                        <div style="display: inline-block; width: 15%; vertical-align: middle">
+                            <label>Price $ @Html.TextBoxFor(m => Model[i].Price, string.Format("0.00", Model[i].Price), new { @class = "topDivInput", @style = "width:5em;text-align:center;", @disabled = "disabled" })</label>
+                        </div>
+                        <div style="display: inline-block; width: 15%; vertical-align: middle">
+                            <label>MSRP $ @Html.TextBoxFor(m => Model[i].MSRP, string.Format("0.00", Model[i].MSRP), new { @class = "topDivInput", @style = "width:5em;text-align:center;", @disabled = "disabled" })</label>
+                        </div>
+                        <div style="display: inline-block; width: 15%; vertical-align: middle">
+                            <label>Cost $ @Html.TextBoxFor(m => Model[i].Cost, string.Format("0.00", Model[i].Cost), new { @class = "topDivInput", @style = "width:5em;text-align:center;", @disabled = "disabled" })</label>
+                        </div>
+                        <div style="display: inline-block; text-align: right; vertical-align: middle; padding-left: 6em">
+                            <label>Color @Html.TextBoxFor(m => Model[i].Color, new { @class = "topDivInput", @style = "width:10em;text-align:center;", @disabled = "disabled" })</label>
+                        </div>
+                    </div>
+                    <div style="border: 1px solid gray; border-top: 0; border-radius: 0 0 10px 10px; margin-bottom: 10px;">
+                        <div style="display: inline-block; width: 16%; padding: 5px; vertical-align: top;">
+                            @if (Model[i].Images.Any())
+                            {
+                                <div style="margin: 0 auto;">
+                                    <a href="@Url.Action("Detail", new { @id = Model[i].ClothesId })">
+                                        <img src="@Url.Content("~/Library/Uploads/" + Model[i].Images[0].ImagePath)" style="height: 225px;border: 1px solid #424240;" />
+                                    </a>
+                                </div>
+                                <div style="width: 95.6%; padding-top: 5px; border-right: 1px solid #424240;">
+                                    @for (int j = 1; j < Model[i].Images.Count; ++j)
+                                    {
+                                        <img src="@Url.Content("~/Library/Uploads/" + Model[i].Images[j].ImagePath)" style="width: 45px;" />
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="margin: 0 auto;">
+                                    <a href="@Url.Action("Detail", new { @id = Model[i].ClothesId })">
+                                        <img src="@Url.Content("~/Library/Uploads/" + "NO_IMAGE.jpg")" style="height: 225px;border: 1px solid #424240;" />
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                        <div style="display: inline-block; padding: 10px; margin: 0 auto; width: 80%;">
+                            @{bool showInseam = Model[i].InseamList.Any();}
+                            @if (Model[i].FitList.Any())
+                            {
+
+                                foreach (var item in Model[i].FitList)
+                                {
+                                <div title="Available Open Size" style="background-color: #D9D9D9; width: 100%;">
+                                    @if (Model[i].AvailableOpenSizes.Any(x => x.FitName.ToLower() == item.Value.ToLower()))
+                                    {
+                                        var OpenList = Model[i].AvailableOpenSizes.FindAll(x => x.FitName.ToLower() == item.Value.ToLower());
+                                        <div style="width: 30%; vertical-align: middle; display: inline-block; color: blue;">@item.Value</div>
+                                        <div style="width: 60%; vertical-align: middle; display: inline-block; text-align: center">
+                                            <table>
+
+                                                <tr class="imP">
+                                                    <td></td>
+                                                    <td colspan="@(OpenList[0].ClothesScaleSizeClass.Count())" style="color: #050508; text-align: left;">Available Open Sizes
+                                                    </td>
+                                                </tr>
+                                                <tr class="imP">
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold"></span>
+                                                    </td>
+                                                    @for (var j = 0; j < OpenList[0].ClothesScaleSizeClass.Count(); j++)
+                                                    {     
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">@Html.DisplayFor(x => OpenList[0].ClothesScaleSizeClass[j].SizeName)</span>
+                                                        </td>
+
+                                                    }
+                                                </tr>
+                                                @{colorIndex = 0;}
+                                                @for (var o = 0; o < OpenList.Count(); ++o)
+                                                {
+                                                
+                                                    <tr style="color:@colors[colorIndex];">
+                                                        <td style="vertical-align: bottom;">
+                                                            @Html.DisplayFor(x => OpenList[o].InseamName)
+                                                        </td>
+                                                        @for (var j = 0; j < OpenList[o].ClothesScaleSizeClass.Count(); j++)
+                                                        {          
+                                                            <td style="padding-left: 5px; padding-top: 4px;">
+                                                                <input type="text" disabled="disabled" value="@OpenList[o].ClothesScaleSizeClass[j].Quantity.Value" maxlength="3" class="effect qty opcal">
+                                                            </td> 
+                                                        }
+                                                    </tr> 
+                                                        ++colorIndex;
+                                                }
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
+                                       
+                                <div title="Scale Matrix" style="width: 100%; background-color: #E9E9E9;">
+                                    @if (Model[i].AvailablePrePacks.Any(x => x.FitName.ToLower() == item.Value.ToLower()))
+                                    {
+                                        var PackList = Model[i].AvailablePrePacks.FindAll(x => x.FitName.ToLower() == item.Value.ToLower());
+                                        <div style="width: 30%; vertical-align: middle; display: inline-block; color: blue;">@item.Value</div>
+                                        <div style="width: 60%; vertical-align: middle; display: inline-block; text-align: center">
+                                            <table>
+
+                                                <tr class="imP">
+                                                    <td colspan="2"></td>
+                                                    <td colspan="@(PackList[0].ClothesScaleSizeClass.Count() + 1)" style="color: #050508; text-align: left;">Scales
+                                                    </td>
+                                                </tr>
+                                                <tr class="imP">
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold"></span>
+                                                    </td>
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold">Inseam</span>
+                                                    </td>
+                                                    @for (var j = 0; j < PackList[0].ClothesScaleSizeClass.Count(); j++)
+                                                    {     
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">@Html.DisplayFor(x => PackList[0].ClothesScaleSizeClass[j].SizeName)</span>
+                                                        </td>
+
+                                                    }
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold">Avl Qty</span>
+                                                    </td>
+                                                </tr>
+                                                @{colorIndex = 0;}
+                                                @for (var o = 0; o < PackList.Count(); ++o)
+                                                {
+                                        
+                                                    <tr style="color:@colors[colorIndex];">
+
+                                                        <td style="vertical-align: bottom;">
+                                                            @Html.DisplayFor(x => PackList[o].Name)
+                                                        </td>
+                                                        <td style="vertical-align: bottom;">
+                                                            @Html.DisplayFor(x => PackList[o].InseamName)
+                                                        </td>
+                                                        @for (var j = 0; j < PackList[o].ClothesScaleSizeClass.Count(); j++)
+                                                        {          
+                                                            <td style="padding-left: 5px; padding-top: 4px;">
+                                                                <input type="text" disabled="disabled" value="@PackList[o].ClothesScaleSizeClass[j].Quantity.Value" maxlength="3" class="effect qty opcal">
+                                                            </td> 
+                                                        }
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <input type="text" disabled="disabled" value="@PackList[o].InvQty.Value" maxlength="3" class="effect qty opcal">
+                                                        </td>
+                                                    </tr> 
+                                                        ++colorIndex;
+                                                }
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
+                                }
+                            }
+                            else
+                            {
+                                <div title="Available Open Size" style="background-color: #D9D9D9; width: 100%;">
+                                    @if (Model[i].AvailableOpenSizes.Any())
+                                    {
+                                    
+                                        <div style="width: 30%; vertical-align: middle; display: inline-block; color: blue;">
+                                            <br>
+                                        </div>
+                                        <div style="width: 60%; vertical-align: middle; display: inline-block; text-align: center">
+                                            <table>
+
+                                                <tr class="imP">
+                                                    @if (showInseam)
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    <td colspan="@(Model[i].AvailableOpenSizes[0].ClothesScaleSizeClass.Count())" style="color: #050508; text-align: left;">Available Open Sizes
+                                                    </td>
+                                                </tr>
+                                                <tr class="imP">
+                                                    @if (showInseam)
+                                                    {
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold"></span>
+                                                        </td>
+                                                    }
+                                                    @for (var j = 0; j < Model[i].AvailableOpenSizes[0].ClothesScaleSizeClass.Count(); j++)
+                                                    {     
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">@Html.DisplayFor(x => Model[i].AvailableOpenSizes[0].ClothesScaleSizeClass[j].SizeName)</span>
+                                                        </td>
+
+                                                    }
+                                                </tr>
+                                                @{colorIndex = 0;}
+                                                @for (var o = 0; o < Model[i].AvailableOpenSizes.Count(); ++o)
+                                                {
+                                                
+                                                    <tr style="color:@colors[colorIndex];">
+                                                        @if (showInseam)
+                                                        {
+                                                            <td style="vertical-align: bottom;">
+                                                                @Html.DisplayFor(x => Model[i].AvailableOpenSizes[o].InseamName)
+                                                            </td>
+                                                        }
+                                                        @for (var j = 0; j < Model[i].AvailableOpenSizes[o].ClothesScaleSizeClass.Count(); j++)
+                                                        {          
+                                                            <td style="padding-left: 5px; padding-top: 4px;">
+                                                                <input type="text" disabled="disabled" value="@Model[i].AvailableOpenSizes[o].ClothesScaleSizeClass[j].Quantity.Value" maxlength="3" class="effect qty opcal">
+                                                            </td> 
+                                                        }
+                                                    </tr> 
+                                                        ++colorIndex;
+                                                }
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
+                                <div title="Scale Matrix" style="width: 100%; background-color: #E9E9E9;">
+                                    @if (Model[i].AvailablePrePacks.Any())
+                                    {
+                                        <div style="width: 30%; vertical-align: middle; display: inline-block; color: blue;">
+                                            <br />
+                                        </div>
+                                        <div style="width: 60%; vertical-align: middle; display: inline-block; text-align: center">
+                                            <table>
+
+                                                <tr class="imP">
+                                                    <td colspan="@(showInseam ? 2 : 1)"></td>
+                                                    <td colspan="@(Model[i].AvailablePrePacks[0].ClothesScaleSizeClass.Count() + 1)" style="color: #050508; text-align: left;">Scales
+                                                    </td>
+                                                </tr>
+                                                <tr class="imP">
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold"></span>
+                                                    </td>
+                                                    @if (showInseam)
+                                                    {
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">Inseam</span>
+                                                        </td>
+                                                    }
+                                                    @for (var j = 0; j < Model[i].AvailablePrePacks[0].ClothesScaleSizeClass.Count(); j++)
+                                                    {     
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">@Html.DisplayFor(x => Model[i].AvailablePrePacks[0].ClothesScaleSizeClass[j].SizeName)</span>
+                                                        </td>
+
+                                                    }
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold">Avl Qty</span>
+                                                    </td>
+                                                </tr>
+                                                @{colorIndex = 0;}
+                                                @for (var o = 0; o < Model[i].AvailablePrePacks.Count(); ++o)
+                                                {
+                                        
+                                                    <tr style="color:@colors[colorIndex];">
+
+                                                        <td style="vertical-align: bottom;">
+                                                            @Html.DisplayFor(x => Model[i].AvailablePrePacks[o].Name)
+                                                        </td>
+                                                        @if (showInseam)
+                                                        {
+                                                            <td style="vertical-align: bottom;">
+                                                                @Html.DisplayFor(x => Model[i].AvailablePrePacks[o].InseamName)
+                                                            </td>
+                                                        }
+                                                        @for (var j = 0; j < Model[i].AvailablePrePacks[o].ClothesScaleSizeClass.Count(); j++)
+                                                        {          
+                                                            <td style="padding-left: 5px; padding-top: 4px;">
+                                                                <input type="text" disabled="disabled" value="@Model[i].AvailablePrePacks[o].ClothesScaleSizeClass[j].Quantity.Value" maxlength="3" class="effect qty opcal">
+                                                            </td> 
+                                                        }
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <input type="text" disabled="disabled" value="@Model[i].AvailablePrePacks[o].InvQty.Value" maxlength="3" class="effect qty opcal">
+                                                        </td>
+                                                    </tr> 
+                                                        ++colorIndex;
+                                                }
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+    }
+}
+else
+{
+    using (Html.BeginForm("EditLineSheet"))
+    {
+    <table style="width: 100%;">
+        @for (int i = 0; i < Model.Count; ++i)
+        {
+            <tr>
+                <td style="">
+                    <div style="background: none repeat scroll 0 0 #cdcdcd; border: 1px solid gray; border-bottom: 0; border-radius: 10px 10px 0 0; padding: 10px;">
+                        <div style="display: inline-block; margin: 0 auto; width: 2%;">
+                            @Html.CheckBoxFor(m => Model[i].isSelected, new { @class = "topBarCheck" })
+                        </div>
+                        <div style="display: inline-block; width: 18%; vertical-align: middle">
+                            <label>Style @Html.TextBoxFor(m => Model[i].StyleNumber, new { @class = "topDivInput", @style = "width:10em", })</label>
+                        </div>
+                        <div style="display: inline-block; width: 15%; vertical-align: middle">
+                            <label>Price $ @Html.TextBoxFor(m => Model[i].Price, string.Format("0.00", Model[i].Price), new { @class = "topDivInput", @style = "width:5em;text-align:center;" })</label>
+                        </div>
+                        <div style="display: inline-block; width: 15%; vertical-align: middle">
+                            <label>MSRP $ @Html.TextBoxFor(m => Model[i].MSRP, string.Format("0.00", Model[i].MSRP), new { @class = "topDivInput", @style = "width:5em;text-align:center;" })</label>
+                        </div>
+                        <div style="display: inline-block; width: 15%; vertical-align: middle">
+                            <label>Cost $ @Html.TextBoxFor(m => Model[i].Cost, string.Format("0.00", Model[i].Cost), new { @class = "topDivInput", @style = "width:5em;text-align:center;" })</label>
+                        </div>
+                        <div style="display: inline-block; width: 15%; vertical-align: middle">
+                            <label>Delivery @Html.TextBoxFor(m => Model[i].fDate, new { @class = "topDivInput datePick", @style = "width:5em;text-align:center;" })</label>
+                        </div>
+                        <div style="display: inline-block; text-align: right; vertical-align: middle;">
+                            <label>Color @Html.TextBoxFor(m => Model[i].Color, new { @class = "topDivInput", @style = "width:10em;text-align:center;" })</label>
+                        </div>
+                    </div>
+                    <div style="border: 1px solid gray; border-top: 0; border-radius: 0 0 10px 10px; margin-bottom: 10px;">
+                        <div style="display: inline-block; width: 16%; padding: 5px; vertical-align: top;">
+                            @if (Model[i].Images.Any())
+                            {
+                                <div style="margin: 0 auto;">
+                                    <a href="@Url.Action("Detail", new { @id = Model[i].ClothesId })">
+                                        <img src="@Url.Content("~/Library/Uploads/" + Model[i].Images[0].ImagePath)" style="height: 225px;border: 1px solid #424240;" />
+                                    </a>
+                                </div>
+                                <div style="width: 95.6%; padding-top: 5px; border-right: 1px solid #424240;">
+                                    @for (int j = 1; j < Model[i].Images.Count; ++j)
+                                    {
+                                        <img src="@Url.Content("~/Library/Uploads/" + Model[i].Images[j].ImagePath)" style="width: 45px;" />
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="margin: 0 auto;">
+                                    <a href="@Url.Action("Detail", new { @id = Model[i].ClothesId })">
+                                        <img src="@Url.Content("~/Library/Uploads/" + "NO_IMAGE.jpg")" style="height: 225px;border: 1px solid #424240;" />
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                        <div style="display: inline-block; padding: 10px; margin: 0 auto; width: 80%;">
+                            @{bool showInseam = Model[i].InseamList.Any();}
+                            @if (Model[i].FitList.Any())
+                            {
+
+                                foreach (var item in Model[i].FitList)
+                                {
+                                <div title="Available Open Size" style="background-color: #D9D9D9; width: 100%;">
+                                    @if (Model[i].AvailableOpenSizes.Any(x => x.FitName.ToLower() == item.Value.ToLower()))
+                                    {
+                                        var OpenList = Model[i].AvailableOpenSizes.FindAll(x => x.FitName.ToLower() == item.Value.ToLower());
+                                        <div style="width: 30%; vertical-align: middle; display: inline-block; color: blue;">@item.Value</div>
+                                        <div style="width: 60%; vertical-align: middle; display: inline-block; text-align: center">
+                                            <table>
+
+                                                <tr class="imP">
+                                                    <td></td>
+                                                    <td colspan="@(OpenList[0].ClothesScaleSizeClass.Count())" style="color: #050508; text-align: left;">Available Open Sizes
+                                                    </td>
+                                                </tr>
+                                                <tr class="imP">
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold"></span>
+                                                    </td>
+                                                    @for (var j = 0; j < OpenList[0].ClothesScaleSizeClass.Count(); j++)
+                                                    {     
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">@Html.DisplayFor(x => OpenList[0].ClothesScaleSizeClass[j].SizeName)</span>
+                                                        </td>
+
+                                                    }
+                                                </tr>
+                                                @{colorIndex = 0;}
+                                                @for (var o = 0; o < OpenList.Count(); ++o)
+                                                {
+                                                
+                                                    <tr style="color:@colors[colorIndex];">
+                                                        <td style="vertical-align: bottom;">
+                                                            @Html.DisplayFor(x => OpenList[o].InseamName)
+                                                        </td>
+                                                        @for (var j = 0; j < OpenList[o].ClothesScaleSizeClass.Count(); j++)
+                                                        {          
+                                                            <td style="padding-left: 5px; padding-top: 4px;">
+                                                                @Html.TextBoxFor(m => OpenList[o].ClothesScaleSizeClass[j].Quantity, new { @maxlength = "3", @class = "effect numOnly opcal" })
+                                                            </td> 
+                                                        }
+                                                    </tr> 
+                                                        ++colorIndex;
+                                                }
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
+                                       
+                                <div title="Scale Matrix" style="width: 100%; background-color: #E9E9E9;">
+                                    @if (Model[i].AvailablePrePacks.Any(x => x.FitName.ToLower() == item.Value.ToLower()))
+                                    {
+                                        var PackList = Model[i].AvailablePrePacks.FindAll(x => x.FitName.ToLower() == item.Value.ToLower());
+                                        <div style="width: 30%; vertical-align: middle; display: inline-block; color: blue;">@item.Value</div>
+                                        <div style="width: 60%; vertical-align: middle; display: inline-block; text-align: center">
+                                            <table>
+
+                                                <tr class="imP">
+                                                    <td colspan="2"></td>
+                                                    <td colspan="@(PackList[0].ClothesScaleSizeClass.Count() + 1)" style="color: #050508; text-align: left;">Scales
+                                                    </td>
+                                                </tr>
+                                                <tr class="imP">
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold"></span>
+                                                    </td>
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold">Inseam</span>
+                                                    </td>
+                                                    @for (var j = 0; j < PackList[0].ClothesScaleSizeClass.Count(); j++)
+                                                    {     
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">@Html.DisplayFor(x => PackList[0].ClothesScaleSizeClass[j].SizeName)</span>
+                                                        </td>
+
+                                                    }
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold">Avl Qty</span>
+                                                    </td>
+                                                </tr>
+                                                @{colorIndex = 0;}
+                                                @for (var o = 0; o < PackList.Count(); ++o)
+                                                {
+                                        
+                                                    <tr style="color:@colors[colorIndex];">
+
+                                                        <td style="vertical-align: bottom;">
+                                                            @Html.DisplayFor(x => PackList[o].Name)
+                                                        </td>
+                                                        <td style="vertical-align: bottom;">
+                                                            @Html.DisplayFor(x => PackList[o].InseamName)
+                                                        </td>
+                                                        @for (var j = 0; j < PackList[o].ClothesScaleSizeClass.Count(); j++)
+                                                        {          
+                                                            <td style="padding-left: 5px; padding-top: 4px;">
+
+                                                                @Html.TextBoxFor(m => PackList[o].ClothesScaleSizeClass[j].Quantity, new { @maxlength = "3", @class = "effect opcal" })
+                                                            </td> 
+                                                        }
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <input type="text" disabled="disabled" value="@PackList[o].InvQty.Value" maxlength="3" class="effect opcal">
+                                                        </td>
+                                                    </tr> 
+                                                        ++colorIndex;
+                                                }
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
+                                }
+                            }
+                            else
+                            {
+                                <div title="Available Open Size" style="background-color: #D9D9D9; width: 100%;">
+                                    @if (Model[i].AvailableOpenSizes.Any())
+                                    {
+                                    
+                                        <div style="width: 30%; vertical-align: middle; display: inline-block; color: blue;">
+                                            <br>
+                                        </div>
+                                        <div style="width: 60%; vertical-align: middle; display: inline-block; text-align: center">
+                                            <table>
+
+                                                <tr class="imP">
+                                                    @if (showInseam)
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    <td colspan="@(Model[i].AvailableOpenSizes[0].ClothesScaleSizeClass.Count())" style="color: #050508; text-align: left;">Available Open Sizes
+                                                    </td>
+                                                </tr>
+                                                <tr class="imP">
+                                                    @if (showInseam)
+                                                    {
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold"></span>
+                                                        </td>
+                                                    }
+                                                    @for (var j = 0; j < Model[i].AvailableOpenSizes[0].ClothesScaleSizeClass.Count(); j++)
+                                                    {     
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">@Html.DisplayFor(x => Model[i].AvailableOpenSizes[0].ClothesScaleSizeClass[j].SizeName)</span>
+                                                        </td>
+
+                                                    }
+                                                </tr>
+                                                @{colorIndex = 0;}
+                                                @for (var o = 0; o < Model[i].AvailableOpenSizes.Count(); ++o)
+                                                {
+                                                
+                                                    <tr style="color:@colors[colorIndex];">
+                                                        @if (showInseam)
+                                                        {
+                                                            <td style="vertical-align: bottom;">
+                                                                @Html.DisplayFor(x => Model[i].AvailableOpenSizes[o].InseamName)
+                                                            </td>
+                                                        }
+                                                        @for (var j = 0; j < Model[i].AvailableOpenSizes[o].ClothesScaleSizeClass.Count(); j++)
+                                                        {          
+                                                            <td style="padding-left: 5px; padding-top: 4px;">
+                                                                @Html.TextBoxFor(m => Model[i].AvailableOpenSizes[o].ClothesScaleSizeClass[j].Quantity, new { @maxlength = "3", @class = "effect opcal" })
+                                                            </td> 
+                                                        }
+                                                    </tr> 
+                                                        ++colorIndex;
+                                                }
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
+                                <div title="Scale Matrix" style="width: 100%; background-color: #E9E9E9;">
+                                    @if (Model[i].AvailablePrePacks.Any())
+                                    {
+                                        <div style="width: 30%; vertical-align: middle; display: inline-block; color: blue;">
+                                            <br />
+                                        </div>
+                                        <div style="width: 60%; vertical-align: middle; display: inline-block; text-align: center">
+                                            <table>
+
+                                                <tr class="imP">
+                                                    <td colspan="@(showInseam ? 2 : 1)"></td>
+                                                    <td colspan="@(Model[i].AvailablePrePacks[0].ClothesScaleSizeClass.Count() + 1)" style="color: #050508; text-align: left;">Scales
+                                                    </td>
+                                                </tr>
+                                                <tr class="imP">
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold"></span>
+                                                    </td>
+                                                    @if (showInseam)
+                                                    {
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">Inseam</span>
+                                                        </td>
+                                                    }
+                                                    @for (var j = 0; j < Model[i].AvailablePrePacks[0].ClothesScaleSizeClass.Count(); j++)
+                                                    {     
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            <span style="font-weight: bold">@Html.DisplayFor(x => Model[i].AvailablePrePacks[0].ClothesScaleSizeClass[j].SizeName)</span>
+                                                        </td>
+
+                                                    }
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        <span style="font-weight: bold">Avl Qty</span>
+                                                    </td>
+                                                </tr>
+                                                @{colorIndex = 0;}
+                                                @for (var o = 0; o < Model[i].AvailablePrePacks.Count(); ++o)
+                                                {
+                                        
+                                                    <tr style="color:@colors[colorIndex];">
+
+                                                        <td style="vertical-align: bottom;">
+                                                            @Html.DisplayFor(x => Model[i].AvailablePrePacks[o].Name)
+                                                        </td>
+                                                        @if (showInseam)
+                                                        {
+                                                            <td style="vertical-align: bottom;">
+                                                                @Html.DisplayFor(x => Model[i].AvailablePrePacks[o].InseamName)
+                                                            </td>
+                                                        }
+                                                        @for (var j = 0; j < Model[i].AvailablePrePacks[o].ClothesScaleSizeClass.Count(); j++)
+                                                        {          
+                                                            <td style="padding-left: 5px; padding-top: 4px;">
+                                                                @Html.TextBoxFor(m => Model[i].AvailablePrePacks[o].ClothesScaleSizeClass[j].Quantity, new { @maxlength = "3", @class = "effect opcal" })
+                                                            </td> 
+                                                        }
+                                                        <td style="padding-left: 5px; padding-top: 4px;">
+                                                            @Html.TextBoxFor(m => Model[i].AvailablePrePacks[o].InvQty, new { @maxlength = "3", @class = "effect  opcal" })
+                                                        </td>
+                                                    </tr> 
+                                                        ++colorIndex;
+                                                }
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+    }
+}
+@Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, searchString = ViewBag.searchStringParam })
+
+<script>
+    $(function () {
+        $("input[type='text'].qty").each(function () {
+            if (parseInt($(this).val()) == 0) {
+                $(this).val("X");
+                $(this).css("color", "black");
+            }
+        });
+        $(".datePick").datepicker();
+    });
+</script>

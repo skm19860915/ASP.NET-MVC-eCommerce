@@ -1,0 +1,32 @@
+﻿@using Platini.Models
+@model UpsFinal
+<style>
+    .mainDiv {
+        border: 1px solid black;
+        font-size: 12px;
+        margin: 0 auto;
+    }
+</style>
+<div class="mainDiv">
+
+    <div class="leftPad">
+        <span style="display: inline-block; text-align: center;">@Model.Message</span>
+    </div>
+    @if (Model.isSuccess)
+    { 
+        <div class="leftPad">
+            <span style="display: inline-block; text-align: right;">Your shipping cost is:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">$@Model.Price</span>
+        </div>
+        <div class="leftPad">
+            <span style="display: inline-block; text-align: right;">Your Shipment Number is:</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">@Model.sNo</span>
+        </div>
+        <div class="leftPad">
+            <span style="display: inline-block; text-align: right;">Shipping Label (click on image to enlarge):</span>
+            <span style="display: inline-block; margin-left: 1em; text-align: left;">
+                <a href="data:image/gif;base64,@(Model.file)" target="_blank"><img src="data:image/gif;base64,@(Model.file)" width="128" /></a>
+            </span>
+        </div>
+    }
+</div>

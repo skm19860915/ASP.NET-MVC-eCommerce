@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/devsvn/!svn/ver/46330/aspnet_platini/Platini/Areas/Common/Views/Order
+END
+ConfirmBox.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/devsvn/!svn/ver/45521/aspnet_platini/Platini/Areas/Common/Views/Order/ConfirmBox.cshtml
+END
+Index.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/devsvn/!svn/ver/46330/aspnet_platini/Platini/Areas/Common/Views/Order/Index.cshtml
+END
+Index2.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/devsvn/!svn/ver/45490/aspnet_platini/Platini/Areas/Common/Views/Order/Index2.cshtml
+END
+ProcessOrder.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/devsvn/!svn/ver/46283/aspnet_platini/Platini/Areas/Common/Views/Order/ProcessOrder.cshtml
+END
+UpsDetail.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/devsvn/!svn/ver/46072/aspnet_platini/Platini/Areas/Common/Views/Order/UpsDetail.cshtml
+END
+UpsShip.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/devsvn/!svn/ver/45521/aspnet_platini/Platini/Areas/Common/Views/Order/UpsShip.cshtml
+END
+ProcessOrder2.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/devsvn/!svn/ver/45490/aspnet_platini/Platini/Areas/Common/Views/Order/ProcessOrder2.cshtml
+END
+DetailPartial.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/devsvn/!svn/ver/45521/aspnet_platini/Platini/Areas/Common/Views/Order/DetailPartial.cshtml
+END
+PackagingList.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/devsvn/!svn/ver/46206/aspnet_platini/Platini/Areas/Common/Views/Order/PackagingList.cshtml
+END
+UpsFinal.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/devsvn/!svn/ver/45521/aspnet_platini/Platini/Areas/Common/Views/Order/UpsFinal.cshtml
+END
+OrderHeader.cshtml
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/devsvn/!svn/ver/46330/aspnet_platini/Platini/Areas/Common/Views/Order/OrderHeader.cshtml
+END

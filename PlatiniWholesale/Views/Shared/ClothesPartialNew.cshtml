@@ -1,0 +1,262 @@
+﻿@using Platini.Models;
+@model ClothList
+@{
+    bool showAct = false;
+    showAct = (!string.IsNullOrEmpty(SiteConfiguration.Mode)) && (SiteConfiguration.Mode.ToLower() == ModeEnum.Edit.ToString().ToLower());
+    bool EditMode = !string.IsNullOrEmpty(ViewBag.EditMode) && (SiteIdentity.IsAdmin.ToLower() == bool.TrueString.ToLower()) && (SiteConfiguration.Mode.ToLower() == ModeEnum.Edit.ToString().ToLower());
+}
+@if (Model != null)
+{
+    if (Model.List.Count > 0)
+    {
+        if (string.IsNullOrEmpty(ViewBag.SearchMode))
+        {
+            for (int i = 0; i < Model.List.Count; i++)
+            {
+                <div class="col-md-2 col-lg-2 col-sm-2 gridstylebox">
+                    <div class="imghover isLoading" @(EditMode ? "data-id=" + Model.List[i].ClothesId : "")>
+                        <div id="loaderDiv@(Model.List[i].ClothesId)" class="loadcontent" style="display: none;">
+                            <img style="" src="@Url.Content("~/Styles/image/platinipreloader2.gif")">
+                        </div>
+                        <a href="@Url.Action("Detail", "Home", new { Id = Model.List[i].StyleNumber, @c = ViewBag.C })">
+                            <img id="imgpic" class="seeAllPic" data-src="@VirtualPathUtility.ToAbsolute("~/Library/Uploads/WebThumb/")@Model.List[i].ImagePath">
+                            @if (Model.List[i].Clearance.HasValue ? Model.List[i].Clearance.Value == 1 : false)
+                            {<img src="@Url.Content("~/Styles/images/btnClearance_color.png")" class="clearanceImg">}
+                        </a>
+                        <span>
+                            <a rel="tooltip" href="javascript:void(0);" data-id="@Model.List[i].ClothesId" class="vso" data-original-title="Quick View">
+                                <i class="fa fa-search"></i>Quick View
+                            </a>
+                        </span>
+                    </div>
+
+                     @*<div class="imghover" @(EditMode ? "data-id=" + Model.List[i].ClothesId : "")>
+                        <div id="loaderDiv@(Model.List[i].ClothesId)" class="loadcontent" style="display: none;">
+                            <img style="" src="@Url.Content("~/Styles/image/platinipreloader2.gif")">
+                        </div>
+                        <a href="@Url.Action("Detail", "Home", new { Id = Model.List[i].StyleNumber, @c = ViewBag.C })">
+                            <img id="imgpic" class="seeAllPic" src="@VirtualPathUtility.ToAbsolute("~/Library/Uploads/WebThumb/")@Model.List[i].ImagePath" onError="this.onerror = null; this.src = '/Library/Uploads/WebThumb/No_Image.jpg';">
+                            @if (Model.List[i].Clearance.HasValue ? Model.List[i].Clearance.Value == 1 : false)
+                            {<img src="@Url.Content("~/Styles/images/btnClearance_color.png")" class="clearanceImg">}
+                        </a>
+                        <span>
+                            <a rel="tooltip" href="javascript:void(0);" data-id="@Model.List[i].ClothesId" class="vso" data-original-title="Quick View">
+                                <i class="fa fa-search"></i>Quick View
+                            </a>
+                        </span>
+                    </div>*@
+
+                    <div class="firs-bottom-text">
+                        <div class="StyleNumberTD">
+
+                            <a href="@Url.Action("Detail", "Home", new { Id = Model.List[i].StyleNumber, @c = ViewBag.C })">@Model.List[i].StyleNumber</a>
+                            @if (ViewBag.Mode != "d")
+                            {
+                                <div style="color: white;" class="priceclass">
+                                    @if (Model.List[i].DiscountedPrice > 0)
+                                    {
+                                        <span style="font-size:12px"><strike class="lblPrice"> $@Model.List[i].Price.Value.ToString("0.00")</strike></span>
+                                        <span> $@Model.List[i].DiscountedPrice.Value.ToString("0.00")</span>
+                                    }
+                                    else
+                                    {
+                                        <span>$@Model.List[i].Price.Value.ToString("0.00")</span>
+                                    }
+                                </div>
+                            }
+                            @if (ViewBag.Mode == "f")
+                            {<div style="color: white;" class="priceclass">Delivery: <span>@Model.List[i].FutureDeliveryDate.Value.ToString("dd MMM yyyy")</span> </div>}
+
+                            @if (ViewBag.Mode == "d" && showAct)
+                            {
+                                <div class="priceclass">
+                                    <span style="float:left;color: white;" id="@("spnAct_" + Model.List[i].ClothesId)">@Html.CheckBox("chkAct", false, new { @id = "chkAct_" + Model.List[i].ClothesId, @class = "chkAct", @value = Model.List[i].ClothesId }) Activate </span>
+                                    <span style="float:left;color: white;float: right;" id="@("spnDel_" + Model.List[i].ClothesId)">@Html.CheckBox("chkDel", false, new { @id = "chkDel_" + Model.List[i].ClothesId, @class = "chkDel", @value = Model.List[i].ClothesId }) Delete </span>
+                                    <div style="text-align: center;"><a href="@Url.Action("Step1", "Clothes", new { Id = Model.List[i].ClothesId, @area = "Common" })" target="_blank">Edit</a></div>
+                                    <div style="clear: both;"></div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <span id="searchcred" style="display:none;">@ViewBag.SearchCred</span>
+            if (Model.List.Any(x => !x.FutureDeliveryDate.HasValue || x.FutureDeliveryDate == new DateTime(1900, 1, 1)))
+            {
+                <div class="row">
+                    <h2> Active Products</h2>
+                    <hr class="dividerHR" />
+                    @{var activelist = Model.List.Where(x => !x.FutureDeliveryDate.HasValue || x.FutureDeliveryDate == new DateTime(1900, 1, 1)).ToList();}
+                    @for (int i = 0; i < activelist.Count; i++)
+                    {
+                        <div class="col-md-2 col-lg-2 col-sm-2 gridstylebox">
+                            <div class="imghover isLoading" @(EditMode ? "data-id=" + activelist[i].ClothesId : "")>
+                                <div id="loaderDiv@(activelist[i].ClothesId)" class="loadcontent" style="display: none;">
+                                    <img style="" src="@Url.Content("~/Styles/image/platinipreloader2.gif")">
+                                </div>
+                                <a href="@Url.Action("Detail", "Home", new { Id = activelist[i].StyleNumber, @c = ViewBag.C })">
+                                    <img id="imgpic" class="seeAllPic" data-src="@VirtualPathUtility.ToAbsolute("~/Library/Uploads/WebThumb/")@activelist[i].ImagePath">
+                                    @if (activelist[i].Clearance.HasValue ? activelist[i].Clearance.Value == 1 : false)
+                                    {<img src="@Url.Content("~/Styles/images/btnClearance_color.png")" class="clearanceImg">}
+                                </a>
+                                <span>
+                                    <a rel="tooltip" href="javascript:void(0);" data-id="@activelist[i].ClothesId" class="vso" data-original-title="Quick View">
+                                        <i class="fa fa-search"></i>Quick View
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="firs-bottom-text">
+                                <div class="StyleNumberTD">
+
+                                    <a href="@Url.Action("Detail", "Home", new { Id = activelist[i].StyleNumber, @c = ViewBag.C })">@activelist[i].StyleNumber</a>
+                                    @if (ViewBag.Mode != "d" && SiteIdentity.Roles != RolesEnum.Warehouse.ToString())
+                                    {
+                                        @*<div style="color: white;" class="priceclass">
+                                            <strike class="lblPrice">$@activelist[i].Price.Value.ToString("0.00")</strike>
+                                        </div>*@
+                                        <div style="color: white;" class="priceclass">
+                                            @if (activelist[i].DiscountedPrice > 0)
+                                            {
+                                                <strike class="lblPrice" style="font-size:12px">$@activelist[i].Price.Value.ToString("0.00")</strike>
+                                                <span>$@activelist[i].DiscountedPrice.Value.ToString("0.00")</span>
+                                            }
+                                            else
+                                            {
+                                                <span>$@activelist[i].Price.Value.ToString("0.00")</span>
+                                            }
+                                        </div>
+                                    }
+                                    @if (ViewBag.Mode == "f")
+                                    {<div style="color: white;" class="priceclass">Delivery: <span>@activelist[i].FutureDeliveryDate.Value.ToString("dd MMM yyyy")</span> </div>}
+
+                                    @if (ViewBag.Mode == "d" && showAct)
+                                    {
+                                        <div class="priceclass">
+                                            <span style="float:left;color: white;" id="@("spnAct_" + activelist[i].ClothesId)">@Html.CheckBox("chkAct", false, new { @id = "chkAct_" + activelist[i].ClothesId, @class = "chkAct", @value = activelist[i].ClothesId }) Activate </span>
+                                            <span style="float:left;color: white;float: right;" id="@("spnDel_" + activelist[i].ClothesId)">@Html.CheckBox("chkDel", false, new { @id = "chkDel_" + activelist[i].ClothesId, @class = "chkDel", @value = activelist[i].ClothesId }) Delete </span>
+                                            <div style="text-align: center;"><a href="@Url.Action("Step1", "Clothes", new { Id = activelist[i].ClothesId, @area = "Common" })" target="_blank">Edit</a></div>
+                                            <div style="clear: both;"></div>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            }
+            if (Model.List.Any(x => x.FutureDeliveryDate.HasValue && x.FutureDeliveryDate > new DateTime(1900, 1, 1)))
+            {
+                <div class="row">
+                    <h2> Future Delivery Products</h2>
+                    <hr class="dividerHR" />
+                    @{var activelist = Model.List.Where(x => x.FutureDeliveryDate.HasValue && x.FutureDeliveryDate > new DateTime(1900, 1, 1)).ToList();}
+                    @for (int i = 0; i < activelist.Count; i++)
+                    {
+                        <div class="col-md-2 col-lg-2 col-sm-2 gridstylebox">
+                            <div class="imghover isLoading" @(EditMode ? "data-id=" + activelist[i].ClothesId : "")>
+                                <div id="loaderDiv@(activelist[i].ClothesId)" class="loadcontent" style="display: none;">
+                                    <img style="" src="@Url.Content("~/Styles/image/platinipreloader2.gif")">
+                                </div>
+                                <a href="@Url.Action("Detail", "Home", new { Id = activelist[i].StyleNumber, @c = ViewBag.C })">
+                                    <img id="imgpic" class="seeAllPic" data-src="@VirtualPathUtility.ToAbsolute("~/Library/Uploads/WebThumb/")@activelist[i].ImagePath">
+                                    @if (activelist[i].Clearance.HasValue ? activelist[i].Clearance.Value == 1 : false)
+                                    {<img src="@Url.Content("~/Styles/images/btnClearance_color.png")" class="clearanceImg">}
+                                </a>
+                                <span>
+                                    <a rel="tooltip" href="javascript:void(0);" data-id="@activelist[i].ClothesId" class="vso" data-original-title="Quick View">
+                                        <i class="fa fa-search"></i>Quick View
+                                    </a>
+                                </span>
+
+                            </div>
+                            <div class="firs-bottom-text">
+                                <div class="StyleNumberTD">
+
+                                    <a href="@Url.Action("Detail", "Home", new { Id = activelist[i].StyleNumber, @c = ViewBag.C })">@activelist[i].StyleNumber</a>
+                                    @if (ViewBag.Mode != "d" && SiteIdentity.Roles != RolesEnum.Warehouse.ToString())
+                                    {
+                                        <div style="color: white;" class="priceclass">
+                                            @if (Model.List[i].DiscountedPrice > 0 && Model.List[i].DiscountedPrice != null && activelist[i].DiscountedPrice!=null)
+                                            {
+                                                <strike class="lblPrice" style="font-size:12px">$@activelist[i].Price.Value.ToString("0.00")</strike>
+                                                <span>$@activelist[i].DiscountedPrice.Value.ToString("0.00")</span>
+                                            }
+                                            else
+                                            {
+                                                <span>$@activelist[i].Price.Value.ToString("0.00")</span>
+                                            }
+                                        </div>
+                                    }
+                                    @if (ViewBag.Mode == "f")
+                                    {<div style="color: white;" class="priceclass">Delivery: <span>@activelist[i].FutureDeliveryDate.Value.ToString("dd MMM yyyy")</span> </div>}
+
+                                    @if (ViewBag.Mode == "d" && showAct)
+                                    {
+                                        <div class="priceclass">
+                                            <span style="float:left;color: white;" id="@("spnAct_" + activelist[i].ClothesId)">@Html.CheckBox("chkAct", false, new { @id = "chkAct_" + activelist[i].ClothesId, @class = "chkAct", @value = activelist[i].ClothesId }) Activate </span>
+                                            <span style="float:left;color: white;float: right;" id="@("spnDel_" + activelist[i].ClothesId)">@Html.CheckBox("chkDel", false, new { @id = "chkDel_" + activelist[i].ClothesId, @class = "chkDel", @value = activelist[i].ClothesId }) Delete </span>
+                                            <div style="text-align: center;"><a href="@Url.Action("Step1", "Clothes", new { Id = activelist[i].ClothesId, @area = "Common" })" target="_blank">Edit</a></div>
+                                            <div style="clear: both;"></div>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+
+            }
+
+            <div id="deactContainer" class="row">
+            </div>
+            <div id="deactEnd" class="bgClass5" style="height:16px;display:none;"></div>
+
+        }
+    }
+    else
+    {
+        <div class="text-center" style="padding: 2em">@(string.IsNullOrEmpty(ViewBag.Message) ? "No Product Found" : ViewBag.Message)</div>
+    }
+}
+<script type="text/javascript">
+    $("input[name='chkAct']:checkbox").change(function () {
+        if ($(this).is(":checked")) {
+            var id = $(this).val();
+            if (confirm("Are you sure you want to activate this item?")) {
+                if (isFinite(id) && id > 0) {
+                    $.post('@Url.Action("ActivateCloth", "Clothes", new { @area = "Common" })', { Id: id }, function (data) {
+                        if (data.Response == "Success")
+                            window.location = window.location.href;
+                        else
+                            alert("Error");
+                    });
+                }
+            }
+        }
+    });
+    $("input[name='chkDel']:checkbox").change(function () {
+        if ($(this).is(":checked")) {
+            var id = $(this).val();
+            if (confirm("Are you sure you want to delete this item?")) {
+                if (isFinite(id) && id > 0) {
+                    $.post('@Url.Action("DeleteClothes", "Clothes", new { @area = "Common" })', { Id: id }, function (data) {
+                        if (data.Response == "Success")
+                            window.location = window.location.href;
+                        else
+                            alert("Error");
+                    });
+                }
+            }
+        }
+    });
+
+  
+</script>

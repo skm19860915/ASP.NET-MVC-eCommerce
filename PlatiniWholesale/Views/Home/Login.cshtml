@@ -1,0 +1,80 @@
+﻿@model Platini.Models.LoginModel
+@using Platini.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+<script type="text/javascript" src="~/Scripts/supersized.3.2.7.min.js"></script>
+<script type="text/javascript" src="~/Scripts/supersized.shutter.min.js"></script>
+<link rel="stylesheet" href="/Styles/supersized.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/Styles/supersized.shutter.css" type="text/css" media="screen" />
+
+<script type="text/javascript">
+    $(function () {
+        $.get('@Url.Action("GetBackGrounds", "Home")').done(function (data) {
+            if (data === undefined || data === null) {
+            }
+            else {
+                $(".mainbodycontainer").hide();
+                $.supersized({
+                    slide_interval: 5000,
+                    transition: 1,
+                    transition_speed: 700,
+                    slide_links: 'blank',
+                    slides: data,
+                });
+            }
+        });
+    });
+</script>
+<div class="col-lg-6 col-sm-6 col-md-6" style="padding: 2%; float: none; margin: 0 auto;">
+    <section id="loginBox" class="loginBox loginopc">
+        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+            <p>If you have an account with us, please log in.</p>
+        </div>
+        <div class="col-md-5 col-sm-5 col-xs-5">
+            <p>
+                <a href="javascript:void(0);" onclick="CallFacebookLogin(false);">
+                    <img src="@Url.Content("~/Styles/images/register-facebook.png")" alt="facebook">
+                </a>
+            </p>
+            <p style="margin-bottom:60px;">
+                <a href="javascript:void(0);" class="customBtn" data-wholesale="false">
+                    <img src="@Url.Content("~/Styles/images/register-googleplay.png")" alt="Google">
+                </a>
+            </p>
+
+            <p>
+                Don’t have an account?
+                @Html.ActionLink("Sign Up With Us For Exclusive Membership!", "Registration", "Home", new { @style = "display:block;" })
+            </p>
+        </div>
+        <div class="col-md-1 col-sm-1 col-xs-1">
+            <span class="">OR</span>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6">
+            @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { @autocomplete = "off" }))
+            {
+                <ul class="signupfield">
+                    <li>
+                        @Html.TextBoxFor(model => model.UserName, new { @placeholder = "Username", @class = "input-text required-entry" })
+                        @Html.ValidationMessageFor(model => model.UserName, null, new { @class = "redMsg" })
+                    </li>
+                    <li>
+                        @Html.PasswordFor(model => model.Password, new { @value = Model != null ? Model.Password : string.Empty, @placeholder = "Password", @class = "input-text required-entry" })
+                        @Html.ValidationMessageFor(model => model.Password, null, new { @class = "redMsg" })
+                    </li>
+                    <li>
+                        <label>Remember Me @Html.CheckBoxFor(m => m.RememberMe)</label>
+                    </li>
+                    <li>
+                        <input type="submit" value="Login">
+                    </li>
+                    <li>
+                        <span class="">Forgot password? <a href="@Url.Action("ForgotPassword", "Home")">Reset Password</a></span>
+                    </li>
+                </ul>
+            }
+        </div>
+    </section>
+</div>

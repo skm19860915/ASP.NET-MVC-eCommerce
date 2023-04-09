@@ -1,0 +1,19 @@
+﻿@using Platini.Models;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<div id="pnlmodewrapper" class="tab">
+    <div id="dvviewmode" class="linkview" onclick="toggleMenu();"></div>
+    <input name="hdnmode" id="hdnmode" value="View" type="hidden">
+    <ul class="clsul">       
+        <li id="lieditmode" class="@(Platini.Models.SiteConfiguration.Mode.ToLower() == Platini.Models.ModeEnum.Edit.ToString().ToLower() ? "active-tab-li" : "")"><a onclick="updateMode('@Platini.Models.ModeEnum.Edit.ToString()'); return false;" id="lnkbtneditmode" href="#">
+            <img src="~/Styles/images/editimgpng.png" alt=""><span>Edit</span></a></li>
+        <li id="liViewmode" class="@(Platini.Models.SiteConfiguration.Mode.ToLower() == Platini.Models.ModeEnum.View.ToString().ToLower() ? "active-tab-li" : "")"><a onclick="updateMode('@Platini.Models.ModeEnum.View.ToString()'); return false;" id="lnkbtnviewmode" class="active-tab-li" href="#">
+            <img src="~/Styles/images/view.png" alt=""><span>View</span></a></li>
+        <li id="liordermode" class="@(Platini.Models.SiteConfiguration.Mode.ToLower() == Platini.Models.ModeEnum.Order.ToString().ToLower() ? "active-tab-li" : "")"><a onclick="updateMode('@Platini.Models.ModeEnum.Order.ToString()'); return false;" id="lnkbtneordermode" href="#">
+            <img src="~/Styles/images/cart.png" alt=""><span>Order</span></a></li>
+    </ul>
+</div>*@
+<div class="col-md-12 col-lg-12 col-sm-12">
+    @RenderBody()
+</div>

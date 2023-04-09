@@ -1,0 +1,552 @@
+﻿@using Platini.Models
+@model DetailViewClass
+@{
+    bool showFit = Model.FitList.Any();
+    var colors = new string[] { "Blue", "Red", "GoldenRod" };
+    int colorIndex = 0;    
+}
+@using (Ajax.BeginForm("DetailPartial", null, new AjaxOptions() { LoadingElementId = "loader", OnSuccess = "check", InsertionMode = InsertionMode.Replace }, new {id="formId" }))
+{
+    
+    <table style="width: 100%; font-size: 12px;">
+        <tr>
+            @if (Platini.Models.SiteConfiguration.Mode == Platini.Models.ModeEnum.Order.ToString())
+            {
+                
+                @Html.HiddenFor(m => m.ClothesId)
+                <td colspan="5" style="padding-top: 1px; border-radius: 6px;">
+                    <div style="background-color: #e7e7e8; border-radius: 6px; border: 1px ridge #000; padding: 0px 12px;">
+                        <table style="font-size: 13px; color: #000; width: 100%; padding-left: 4px; text-align: center; vertical-align: top;">
+                            <tr>
+
+                                <td style="font-weight: bold; color: #006600; padding-left: 0px; padding-top: 26px;">
+                                    <span style="color: #050508;">Style:</span>
+                                    <div>
+                                        <input type="text" value="@Model.StyleNumber" id="tbMensTopsStyleNumber"
+                                        disabled="disabled" class="text glow focus"
+                                        style="border: none; text-align: center; width: 110px; font-weight: bold; box-shadow: none; color: #050508; background-color: #e7e7e8; border-radius: 0px;">
+                                    </div>
+                                </td>
+                                @if (showFit)
+                                {
+                                    <td id="tdddlOpenSizeFitsdet" style="padding-left: 10px; padding-top: 22px;">
+                                        <span style="color: #050508;">Fit:</span>
+                                        <div>
+
+                                            <select id="fitDdldet" style="padding: 0 5px 0 5px; border-radius: 0px; box-shadow: none; font-weight: bold; text-align: left; border: 1px black solid; background-color: #e7e7e8; color: #050508;">
+                                                @foreach (var fit in Model.FitList)
+                                                {
+                                                    <option value="@fit.Value.Replace(" ", "")">@fit.Value</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </td>
+                                }
+                                <td style="padding-left: 10px; padding-top: 22px;">
+                                    <span style="color: #050508; border: none">Wholesale $</span>
+                                    <div style="">
+                                        <input type="text" value="@Model.Price.ToString("F2")" id="txtPrice" disabled="disabled" class="text  glow focus"
+                                        style="width: 55px; border-radius: 0px; box-shadow: none; font-weight: bold; border: none; background-color: #e7e7e8; color: #050508;">
+                                    </div>
+                                </td>
+                                <td id="tdMsrpdet" style="color: #006600; padding-left: 10px; padding-top: 22px; width: 80px;">
+                                    <span style="color: #050508;">MSRP$</span>
+                                    <div>
+                                        <input type="text" value="@Model.MSRP.ToString("F2")" id="txtMSRP" disabled="disabled" class="text glow focus"
+                                        style="box-shadow: none; width: 62px; font-weight: bold; text-align: center; border: 1px black solid; border-radius: 0px; background-color: #e7e7e8; color: #050508; /* border: none; */">
+                                    </div>
+                                </td>
+
+                                <td style="padding-left: 10px;">
+                                    <table id="openSizeTbldet">
+                                        @if (Model.AvailableOpenSizes.Count() > 0)
+                                        {
+                                            <tr class="imP">
+                                                <td colspan="@(Model.AvailableOpenSizes[0].ClothesScaleSizeClass.Count() + 2)" style="color: #050508; text-align: center;">Available Open Sizes
+                                                </td>
+                                            </tr>
+                                            <tr class="imP">
+                                                <td style="padding-left: 5px; padding-top: 4px; width: 30px;">
+                                                    <span style="font-weight: bold"></span>
+                                                </td>
+                                                @for (var j = 0; j < Model.AvailableOpenSizes[0].ClothesScaleSizeClass.Count(); j++)
+                                                {     
+                                                    <td style="padding-left: 5px; padding-top: 4px; width: 30px;">
+                                                        <span style="font-weight: bold">@Html.DisplayFor(x => Model.AvailableOpenSizes[0].ClothesScaleSizeClass[j].SizeName)</span>
+                                                    </td>
+
+                                                }
+                                            </tr>
+                                        }
+                                        @for (var i = 0; i < Model.AvailableOpenSizes.Count(); i++)
+                                        {
+                                        
+                                            <tr class="@(Model.AvailableOpenSizes[i].FitName != null ? Model.AvailableOpenSizes[i].FitName.Replace(" ", "") : "")">
+                                                <td style="vertical-align: bottom;">
+                                                    @Html.DisplayFor(x => Model.AvailableOpenSizes[i].InseamName)
+                                                </td>
+                                                @for (var j = 0; j < Model.AvailableOpenSizes[i].ClothesScaleSizeClass.Count(); j++)
+                                                {          
+                                                    <td style="padding-left: 5px; padding-top: 4px;">
+                                                        @if (Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity.HasValue && Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity.Value > 0)
+                                                        {
+                                                            <input type="text" data-val="@Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity.Value" value="" style="background:white" maxlength="3" class="effect numOnly opcaldet"  onfocus="this.select();" onmouseup="return false;">
+                                                            @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity, new { @class = "hidOSClassdet" })
+                                                            @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleSizeId)
+                                                        }
+                                                        else
+                                                        {
+                                                            <input disabled="disabled" type="text" value="X" maxlength="3" class="effect numOnly">
+                                                            @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].Quantity, new { @class = "hidOSClassdet" })
+                                                            @Html.HiddenFor(m => Model.AvailableOpenSizes[i].ClothesScaleSizeClass[j].ClothesScaleSizeId)
+                                                        }
+                                                    </td> 
+                                                }
+                                            </tr> 
+                                        }
+                                    </table>
+                                </td>
+                                <td style="padding-left: 4px; padding-top: 44px; vertical-align: middle">
+                                    <input type="button" style="font-weight: bold; background: #283890; color: #fff; display: none;" class="btnOrder" id="btnOrderOpenSizes" value="Add To Order" />
+                                </td>
+                                <td style="padding-top: 22px; padding-left: 10px;">Color
+                                    <input type="text" id="txtColor" disabled="disabled" class="text" style="width: 56px;" value="@Model.Color">
+                                    <div id="dvColor" style="width: 45px; height: 45px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;">&nbsp;</div>
+                                </td>
+                            </tr>
+                        </table>
+                        @if (Model.AvailablePrePacks.Count() > 0)
+                        {
+                            if (Model.AvailablePrePacks.Any(x => x.InvQty > 0 && x.ClothesScaleSizeClass.Sum(y => y.Quantity) > 0 && !string.IsNullOrEmpty(x.Name)))
+                            {
+                            <div>
+                                <table id="prePackTbldet" class="bg_div" border="0" style="vertical-align: middle; margin-top: 10px;">
+                                    <tr class="imP" style="text-align: left;">
+                                        <td colspan="@(showFit ? 3 : 2)">
+                                            <br />
+                                        </td>
+                                        <td colspan="@(Model.AvailablePrePacks[0].ClothesScaleSizeClass.Count() + 1)">Available Pre-Packs:<a href="#" onmouseout="hideTip()" onmouseover="doTooltip(event,1)">
+                                            <img src="@Url.Content("~/Styles/image/questionmark.png")" border="0" width="19" height="19">
+                                        </a>
+                                        </td>
+                                        <td colspan="3">Order your prepack here:
+                                        </td>
+                                        <td  style="background-color:#E7E7E8;vertical-align:middle;" rowspan="@Model.AvailablePrePacks.Count()">
+                                            <input id="btnOrderPrePackdet" class="btnOrder" type="button" style="font-weight: bold; background: #283890; color: #FFFFFF; margin-left: 9px; display: none;" value="Add To Order"></td>
+                                    </tr>
+                                    <tr class="imP">
+                                        <td colspan="@(showFit ? 3 : 2)">
+                                            <br />
+                                        </td>
+
+                                        @for (var j = 0; j < Model.AvailablePrePacks[0].ClothesScaleSizeClass.Count(); j++)
+                                        {
+                                            <td style="background: none; vertical-align: middle; text-align: center; padding-left: 4px;">
+                                                <span style="font-weight: bold;">@Model.AvailablePrePacks[0].ClothesScaleSizeClass[j].SizeName</span></td>
+                                        }
+                                        <td style="background: none; vertical-align: middle; text-align: center; padding-left: 4px;">
+                                            <span style="font-weight: bold; text-align: center">Total</span></td>
+                                        <td style="background: none; vertical-align: middle; padding-left: 4px;">
+                                            <span style="font-weight: bold; text-align: center;"></span></td>
+                                        <td style="background: none; vertical-align: middle; padding-left: 4px;">
+                                            <span style="font-weight: bold; text-align: center;">Qty</span></td>
+
+                                    </tr>
+                                    @{Model.AvailablePrePacks = Model.AvailablePrePacks.OrderBy(x => x.FitId).ToList();
+                                      bool shownButton = false;}
+
+                                    @for (var i = 0; i < Model.AvailablePrePacks.Count(); i++)
+                                    {
+                                        if (Model.AvailablePrePacks[i].ClothesScaleSizeClass.Any(x => x.Quantity > 0) && Model.AvailablePrePacks[i].InvQty > 0 && !string.IsNullOrEmpty(Model.AvailablePrePacks[i].Name))
+                                        {
+
+                                            if (colorIndex > 2)
+                                            {
+                                                colorIndex = 0;
+                                            }
+                                    
+                                        <tr style="color:@(colors.ElementAt(colorIndex))" class="itemRow @(Model.AvailablePrePacks[i].FitName != null ? Model.AvailablePrePacks[i].FitName.Replace(" ", "") : "")">
+                                            <td class="pnlScale" style="text-align: center; vertical-align: bottom;">
+                                                <div style="margin-left: 20px; text-align: center">
+                                                    <span id="lblName1" class="lblclass" style="padding-left: 0px;">@Model.AvailablePrePacks[i].Name</span>
+                                                </div>
+
+                                            </td>
+                                            @if (showFit)
+                                            {
+                                                <td class="padtop-20 pnlScale" style="text-align: left; vertical-align: bottom;">
+                                                    <div class="ClsFits">
+                                                        <div style="margin-left: 20px;">
+                                                            <span>@Model.AvailablePrePacks[i].FitName</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            }
+                                            <td class="pnlScale" style="vertical-align: bottom;">
+                                                <div class="ClsInseam">
+                                                    <div style="margin-left: 20px;">
+                                                        <span style="padding-left: 8px;">@Model.AvailablePrePacks[i].InseamName</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            @for (var j = 0; j < Model.AvailablePrePacks[i].ClothesScaleSizeClass.Count(); j++)
+                                            {
+                                                <td style="background: none; text-align: center; vertical-align: middle; padding-left: 4px">
+                                                    <input type="text" disabled="disabled" class="qty effect" style="font-weight: bold; text-align: center" value="@Model.AvailablePrePacks[i].ClothesScaleSizeClass[j].Quantity">
+                                                </td>
+                                            }
+                                            <td style="background: none; text-align: center; vertical-align: middle; padding-left: 4px">
+                                                <input type="text" disabled="disabled" class="effect" style="font-weight: bold; text-align: center" value="@Model.AvailablePrePacks[i].ClothesScaleSizeClass.Sum(x => x.Quantity)"></td>
+                                            <td style="background: none; text-align: center; vertical-align: middle; padding-left: 4px">
+                                                <input type="button" value="Break Prepack" class="btnbreak btnOrder" style="padding: 2px; color: rgb(255, 255, 255); background: rgb(0, 0, 0);">
+                                                @Html.HiddenFor(m => Model.AvailablePrePacks[i].ClothesScaleId, new { @class = "hidClass" })
+                                            </td>
+                                            <td style="background: none; text-align: center; vertical-align: middle; padding-left: 4px">
+                                                <input type="text" class="cls1det effect numOnly" style="font-weight: bold; text-align: center;color:black" title="@Model.AvailablePrePacks[i].ClothesScaleSizeClass.Sum(x => x.Quantity)"
+                                                onchange="checkMe(@Model.AvailablePrePacks[i].InvQty,this);" value="" onfocus="this.select();" onmouseup="return false;">
+                                                @Html.HiddenFor(m => Model.AvailablePrePacks[i].InvQty, new { @class = "hidAPClassdet" })
+                                            </td>
+
+                                        </tr>  
+                                            ++colorIndex;
+                                        }
+
+                                    }
+
+
+                                </table>
+                            </div>
+                            }
+                        }
+
+                        <div style="margin: 10px; text-align: right;">
+
+                            <div style="display: inline-block; font-weight: bold;">
+                                Total Order Qty:<span style="margin-left: 5px;" id="ttlQtydet">0</span>
+                            </div>
+                            <div style="display: inline-block; font-weight: bold; margin-left: 10px;">
+                                Total:<span style="margin-left: 5px;" id="ttlPrcdet">$ 0.00</span>
+                            </div>
+                            <input id="btnOrderAlldet" class="btnOrder" type="button" style="font-weight: bold; background: #283890; color: #FFFFFF; margin-left: 9px;" value="Add To Order">
+                            <div id="loader" style="width: 100%; text-align:right; display: none;" class="bgClass3">
+                                &nbsp;
+                            </div>
+                        </div>
+
+                    </div>
+                </td>
+            }
+        </tr>
+    </table>
+}
+<script type="text/javascript">
+    $(function () {
+        $("input[type='text'].qty").each(function () {
+            if ($(this).val() == "0" || $(this).val() === null) {
+                $(this).val("X");
+                $(this).css("color", "black");
+            }
+        });
+
+        if ($("#tdddlOpenSizeFitsdet").length > 0) {
+            var className = $("select#fitDdldet").val();
+
+            if (className != '') {
+                $("table#openSizeTbldet tr,table#prePackTbldet tr").each(function () {
+                    if ($(this).hasClass(className) == false)
+                        if ($(this).hasClass("imP") == false) {
+                            $(this).hide();
+                        }
+                });
+            }
+        }
+    });
+    $("select#fitDdldet").change(function () {
+        var className = $(this).val();
+        var changed = false;
+        if (className != '') {
+            $("table#prePackTbldet").show();
+            $("table#openSizeTbldet tr,table#prePackTbldet tr").each(function () {
+
+                if ($(this).hasClass(className) || $(this).hasClass("imP")) {
+                    $(this).show();
+                }
+                else {
+                    $(this).hide();
+                }
+            });
+            if ($("table#prePackTbldet tr." + className).length <= 0) {
+                $("table#prePackTbldet").hide();
+            }
+        }
+        doCalc();
+    });
+    $(".cls1det").focusin(function () {
+        $(this).css("background", "white");
+    });
+    $(".cls1det").focusout(function () {
+        $(this).css("background", "none");
+    });
+    $(".numOnly").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+            // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) ||
+            // Allow: home, end, left, right, down, up
+            (e.keyCode >= 35 && e.keyCode <= 40)) {
+            // let it happen, don't do anything
+            return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+    $(".opcaldet").change(function () {
+        var MaxVal = parseInt($(this).attr("data-val"));
+        var currentVal = parseInt($(this).val());
+        if (isNaN(MaxVal)) {
+            MaxVal = 0;
+        }
+        if (!isNaN(currentVal)) {
+            if (MaxVal < currentVal) {
+                $(this).val("");
+                var dialog = $('<p>You cannot order more than ' + MaxVal + ' quantity for this size</p>').dialog({
+                    resizable: false,
+                    modal: true,
+                    buttons: {
+                        "OK": function () { dialog.dialog('close'); }
+                    }
+                });
+                //alert("You cannot order more than " + MaxVal + " quantity for this pack");
+            }
+        }
+        else {
+            var dialog = $('<p>You cannot order more than ' + MaxVal + ' quantity for this size</p>').dialog({
+                resizable: false,
+                modal: true,
+                buttons: {
+                    "OK": function () { dialog.dialog('close'); }
+                }
+            });
+            //alert("You cannot order more than" + MaxVal + " quantity for this pack");
+        }
+        doCalc();
+    });
+    $("#btnOrderOpenSizes").click(function () {
+        var total = 0;
+        $(".opcaldet").each(function () {
+            if ($(this).is(":visible")) {
+                $(this).siblings(".hidOSClassdet").val("0");
+                var quant = $(this).val();
+                if (!isNaN(quant)) {
+                    total += quant;
+                    $(this).siblings(".hidOSClassdet").val(quant);
+                }
+            }
+            else {
+                $(this).siblings(".hidOSClassdet").val(quant);
+            }
+        });
+        if (total == 0) {
+            var dialog = $('<p>Please enter quantity for any size.</p>').dialog({
+                resizable: false,
+                modal: true,
+                buttons: {
+                    "OK": function () { dialog.dialog('close'); }
+                }
+            });
+            //alert("Please enter quantity for any size.");
+        }
+        else {
+
+            addMeToo("cls1det");
+        }
+    });
+    $("#btnOrderPrePackdet").click(function () {
+        var total = 0;
+        $(".cls1det").each(function () {
+            if ($(this).is(":visible")) {
+                $(this).siblings(".hidAPClassdet").val("0");
+                var quant = $(this).val();
+                if (!isNaN(quant)) {
+                    total += quant;
+                    $(this).siblings(".hidAPClassdet").val(quant);
+                }
+            }
+            else {
+                $(this).siblings(".hidAPClassdet").val("0");
+            }
+        });
+        if (total == 0) {
+            var dialog = $('<p>Please enter quantity for any size.</p>').dialog({
+                resizable: false,
+                modal: true,
+                buttons: {
+                    "OK": function () { dialog.dialog('close'); }
+                }
+            });
+            //alert("Please enter quantity for any size.");
+        }
+        else {
+
+            addMeToo("opcaldet");
+        }
+    });
+
+    $("#btnOrderAlldet").click(function () {
+        var total = 0;
+        $(".opcaldet").each(function () {
+            if ($(this).is(":visible")) {
+                $(this).siblings(".hidOSClassdet").val("0");
+                var quant = $(this).val();
+                if (!isNaN(quant)) {
+                    total += quant;
+                    $(this).siblings(".hidOSClassdet").val(quant);
+                }
+            }
+            else {
+                $(this).siblings(".hidOSClassdet").val(quant);
+            }
+        });
+        $(".cls1det").each(function () {
+            if ($(this).is(":visible")) {
+                $(this).siblings(".hidAPClassdet").val("0");
+                var quant = $(this).val();
+                if (!isNaN(quant)) {
+                    total += quant;
+                    $(this).siblings(".hidAPClassdet").val(quant);
+                }
+            }
+            else {
+                $(this).siblings(".hidAPClassdet").val("0");
+            }
+        });
+        if (total == 0) {
+            //alert("Please enter quantity for any size.");
+            var dialog = $('<p>Please enter quantity for any size.</p>').dialog({
+                resizable: false,
+                modal: true,
+                buttons: {
+                    "OK": function () { dialog.dialog('close'); }
+                }
+            });
+        }
+        else {
+            $("#formId").submit();
+            location.reload();
+        }
+    });
+    function addMeToo(className) {
+        var total = 0;
+        $("." + className).each(function () {
+            if ($(this).is(":visible")) {
+                var quant = $(this).val();
+                if (className == "cls1det")
+                    $(this).siblings(".hidAPClassdet").val("0");
+                else if (className == "opcaldet")
+                    $(this).siblings(".hidOSClassdet").val("0");
+                if (!isNaN(quant)) {
+                    total += quant;
+                    if (className == "cls1det")
+                        $(this).siblings(".hidAPClassdet").val(quant);
+                    else if (className == "opcaldet")
+                        $(this).siblings(".hidOSClassdet").val(quant);
+                }
+            }
+            else {
+                if (className == "cls1det")
+                    $(this).siblings(".hidAPClassdet").val("0");
+                else if (className == "opcaldet")
+                    $(this).siblings(".hidOSClassdet").val("0");
+            }
+        });
+
+        $("#formId").submit();
+    }
+
+    function checkMe(Total, elm) {
+
+        var currentVal = parseInt($(elm).val());
+        if (Total < currentVal) {
+            $(elm).val("");
+            var dialog = $('<p>You cannot order more than ' + Total + ' quantity for this pack</p>').dialog({
+                resizable: false,
+                modal: true,
+                buttons: {
+                    "OK": function () { dialog.dialog('close'); }
+                }
+            });
+            //alert("You cannot order more than " + Total + " quantity for this pack");
+        }
+        doCalc();
+    }
+
+    function doCalc() {
+        var price = $("#txtPrice").val();
+        var total = 0;
+        $(".opcaldet").each(function () {
+            if ($(this).is(":visible")) {
+                var quant = parseInt($(this).val());
+                if (!isNaN(quant)) {
+                    total = total + quant;
+                }
+            }
+        });
+        $(".cls1det").each(function () {
+            if ($(this).is(":visible")) {
+                var quant = parseInt($(this).val());
+                var item = parseInt($(this).attr("title"));
+                if (!isNaN(quant) && !isNaN(item)) {
+                    total = total + (quant * item);
+                }
+            }
+        });
+        $("#ttlQtydet").empty().text(total);
+        $("#ttlPrcdet").empty().text("$ " + (parseFloat(price) * total).toFixed(2));
+    }
+    $(".btnbreak").click(function () {
+        if (confirm("Are you sure you want to break this pack?")) {
+            var id = parseInt($(this).siblings("input[type='hidden'].hidClass").val());
+            if (id > 0) {
+                $.post('@Url.Action("BreakPack", "Home")', { id: id }).done(function (data) {
+                    if (data == "success") {
+                        window.location = window.location.href;
+                    }
+                    else {
+                        var dialog = $('<p>' + data + '</p>').dialog({
+                            resizable: false,
+                            modal: true,
+                            buttons: {
+                                "OK": function () { dialog.dialog('close'); }
+                            }
+                        });
+                        //alert(data);
+                    }
+                });
+            }
+        }
+    });
+    function check(data) {
+        
+        $("#detPart").dialog("close");
+        if (data == "success") {
+            $("#slide").click();
+            setTimeout(function () {
+                $("#slide").click();
+            }, 1000);
+        }
+        if (data == "failure") {
+            var dialog = $('<p>Please refresh your cart and try again.</p>').dialog({
+                resizable: false,
+                modal: true,
+                buttons: {
+                    "OK": function () { dialog.dialog('close'); }
+                }
+            });
+            //alert("Please refresh your cart and try again.");
+        }
+        
+    }
+</script>
+

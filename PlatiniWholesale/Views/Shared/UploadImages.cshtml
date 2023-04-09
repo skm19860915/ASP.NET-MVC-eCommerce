@@ -1,0 +1,163 @@
+﻿@using Platini.Models;
+@model DetailViewClass
+
+
+<div id="accordion" style="width: 100%;">
+
+    <h3>Style Number: @Model.StyleNumber</h3>
+    <div>
+        <div id="dropZonediv" style="height: 340px; border-bottom: #D3D3D3 1px solid; overflow: auto;">
+
+            <div id="dropLabel" style="height: 5%;">Drop files below!</div>
+            <div id="dropZone" style="height: 85%; border: 1px dashed blue"></div>
+            <div id="upProgressHolder" style="height: 5%;">
+                <div class="upProgress"></div>
+            </div>
+        </div>
+        <div style="padding-top: 5px;">
+            <ul id="gallery" data-listidx="0">
+                @if (Model.Images != null)
+                {
+                    foreach (var image in Model.Images)
+                    {
+                        
+                    <li class="sortList" id="@(image.ClothesImageId)">
+                        <div style="cursor: pointer;">
+                            <img id="imgpic@(image.ClothesImageId)" class="ui-draggable dropped" src="@Url.Content("~/Library/Uploads/WebThumb/" + image.ImagePath)" style="height:50px;width:45px;border-width:0px;">
+                        </div>
+                        <div class="closeDiv" style="cursor: pointer;">
+                            <img id="img@(image.ClothesImageId)" src="@Url.Content("~/Styles/image/IsNotActive.png")" onclick="DeleteThis(@image.ClothesImageId);"/>
+                            @Html.Hidden("hId", image.ClothesImageId, new { @id = "hid" + image.ClothesImageId, value = image.ClothesImageId })
+                        </div>
+
+                    </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+<div style="float: right; padding: 10px 0px;">
+    <button id="saveOrder" onclick="saveSort();" class="btn-Popup">Save</button>
+    <button id="closeUpload" onclick="closeUpload();" class="btn-Popup">Cancel</button>
+</div>
+<script src="@Url.Content("~/Scripts/jquery.filedrop.js")"></script>
+<script type="text/javascript">
+    $(function () {
+
+        //$("#accordion").accordion({
+        //    collapsible: true
+        //});
+        $("ul#gallery").sortable({ placeholder: "placeHolder" });
+
+
+        function buildLis() {
+            $.get('@Url.Action("GetImages", "Clothes", new { @area = "Common" })', { clothesId: '@Model.ClothesId' }).done(function (data) {
+                if (data === undefined || data === null) {
+                }
+                else {
+                    $("ul#gallery").empty();
+                    for (var x = 0; x < data.length; ++x) {
+                        $("ul#gallery").append('<li class="sortList" id="' + data[x].ClothesImageId + '"><div style="cursor: pointer;"><img id="imgpic' + data[x].ClothesImageId + '" class="ui-draggable dropped" src="/Library/Uploads/WebThumb/' + data[x].ImagePath + '" style="height:50px;width:45px;border-width:0px;"></div><div class="closeDiv" style="cursor: pointer;"><img id="img' + data[x].ClothesImageId + '" src="@Url.Content("~/Styles/image/IsNotActive.png")" onclick="DeleteThis(' + data[x].ClothesImageId + ')"/></div><input type="hidden" name="hId" value="' + data[x].ClothesImageId + '" id="hid' + data[x].ClothesImageId + '"/> </li>');
+                    }
+                }
+            });
+        }
+        $("#upProgressHolder").progressbar({
+            value: false, complete: function () {
+                $(".upProgress").addClass("upDone");
+                $("#upProgressHolder").progressbar("value", 0);
+            }
+        });
+
+        $('#dropZone').filedrop({
+            url: '@Url.Action("FileUpload", "Clothes", new { @area = "Common" })',
+            paramname: 'files',
+            data: {
+                clothesId: '@Model.ClothesId',
+                StyleNumber: '@Model.StyleNumber'
+            },
+            error: function (err, file) {
+                switch (err) {
+                    case 'BrowserNotSupported':
+                        alert('browser does not support HTML5 drag and drop');
+                        buildLis();
+                        $(".upProgress").addClass("upDone");
+                        break;
+                    case 'TooManyFiles':
+                        alert('file limit exceeded');
+                        buildLis();
+                        $(".upProgress").addClass("upDone");
+                        break;
+                    case 'FileTooLarge':
+                        alert(file.name + ", file size too large");
+                        buildLis();
+                        $(".upProgress").addClass("upDone");
+                        break;
+                    case 'FileTypeNotAllowed':
+                        alert("upload image files only");
+                        buildLis();
+                        $(".upProgress").addClass("upDone");
+                        break;
+                    case 'FileExtensionNotAllowed':
+                        alert("upload image files only");
+                        buildLis();
+                        $(".upProgress").addClass("upDone");
+                        break;
+                    default:
+                        alert("Error");
+                        buildLis();
+                        $(".upProgress").addClass("upDone");
+                        break;
+                }
+            },
+            queuefiles: 1,
+            allowedfiletypes: ['image/jpeg', 'image/png', 'image/gif'],
+            allowedfileextensions: ['.jpg', '.jpeg', '.png', '.gif'],
+            afterAll: function () {
+                $('#dropLabel').empty().append('The file(s) have been uploaded successfully!');
+                setName('@Model.ClothesId');
+            },
+            uploadStarted: function (i, file, len) {
+                $("#upProgressHolder").progressbar("value", 0);
+            },
+            progressUpdated: function (i, file, progress) {
+                $("#upProgressHolder").progressbar("value", progress);
+            },
+            uploadFinished: function (i, file, response) {
+                $('#dropLabel').empty().append('Uploading next file...');
+            }
+        });
+        function setName(Id) {
+            $.post('@Url.Action("SetStyleNumber", "Clothes", new { @area = "Common" })', { clothesId: Id }).done(function () {
+                buildLis();
+            });
+        }
+    });
+
+    
+
+    $("#ImageButton").click(function () {
+        $("ul#gallery").sortable();
+    });
+    function DeleteThis(Id) {
+        if (confirm("Are you sure you want to delete this image?")) {
+            if (isFinite(Id) && Id > 0) {
+                $.post('@Url.Action("DeleteImage", "Clothes", new { @area = "Common" })', { ClothesId: Id }, function (data) {
+                        if (data === undefined || data === null) {
+
+                            alert("Error");
+                        }
+                        else {
+                            $("ul#gallery").empty();
+                            for (var x = 0; x < data.length; ++x) {
+                                $("ul#gallery").append('<li class="sortList" id="' + data[x].ClothesImageId + '"><div style="cursor: pointer;"><img id="imgpic' + data[x].ClothesImageId + '" class="ui-draggable dropped" src="/Library/Uploads/' + data[x].ImagePath + '" style="height:50px;width:45px;border-width:0px;"></div><div class="closeDiv" style="cursor: pointer;"><img id="img' + data[x].ClothesImageId + '" src="@Url.Content("~/Styles/image/IsNotActive.png")" onclick="DeleteThis(' + data[x].ClothesImageId + ')" /></div><input type="hidden" name="hId" value="' + data[x].ClothesImageId + '" id="hid' + data[x].ClothesImageId + '"/> </li>');
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        
+</script>

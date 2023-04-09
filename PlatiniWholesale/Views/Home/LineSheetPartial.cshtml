@@ -1,0 +1,257 @@
+﻿@using Platini.Models
+@model LinesheetSelectModel
+@{
+    bool EditMode = SiteConfiguration.Mode.ToLower() == ModeEnum.Edit.ToString().ToLower();
+    bool OrderMode = SiteConfiguration.Mode.ToLower() == ModeEnum.Order.ToString().ToLower();
+}
+
+<style>
+    .ui-front {
+        z-index: 99999 !important;
+    }
+</style>
+<div class="topBar">
+    @Html.HiddenFor(m=> Model.SubCategoryTypeId, new { id="CtypeId"})
+    <div class="topBarLeft">
+        <ul>
+            <li>
+                <label class="topBarLabel">Category:</label>
+                <div class="topBarSDiv">
+                    @Html.DropDownListFor(m => Model.CategoryId, new SelectList(Model.Categories, "Id", "Value", 0), "Select Category", new { @id = "ddlCategories", @class = "topBarSelect" })
+                </div>
+            </li>
+            <li>
+                <label class="topBarLabel">Sub-Category:</label>
+                <div class="topBarSDiv">
+                    @Html.DropDownListFor(m => Model.SubCategoryId, new SelectList(Model.SubCategories, "Id", "Value", 0), "Select Sub-Category", new { @id = "ddlSubCategories", @class = "topBarSelect" })
+                </div>
+            </li>
+            <li>
+                <label class="topBarLabel">Type:</label>
+                <div class="topBarSDiv">
+                    @Html.DropDownListFor(m => Model.SubCategoryTypeId, new SelectList(Model.Types, "Id", "Value", 0), "Select Type", new { @id = "ddlCategoryTypes", @class = "topBarSelect" })
+                </div>
+            </li>
+        </ul>
+    </div>
+    @if (!EditMode && !OrderMode)
+    {
+        <div class="topBarRight">
+            <span style="width: 30%;">
+                <label class="topBarLabel">
+                    <input type="checkbox" value="" class="topBarCheck checkAll" />Select All
+                </label>
+            </span>
+            <span style="width: 40%;">
+                <input type="button" value="Send Email" class="topBarButton sendMail" />
+            </span>
+            <span style="width: 30%;">
+                <a id="prntUrl" href="javascript:void(0);" target="_blank" data-future="@(ViewBag.isFuture ? "1" : "")" data-deactive="@(ViewBag.isDeactive ? "1" : "")">
+                    <img src="@Url.Content("~/Styles/images/print_img.png")" title="Print" />
+                </a>
+            </span>
+        </div>
+    }
+    else if (!EditMode && OrderMode)
+    {
+        <div class="topBarRight">
+            <span style="width: 30%;">
+                <label class="topBarLabel">
+                    <input type="checkbox" value="" class="topBarCheck checkAll" />Select All
+                </label>
+            </span>
+            @if (!ViewBag.isDeactive)
+            {
+                <span style="width: 40%;">
+                    <input type="button" value="Add To Order" class="topBarButton saveAll" />
+                </span>
+            }
+            <span style="width: 30%;">
+                <input type="button" value="Send Email" class="topBarButton sendMail" />
+                <a id="prntUrl" href="javascript:void(0);" target="_blank" data-future="@(ViewBag.isFuture ? "1" : "")" data-deactive="@(ViewBag.isDeactive ? "1" : "")">
+                    <img src="@Url.Content("~/Styles/images/print_img.png")" title="Print" />
+                </a>
+            </span>
+        </div>
+    }
+    else
+    {
+        <div class="topBarRight">
+            <span style="width: 30%;">
+                <label class="topBarLabel">
+                    <input type="checkbox" value="" class="topBarCheck checkAll" />Select All
+                </label>
+            </span>
+            <span style="width: 40%;">
+                <input type="button" value="Send Email" class="topBarButton sendMail" />
+            </span>
+            <span style="width: 30%;">
+                <input type="button" value="Save" class="topBarButton saveAll" />
+                @if (!ViewBag.isDeactive)
+                {
+                    <input type="button" value="Deactivate" class="topBarButton deactivateAll" />                   
+                }
+                else
+                {
+                    <input type="button" value="Activate" class="topBarButton activateAll" />
+                }
+            </span>
+            @*<span style="color: white">
+               Inventory:
+                <input type="checkbox" name="my-checkbox" checked data-size="mini">                
+            </span>*@            
+           </div>        
+    }
+    <div class="clearfix"></div>
+</div>
+
+<script type="text/javascript">
+    $("[name='my-checkbox']").bootstrapSwitch();
+
+    $('input[name="my-checkbox"]').on('switchChange.bootstrapSwitch', function (event, state) {
+        //alert(state);
+        var Type = $('#CtypeId').val();
+        //alert(Type);
+        if(state==true)
+        {
+            if (confirm("Are you sure you want to auto deactivate on?")) {
+                $.post('@Url.Action("AutoDeactivateAllClothes")', { check: state, Type : Type }).done(function (data) {
+                    window.location = window.location.href;
+                });
+            }
+        }
+        else
+        {
+            if (confirm("Are you sure you want to auto deactivate off?")) {
+                $.post('@Url.Action("AutoDeactivateAllClothes")', { check: state, Type: Type }).done(function (data) {
+                    window.location = window.location.href;
+                });
+            }
+        }
+    });    
+
+    $("#ddlCategories").change(function () {
+        var selectedItem = $(this).val();
+        var updateHolder = $("#ddlSubCategories");
+
+        $.ajax({
+            type: "GET",
+            url: "@(Url.Action("GetSubCategoryByCategoryId", "Size", new { @area = "Common" }))",
+            data: { "categoryId": selectedItem },
+            success: function (data) {
+                updateHolder.html('');
+                updateHolder.append($('<option>Select Sub-Category</option>'));
+                $.each(data, function (id, option) {
+                    updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                });
+                $("#ddlCategoryTypes").html('');
+                $("#ddlCategoryTypes").append($('<option>Select Type</option>'));
+            },
+            error: function () { }
+        });
+    });
+    $("#ddlSubCategories").change(function () {
+        var selectedItem = $(this).val();
+        var updateHolder = $("#ddlCategoryTypes");
+
+        $.ajax({
+            type: "GET",
+            url: "@(Url.Action("GetSubCategoryTypeBySubCategoryId", "Size", new { @area = "Common" }))",
+            data: { "subCategoryId": selectedItem },
+            success: function (data) {
+                updateHolder.html('');
+                updateHolder.append($('<option>Select Type</option>'));
+                $.each(data, function (id, option) {
+                    updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                });
+            },
+            error: function () { }
+        });
+    });
+    $("#ddlCategoryTypes").change(function () {
+        var selectedItem = $(this).val();
+        if (parseInt(selectedItem) > 0) {
+            window.location.href = "/Home/LineSheet?TypeId=" + selectedItem + '&' + '@(ViewBag.isFuture?"future=1":"")';
+        }
+
+    });
+    $(".saveAll").click(function () {
+        var any = $(".divCheck:checked").length > 0;
+        if (any == true) {
+            if ($("#linesheetForm").length > 0)
+                $("#linesheetForm").submit();
+        }
+        else
+            alert("Please check at least one checkbox");
+    });
+    $(".deactivateAll").click(function () {
+        var any = $(".divCheck:checked").length > 0;
+        if (any == true) {
+            var Ids = [];
+            $(".divCheck:checked").each(function () {
+                Ids.push(parseInt($(this).attr('dataval')));
+            });
+            if (confirm("Are you sure you want to deactivate the checked items?")) {
+                $.post('@Url.Action("DeactivateClothes")', { Ids: JSON.stringify(Ids) }).done(function (data) {
+                    window.location = window.location.href;
+                });
+            }
+        }
+        else
+            alert("Please check at least one checkbox");
+    });
+    $(".activateAll").click(function () {
+        var any = $(".divCheck:checked").length > 0;
+        if (any == true) {
+            var Ids = [];
+            $(".divCheck:checked").each(function () {
+                Ids.push($(this).attr('dataval'));
+            });
+            if (confirm("Are you sure you want to activate the checked items?")) {
+                $.post('@Url.Action("ActivateClothes", "Home", new { @area = "common" })', $.param({ selectedClothIds: Ids }, true)).done(function (data) {
+                    window.location = window.location.href;
+                });
+            }
+        }
+        else
+            alert("Please check at least one checkbox");
+    });
+    $(".checkAll").change(function () {
+        var checked = $(this).is(":checked");
+        $(".divCheck").prop("checked", checked);
+    });
+    $(".sendMail").click(function () {
+        var any = $(".divCheck:checked");
+        if (any.length > 0) {
+            if ($(".checkAll").is(":checked")) {
+            }
+            else {
+                var sendIds = '';
+                $.each(any, function () {
+                    sendIds += $(this).attr('dataval') + ",";
+                });
+                $("#sendIds").val(sendIds);
+            }
+            $("#dialog").dialog("open");
+        }
+        else
+            alert("Please check at least one checkbox");
+    });
+    $("#prntUrl").click(function () {
+        var any = $(".checkAll");
+        var sendIds = '';
+        var isfuture = $(this).data("future");
+        var isdeactive = $(this).data("deactive");
+        $.each($(".divCheck:checked"), function () {
+            sendIds += $(this).attr('dataval') + ",";
+        });
+        if (any.is(":checked") > 0) {
+
+            $(this).attr('href', "@Url.Action("PrintLineSheet", "Home")" + "?sA=1&future=" + isfuture + "&deactive=" + isdeactive);
+        }
+        else {
+            $(this).attr('href', "@Url.Action("PrintLineSheet", "Home")" + "?sA=0&sIds=" + sendIds + "&future=" + isfuture + "&deactive=" + isdeactive);
+        }
+    });
+   
+</script>

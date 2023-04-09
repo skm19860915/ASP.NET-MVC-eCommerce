@@ -1,0 +1,1937 @@
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A91704C5-2F62-4B7A-828A-226FB2AB96A0}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PlatiniWholesale</RootNamespace>
+    <AssemblyName>PlatiniWholesale</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.3.1.7705, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="DevDefined.OAuth, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a3261f5b4697e67d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\DevDefined.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="HiQPdf, Version=5.9.0.0, Culture=neutral, PublicKeyToken=acd8b62594985b24, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\HiQPdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Core, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Data, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.DataService, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.DataService.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Diagnostics, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Exception, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.Exception.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.LinqExtender, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.LinqExtender.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.PlatformService, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.PlatformService.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.QueryFilter, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.QueryFilter.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.ReportService, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.ReportService.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Retry, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.Retry.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Security, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Intuit.Ipp.Utility, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Intuit.Ipp.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.4.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Omu.ValueInjecter, Version=2.3.3.0, Culture=neutral, PublicKeyToken=c7694541b0ac80e4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Omu.ValueInjecter.dll</HintPath>
+    </Reference>
+    <Reference Include="PayPal, Version=1.7.2.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\PayPal.dll</HintPath>
+    </Reference>
+    <Reference Include="PayPalCoreSDK, Version=1.7.0.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\PayPalCoreSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="PayPalMerchantSDK, Version=2.15.117.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\PayPalMerchantSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Resources, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Resources.dll</HintPath>
+    </Reference>
+    <Reference Include="ShipWSSample, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\ShipWSSample.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Net.Http">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebGrease, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="WebsitesScreenshot, Version=1.6.0.0, Culture=neutral, PublicKeyToken=a86c4eea080940bd, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\WebsitesScreenshot.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ckeditor\adapters\jquery.js" />
+    <Content Include="ckeditor\build-config.js" />
+    <Content Include="ckeditor\ckeditor.js" />
+    <Content Include="ckeditor\config.js" />
+    <Content Include="ckeditor\contents.css" />
+    <Content Include="ckeditor\lang\af.js" />
+    <Content Include="ckeditor\lang\ar.js" />
+    <Content Include="ckeditor\lang\bg.js" />
+    <Content Include="ckeditor\lang\bn.js" />
+    <Content Include="ckeditor\lang\bs.js" />
+    <Content Include="ckeditor\lang\ca.js" />
+    <Content Include="ckeditor\lang\cs.js" />
+    <Content Include="ckeditor\lang\cy.js" />
+    <Content Include="ckeditor\lang\da.js" />
+    <Content Include="ckeditor\lang\de.js" />
+    <Content Include="ckeditor\lang\el.js" />
+    <Content Include="ckeditor\lang\en-au.js" />
+    <Content Include="ckeditor\lang\en-ca.js" />
+    <Content Include="ckeditor\lang\en-gb.js" />
+    <Content Include="ckeditor\lang\en.js" />
+    <Content Include="ckeditor\lang\eo.js" />
+    <Content Include="ckeditor\lang\es.js" />
+    <Content Include="ckeditor\lang\et.js" />
+    <Content Include="ckeditor\lang\eu.js" />
+    <Content Include="ckeditor\lang\fa.js" />
+    <Content Include="ckeditor\lang\fi.js" />
+    <Content Include="ckeditor\lang\fo.js" />
+    <Content Include="ckeditor\lang\fr-ca.js" />
+    <Content Include="ckeditor\lang\fr.js" />
+    <Content Include="ckeditor\lang\gl.js" />
+    <Content Include="ckeditor\lang\gu.js" />
+    <Content Include="ckeditor\lang\he.js" />
+    <Content Include="ckeditor\lang\hi.js" />
+    <Content Include="ckeditor\lang\hr.js" />
+    <Content Include="ckeditor\lang\hu.js" />
+    <Content Include="ckeditor\lang\id.js" />
+    <Content Include="ckeditor\lang\is.js" />
+    <Content Include="ckeditor\lang\it.js" />
+    <Content Include="ckeditor\lang\ja.js" />
+    <Content Include="ckeditor\lang\ka.js" />
+    <Content Include="ckeditor\lang\km.js" />
+    <Content Include="ckeditor\lang\ko.js" />
+    <Content Include="ckeditor\lang\ku.js" />
+    <Content Include="ckeditor\lang\lt.js" />
+    <Content Include="ckeditor\lang\lv.js" />
+    <Content Include="ckeditor\lang\mk.js" />
+    <Content Include="ckeditor\lang\mn.js" />
+    <Content Include="ckeditor\lang\ms.js" />
+    <Content Include="ckeditor\lang\nb.js" />
+    <Content Include="ckeditor\lang\nl.js" />
+    <Content Include="ckeditor\lang\no.js" />
+    <Content Include="ckeditor\lang\pl.js" />
+    <Content Include="ckeditor\lang\pt-br.js" />
+    <Content Include="ckeditor\lang\pt.js" />
+    <Content Include="ckeditor\lang\ro.js" />
+    <Content Include="ckeditor\lang\ru.js" />
+    <Content Include="ckeditor\lang\si.js" />
+    <Content Include="ckeditor\lang\sk.js" />
+    <Content Include="ckeditor\lang\sl.js" />
+    <Content Include="ckeditor\lang\sq.js" />
+    <Content Include="ckeditor\lang\sr-latn.js" />
+    <Content Include="ckeditor\lang\sr.js" />
+    <Content Include="ckeditor\lang\sv.js" />
+    <Content Include="ckeditor\lang\th.js" />
+    <Content Include="ckeditor\lang\tr.js" />
+    <Content Include="ckeditor\lang\tt.js" />
+    <Content Include="ckeditor\lang\ug.js" />
+    <Content Include="ckeditor\lang\uk.js" />
+    <Content Include="ckeditor\lang\vi.js" />
+    <Content Include="ckeditor\lang\zh-cn.js" />
+    <Content Include="ckeditor\lang\zh.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\a11yhelp.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\af.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\ar.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\bg.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\ca.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\cs.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\cy.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\da.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\de.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\el.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\en-gb.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\en.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\eo.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\es.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\et.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\fa.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\fi.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\fr-ca.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\fr.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\gl.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\gu.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\he.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\hi.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\hr.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\hu.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\id.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\it.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\ja.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\km.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\ko.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\ku.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\lt.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\lv.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\mk.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\mn.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\nb.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\nl.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\no.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\pl.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\pt-br.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\pt.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\ro.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\ru.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\si.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\sk.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\sl.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\sq.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\sr-latn.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\sr.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\sv.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\th.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\tr.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\tt.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\ug.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\uk.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\vi.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\zh-cn.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\zh.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\_translationstatus.txt" />
+    <Content Include="ckeditor\plugins\about\dialogs\about.js" />
+    <Content Include="ckeditor\plugins\about\dialogs\hidpi\logo_ckeditor.png" />
+    <Content Include="ckeditor\plugins\about\dialogs\logo_ckeditor.png" />
+    <Content Include="ckeditor\plugins\clipboard\dialogs\paste.js" />
+    <Content Include="ckeditor\plugins\dialog\dialogDefinition.js" />
+    <Content Include="ckeditor\plugins\icons.png" />
+    <Content Include="ckeditor\plugins\icons_hidpi.png" />
+    <Content Include="ckeditor\plugins\image\dialogs\image.js" />
+    <Content Include="ckeditor\plugins\image\images\noimage.png" />
+    <Content Include="ckeditor\plugins\link\dialogs\anchor.js" />
+    <Content Include="ckeditor\plugins\link\dialogs\link.js" />
+    <Content Include="ckeditor\plugins\link\images\anchor.png" />
+    <Content Include="ckeditor\plugins\link\images\hidpi\anchor.png" />
+    <Content Include="ckeditor\plugins\magicline\images\hidpi\icon-rtl.png" />
+    <Content Include="ckeditor\plugins\magicline\images\hidpi\icon.png" />
+    <Content Include="ckeditor\plugins\magicline\images\icon-rtl.png" />
+    <Content Include="ckeditor\plugins\magicline\images\icon.png" />
+    <Content Include="ckeditor\plugins\pastefromword\filter\default.js" />
+    <Content Include="ckeditor\plugins\scayt\dialogs\options.js" />
+    <Content Include="ckeditor\plugins\scayt\dialogs\toolbar.css" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\af.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\ar.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\bg.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\ca.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\cs.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\cy.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\da.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\de.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\el.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\en-gb.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\en.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\eo.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\es.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\et.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\fa.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\fi.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\fr-ca.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\fr.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\gl.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\he.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\hr.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\hu.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\id.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\it.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\ja.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\km.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\ku.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\lt.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\lv.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\nb.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\nl.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\no.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\pl.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\pt-br.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\pt.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\ru.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\si.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\sk.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\sl.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\sq.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\sv.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\th.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\tr.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\tt.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\ug.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\uk.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\vi.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\zh-cn.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\zh.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\_translationstatus.txt" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\specialchar.js" />
+    <Content Include="ckeditor\plugins\tabletools\dialogs\tableCell.js" />
+    <Content Include="ckeditor\plugins\table\dialogs\table.js" />
+    <Content Include="ckeditor\plugins\wsc\dialogs\ciframe.html" />
+    <Content Include="ckeditor\plugins\wsc\dialogs\tmpFrameset.html" />
+    <Content Include="ckeditor\plugins\wsc\dialogs\wsc.css" />
+    <Content Include="ckeditor\plugins\wsc\dialogs\wsc.js" />
+    <Content Include="ckeditor\plugins\wsc\dialogs\wsc_ie.js" />
+    <Content Include="ckeditor\samples\ajax.html" />
+    <Content Include="ckeditor\samples\api.html" />
+    <Content Include="ckeditor\samples\appendto.html" />
+    <Content Include="ckeditor\samples\assets\inlineall\logo.png" />
+    <Content Include="ckeditor\samples\assets\outputxhtml\outputxhtml.css" />
+    <Content Include="ckeditor\samples\assets\posteddata.php" />
+    <Content Include="ckeditor\samples\assets\sample.jpg" />
+    <Content Include="ckeditor\samples\assets\uilanguages\languages.js" />
+    <Content Include="ckeditor\samples\datafiltering.html" />
+    <Content Include="ckeditor\samples\divreplace.html" />
+    <Content Include="ckeditor\samples\index.html" />
+    <Content Include="ckeditor\samples\inlineall.html" />
+    <Content Include="ckeditor\samples\inlinebycode.html" />
+    <Content Include="ckeditor\samples\inlinetextarea.html" />
+    <Content Include="ckeditor\samples\jquery.html" />
+    <Content Include="ckeditor\samples\plugins\dialog\assets\my_dialog.js" />
+    <Content Include="ckeditor\samples\plugins\dialog\dialog.html" />
+    <Content Include="ckeditor\samples\plugins\enterkey\enterkey.html" />
+    <Content Include="ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.swf" />
+    <Content Include="ckeditor\samples\plugins\htmlwriter\assets\outputforflash\swfobject.js" />
+    <Content Include="ckeditor\samples\plugins\htmlwriter\outputforflash.html" />
+    <Content Include="ckeditor\samples\plugins\htmlwriter\outputhtml.html" />
+    <Content Include="ckeditor\samples\plugins\magicline\magicline.html" />
+    <Content Include="ckeditor\samples\plugins\toolbar\toolbar.html" />
+    <Content Include="ckeditor\samples\plugins\wysiwygarea\fullpage.html" />
+    <Content Include="ckeditor\samples\readonly.html" />
+    <Content Include="ckeditor\samples\replacebyclass.html" />
+    <Content Include="ckeditor\samples\replacebycode.html" />
+    <Content Include="ckeditor\samples\sample.css" />
+    <Content Include="ckeditor\samples\sample.js" />
+    <Content Include="ckeditor\samples\sample_posteddata.php" />
+    <Content Include="ckeditor\samples\tabindex.html" />
+    <Content Include="ckeditor\samples\uicolor.html" />
+    <Content Include="ckeditor\samples\uilanguages.html" />
+    <Content Include="ckeditor\samples\xhtmlstyle.html" />
+    <Content Include="ckeditor\skins\moono\dialog.css" />
+    <Content Include="ckeditor\skins\moono\dialog_ie.css" />
+    <Content Include="ckeditor\skins\moono\dialog_ie7.css" />
+    <Content Include="ckeditor\skins\moono\dialog_ie8.css" />
+    <Content Include="ckeditor\skins\moono\dialog_iequirks.css" />
+    <Content Include="ckeditor\skins\moono\editor.css" />
+    <Content Include="ckeditor\skins\moono\editor_gecko.css" />
+    <Content Include="ckeditor\skins\moono\editor_ie.css" />
+    <Content Include="ckeditor\skins\moono\editor_ie7.css" />
+    <Content Include="ckeditor\skins\moono\editor_ie8.css" />
+    <Content Include="ckeditor\skins\moono\editor_iequirks.css" />
+    <Content Include="ckeditor\skins\moono\icons.png" />
+    <Content Include="ckeditor\skins\moono\icons_hidpi.png" />
+    <Content Include="ckeditor\skins\moono\images\arrow.png" />
+    <Content Include="ckeditor\skins\moono\images\close.png" />
+    <Content Include="ckeditor\skins\moono\images\hidpi\close.png" />
+    <Content Include="ckeditor\skins\moono\images\hidpi\lock-open.png" />
+    <Content Include="ckeditor\skins\moono\images\hidpi\lock.png" />
+    <Content Include="ckeditor\skins\moono\images\hidpi\refresh.png" />
+    <Content Include="ckeditor\skins\moono\images\lock-open.png" />
+    <Content Include="ckeditor\skins\moono\images\lock.png" />
+    <Content Include="ckeditor\skins\moono\images\refresh.png" />
+    <Content Include="ckeditor\styles.js" />
+    <Content Include="DB\PlatiniDB.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>PlatiniDB.edmx</DependentUpon>
+      <LastGenOutput>PlatiniDB.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DB\PlatiniDB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>PlatiniDB.edmx</DependentUpon>
+      <LastGenOutput>PlatiniDB.cs</LastGenOutput>
+    </Content>
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Screenshot\UPS-Label\5778.gif" />
+    <Content Include="Scripts\additional-methods.js" />
+    <Content Include="Scripts\bootstrap-switch.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\classie.js" />
+    <Content Include="Scripts\common.js" />
+    <Content Include="Scripts\common_002.js" />
+    <Content Include="Scripts\DetailPageStuff.js" />
+    <Content Include="Scripts\Elements.js" />
+    <Content Include="Scripts\FacebookAction.js" />
+    <Content Include="Scripts\GoogleAction.js" />
+    <Content Include="Scripts\intlTelInput.js" />
+    <Content Include="Scripts\intlTelInput.min.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Areas\Common\Views\Backgrounds\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\Backgrounds\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Brand\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\Brand\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Category\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\Category\Index.cshtml" />
+    <Content Include="Areas\Common\Views\CategoryType\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\CategoryType\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\AddClothesTwo.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\AddNewScale.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\GetAllColors.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\GetAllProducts.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\MapCreateEdit.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\MassUpload.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\MassUpload2.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\RelatedProduct.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\Step1.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\Step2.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\TagMap.cshtml" />
+    <Content Include="Areas\Common\Views\Clothes\TagMaps.cshtml" />
+    <Content Include="Areas\Common\Views\Customer\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\Customer\InactiveCustomer.cshtml" />
+    <Content Include="Areas\Common\Views\Customer\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Customer\ShowRoomImages.cshtml" />
+    <Content Include="Areas\Common\Views\Employee\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\Employee\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Failure\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Fit\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\Fit\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Home\Account.cshtml" />
+    <Content Include="Areas\Common\Views\Home\DeactivatedProducts.cshtml" />
+    <Content Include="Areas\Common\Views\Home\FutureDeliveries.cshtml" />
+    <Content Include="Areas\Common\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Home\NewsLetterSignUps.cshtml" />
+    <Content Include="Areas\Common\Views\Home\OnlineNow.cshtml" />
+    <Content Include="Areas\Common\Views\Home\Visitors.cshtml" />
+    <Content Include="Areas\Common\Views\Inseam\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\Inseam\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Order\AddressDetail.cshtml" />
+    <Content Include="Areas\Common\Views\Order\ConfirmBox.cshtml" />
+    <Content Include="Areas\Common\Views\Order\DetailPartial.cshtml" />
+    <Content Include="Areas\Common\Views\Order\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Order\Index2.cshtml" />
+    <Content Include="Areas\Common\Views\Order\OrderHeader.cshtml" />
+    <Content Include="Areas\Common\Views\Order\PackagingList.cshtml" />
+    <Content Include="Areas\Common\Views\Order\ProcessOrder.cshtml" />
+    <Content Include="Areas\Common\Views\Order\ProcessOrder2.cshtml" />
+    <Content Include="Areas\Common\Views\Order\UpsDetail.cshtml" />
+    <Content Include="Areas\Common\Views\Order\UpsFinal.cshtml" />
+    <Content Include="Areas\Common\Views\Order\UpsShip.cshtml" />
+    <Content Include="Areas\Common\Views\Web.config" />
+    <EntityDeploy Include="DB\PlatiniDB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>PlatiniDB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="DB\PlatiniDB.edmx.diagram">
+      <DependentUpon>PlatiniDB.edmx</DependentUpon>
+    </Content>
+    <None Include="Scripts\jquery-1.4.1-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.4.1.js" />
+    <Content Include="Scripts\jquery-1.4.1.min.js" />
+    <Content Include="Scripts\jquery-1.7.1.min.js" />
+    <None Include="Scripts\jquery-1.8.3.intellisense.js" />
+    <Content Include="Scripts\jquery-1.8.3.js" />
+    <Content Include="Scripts\jquery-1.8.3.min.js" />
+    <Content Include="Scripts\jquery-1.9.1.js" />
+    <Content Include="Scripts\jquery-1.js" />
+    <Content Include="Scripts\jquery-cashme.js" />
+    <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\jquery.colorbox.js" />
+    <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Scripts\jquery.filedrop.js" />
+    <Content Include="Scripts\jquery.js" />
+    <Content Include="Scripts\jQuery.loadScroll.js" />
+    <Content Include="Scripts\jquery.popupoverlay.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.unveil.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery_002.js" />
+    <Content Include="Scripts\modalEffects.js" />
+    <Content Include="Scripts\modernizr.custom.js" />
+    <Content Include="Scripts\owl.carousel.js" />
+    <Content Include="Scripts\PlatiniScroll.js" />
+    <Content Include="Scripts\responsivemobilemenu.js" />
+    <Content Include="Scripts\supersized.3.2.7.js" />
+    <Content Include="Scripts\supersized.3.2.7.min.js" />
+    <Content Include="Scripts\supersized.shutter.min.js" />
+    <Content Include="Scripts\ToolTip.js" />
+    <Content Include="Scripts\utils.js" />
+    <Content Include="Styles\admin.css" />
+    <Content Include="Styles\BootMerge.css" />
+    <Content Include="Styles\bootstrap-switch.css" />
+    <Content Include="Styles\bootstrap-switch.min.css" />
+    <Content Include="Styles\bootstrap.min.css" />
+    <Content Include="Styles\colorbox.css" />
+    <Content Include="Styles\component.css" />
+    <Content Include="Styles\font-awesome.css" />
+    <Content Include="Styles\fonts.css" />
+    <Content Include="Styles\fonts\fontawesome-webfont.svg" />
+    <Content Include="Styles\fonts\helveticaltstd-bold-webfont.svg" />
+    <Content Include="Styles\fonts\helveticaltstd-roman-webfont.svg" />
+    <Content Include="Styles\fonts\myriadpro-bold_0-webfont.svg" />
+    <Content Include="Styles\fonts\myriadpro-light-webfont.svg" />
+    <Content Include="Styles\fonts\myriadpro-regular_0-webfont.svg" />
+    <Content Include="Styles\fonts\myriadpro-semibold_0-webfont.svg" />
+    <Content Include="Styles\full-slide.css" />
+    <Content Include="Styles\images\##arrow_right.png" />
+    <Content Include="Styles\images\ad-cus.png" />
+    <Content Include="Styles\images\addlistIcon.png" />
+    <Content Include="Styles\images\adPro.png" />
+    <Content Include="Styles\images\animated-overlay.gif" />
+    <Content Include="Styles\images\ar.png" />
+    <Content Include="Styles\images\arrow_right.png" />
+    <Content Include="Styles\images\ax.png" />
+    <Content Include="Styles\images\bg-sale.png" />
+    <Content Include="Styles\images\BlankImage.png" />
+    <Content Include="Styles\images\btnClearance.png" />
+    <Content Include="Styles\images\btnClearance_color.png" />
+    <Content Include="Styles\images\btnViewMyOrder.png" />
+    <Content Include="Styles\images\c5e709a3.jpg" />
+    <Content Include="Styles\images\cancel.png" />
+    <Content Include="Styles\images\carousel-control-left.png" />
+    <Content Include="Styles\images\carousel-control-right.png" />
+    <Content Include="Styles\images\cart.png" />
+    <Content Include="Styles\images\cartLogo.png" />
+    <Content Include="Styles\images\cb_scout2.png" />
+    <Content Include="Styles\images\controls.png" />
+    <Content Include="Styles\images\cross.png" />
+    <Content Include="Styles\images\crossOver.png" />
+    <Content Include="Styles\images\cutpa.png" />
+    <Content Include="Styles\images\dc.png" />
+    <Content Include="Styles\images\editimgpng.png" />
+    <Content Include="Styles\images\exclusive.png" />
+    <Content Include="Styles\images\facebook_color.png" />
+    <Content Include="Styles\images\face_black.png" />
+    <Content Include="Styles\images\face_white.png" />
+    <Content Include="Styles\images\filterIcon.png" />
+    <Content Include="Styles\images\FT.png" />
+    <Content Include="Styles\images\gb.png" />
+    <Content Include="Styles\images\google_white2.png" />
+    <Content Include="Styles\images\header.png" />
+    <Content Include="Styles\images\icon-cart-small.png" />
+    <Content Include="Styles\images\icon-compare.png" />
+    <Content Include="Styles\images\icon-qview.png" />
+    <Content Include="Styles\images\icon-search.png" />
+    <Content Include="Styles\images\icon-wishlist.png" />
+    <Content Include="Styles\images\icon-zoom.png" />
+    <Content Include="Styles\images\icon_address.png" />
+    <Content Include="Styles\images\icon_poweroff.png" />
+    <Content Include="Styles\images\Imgprint.png" />
+    <Content Include="Styles\images\insta_black.png" />
+    <Content Include="Styles\images\insta_color.png" />
+    <Content Include="Styles\images\insta_white.png" />
+    <Content Include="Styles\images\libg.png" />
+    <Content Include="Styles\images\lidot.jpg" />
+    <Content Include="Styles\images\liover.jpg" />
+    <Content Include="Styles\images\liover.png" />
+    <Content Include="Styles\images\listIcon.png" />
+    <Content Include="Styles\images\loading.gif" />
+    <Content Include="Styles\images\logo-footer.png" />
+    <Content Include="Styles\images\logo-theme-white.png" />
+    <Content Include="Styles\images\logo_header.png" />
+    <Content Include="Styles\images\logo_small.png" />
+    <Content Include="Styles\images\logo_small2.png" />
+    <Content Include="Styles\images\mapcnt3.png" />
+    <Content Include="Styles\images\mc.png" />
+    <Content Include="Styles\images\new-cus.png" />
+    <Content Include="Styles\images\next-details.png" />
+    <Content Include="Styles\images\next.png" />
+    <Content Include="Styles\images\NO_IMAGE.jpg" />
+    <Content Include="Styles\images\orders.png" />
+    <Content Include="Styles\images\payment-02.png" />
+    <Content Include="Styles\images\payPal.jpg" />
+    <Content Include="Styles\images\prev-details.png" />
+    <Content Include="Styles\images\prev.png" />
+    <Content Include="Styles\images\print_img.png" />
+    <Content Include="Styles\images\q.png" />
+    <Content Include="Styles\images\register-facebook.png" />
+    <Content Include="Styles\images\register-googleplay.png" />
+    <Content Include="Styles\images\register-twitter.png" />
+    <Content Include="Styles\images\searchicon.png" />
+    <Content Include="Styles\images\stars-0.png" />
+    <Content Include="Styles\images\stars-1.png" />
+    <Content Include="Styles\images\stars-2.png" />
+    <Content Include="Styles\images\stars-3.png" />
+    <Content Include="Styles\images\stars-4.png" />
+    <Content Include="Styles\images\stars-5.png" />
+    <Content Include="Styles\images\Submit.png" />
+    <Content Include="Styles\images\tick.png" />
+    <Content Include="Styles\images\topline.jpg" />
+    <Content Include="Styles\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Styles\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Styles\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Styles\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Styles\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Styles\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Styles\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Styles\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Styles\images\ui-icons_222222_256x240.png" />
+    <Content Include="Styles\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Styles\images\ui-icons_454545_256x240.png" />
+    <Content Include="Styles\images\ui-icons_888888_256x240.png" />
+    <Content Include="Styles\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Styles\images\view.png" />
+    <Content Include="Styles\images\viewarrow.png" />
+    <Content Include="Styles\images\visa.png" />
+    <Content Include="Styles\images\vm_1.png" />
+    <Content Include="Styles\images\vm_2.png" />
+    <Content Include="Styles\image\1-2_facebook-social.png" />
+    <Content Include="Styles\image\1-2_flag.png.gif" />
+    <Content Include="Styles\image\1-2_hp-logo-white.gif" />
+    <Content Include="Styles\image\1-2_linkedin-social.png" />
+    <Content Include="Styles\image\1-2_twitter-social.png" />
+    <Content Include="Styles\image\add.png" />
+    <Content Include="Styles\image\addlistIcon.png" />
+    <Content Include="Styles\image\apply-orange.png" />
+    <Content Include="Styles\image\compLogos_n.gif" />
+    <Content Include="Styles\image\dustbin.png" />
+    <Content Include="Styles\image\email.png" />
+    <Content Include="Styles\image\fancybox_loading.gif" />
+    <Content Include="Styles\image\filterbuttons.png" />
+    <Content Include="Styles\image\filterIcon.png" />
+    <Content Include="Styles\image\flags%402x.png" />
+    <Content Include="Styles\image\flags.png" />
+    <Content Include="Styles\image\forward-looking-man.jpg" />
+    <Content Include="Styles\image\HP_logo.gif" />
+    <Content Include="Styles\image\icon-address.png" />
+    <Content Include="Styles\image\icon-billaddress.png" />
+    <Content Include="Styles\image\icon_category.png" />
+    <Content Include="Styles\image\icon_job.png" />
+    <Content Include="Styles\image\icon_location.png" />
+    <Content Include="Styles\image\icon_option.png" />
+    <Content Include="Styles\image\icon_user.png" />
+    <Content Include="Styles\image\input.jpg" />
+    <Content Include="Styles\image\IsNotActive.png" />
+    <Content Include="Styles\image\JD1.jpg" />
+    <Content Include="Styles\image\JD2.jpg" />
+    <Content Include="Styles\image\JD3.jpg" />
+    <Content Include="Styles\image\keyword-bg.gif" />
+    <Content Include="Styles\image\left-bg.gif" />
+    <Content Include="Styles\image\leftbg.jpg" />
+    <Content Include="Styles\image\leftsecbtnBg.png" />
+    <Content Include="Styles\image\leftsecbtnBgactive.png" />
+    <Content Include="Styles\image\login_back.png" />
+    <Content Include="Styles\image\logo-large.png" />
+    <Content Include="Styles\image\logo.png" />
+    <Content Include="Styles\image\mode-swicher-hover.png" />
+    <Content Include="Styles\image\mode-swicher.png" />
+    <Content Include="Styles\image\next.png" />
+    <Content Include="Styles\image\platinipreloader.gif" />
+    <Content Include="Styles\image\platinipreloader2.GIF" />
+    <Content Include="Styles\image\platinipreloader3.GIF" />
+    <Content Include="Styles\image\prev.png" />
+    <Content Include="Styles\image\print.png" />
+    <Content Include="Styles\image\questionmark.png" />
+    <Content Include="Styles\image\search-btn.gif" />
+    <Content Include="Styles\image\social-facebook.gif" />
+    <Content Include="Styles\image\social-linkedin.gif" />
+    <Content Include="Styles\image\social-twitter.gif" />
+    <Content Include="Styles\image\social-youtube.gif" />
+    <Content Include="Styles\image\src.jpg" />
+    <Content Include="Styles\intlTelInput.css" />
+    <Content Include="Styles\jquery-ui.css" />
+    <Content Include="Styles\newdesign.css" />
+    <Content Include="Styles\newdesign1.css" />
+    <Content Include="Styles\paneltool.css" />
+    <Content Include="Styles\style.css" />
+    <Content Include="Styles\supersized.css" />
+    <Content Include="Styles\supersized.shutter.css" />
+    <Content Include="Styles\temp.css" />
+    <Content Include="Template\033f62cd.txt" />
+    <Content Include="Template\0680fc0f.txt" />
+    <Content Include="Template\06d57eaa.txt" />
+    <Content Include="Template\0923226a.txt" />
+    <Content Include="Template\0a9051cc.txt" />
+    <Content Include="Template\0bac066e.txt" />
+    <Content Include="Template\13957f1c.txt" />
+    <Content Include="Template\16fe75a9.txt" />
+    <Content Include="Template\25793905.txt" />
+    <Content Include="Template\38d222cd.txt" />
+    <Content Include="Template\55fd968e.txt" />
+    <Content Include="Template\62616d26.txt" />
+    <Content Include="Template\62f20684.txt" />
+    <Content Include="Template\654f01e0.txt" />
+    <Content Include="Template\691bd3b8.txt" />
+    <Content Include="Template\6c2767c2.txt" />
+    <Content Include="Template\7251f45b.txt" />
+    <Content Include="Template\7727e90c.txt" />
+    <Content Include="Template\7761a195.txt" />
+    <Content Include="Template\78a52631.txt" />
+    <Content Include="Template\86a2dc2c.txt" />
+    <Content Include="Template\878108aa.txt" />
+    <Content Include="Template\88550894.txt" />
+    <Content Include="Template\8a399a94.txt" />
+    <Content Include="Template\90e1e8d7.txt" />
+    <Content Include="Template\9d276151.txt" />
+    <Content Include="Template\a4746fea.txt" />
+    <Content Include="Template\a6405c8d.txt" />
+    <Content Include="Template\ab627ae5.txt" />
+    <Content Include="Template\ace32211.txt" />
+    <Content Include="Template\ActivationEmail.html" />
+    <Content Include="Template\ActivationMail.html" />
+    <Content Include="Template\ae483206.txt" />
+    <Content Include="Template\b0feeec3.txt" />
+    <Content Include="Template\b3d1cc4f.txt" />
+    <Content Include="Template\b46301ed.txt" />
+    <Content Include="Template\b9c19890.txt" />
+    <Content Include="Template\bc5e8067.txt" />
+    <Content Include="Template\c3593f15.txt" />
+    <Content Include="Template\c5fecec3.txt" />
+    <Content Include="Template\Customer-Activation.html" />
+    <Content Include="Template\Customer-Invitation.html" />
+    <Content Include="Template\d3a59026.txt" />
+    <Content Include="Template\d85fb4db.txt" />
+    <Content Include="Template\db0101f8.txt" />
+    <Content Include="Template\dbef996c.txt" />
+    <Content Include="Template\dcfb4e54.txt" />
+    <Content Include="Template\e425e092.txt" />
+    <Content Include="Template\efe8edd5.txt" />
+    <Content Include="Template\Email.html" />
+    <Content Include="Template\f3f0d7bf.txt" />
+    <Content Include="Template\f62d4ad1.txt" />
+    <Content Include="Template\ForgotPassword.html" />
+    <Content Include="Template\FullSync.txt" />
+    <Content Include="Template\InitialSync.txt" />
+    <Content Include="Template\Order-Customer.html" />
+    <Content Include="Template\Order.html" />
+    <Content Include="Template\OrderEmail.html" />
+    <Content Include="Template\RegisterMail.html" />
+    <Content Include="Template\ResendActivationMail.html" />
+    <Content Include="Template\ScreenShot.txt" />
+    <Content Include="Template\ScreeShotBody.txt" />
+    <Content Include="Template\SyncCheck.txt" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Resources\Resources.Designer.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Common\CommonAreaRegistration.cs" />
+    <Compile Include="Areas\Common\Controllers\BackgroundsController.cs" />
+    <Compile Include="Areas\Common\Controllers\BrandController.cs" />
+    <Compile Include="Areas\Common\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\Common\Controllers\CategoryTypeController.cs" />
+    <Compile Include="Areas\Common\Controllers\ClothesController.cs" />
+    <Compile Include="Areas\Common\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\Common\Controllers\EmployeeController.cs" />
+    <Compile Include="Areas\Common\Controllers\FailureController.cs" />
+    <Compile Include="Areas\Common\Controllers\FitController.cs" />
+    <Compile Include="Areas\Common\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Common\Controllers\InseamController.cs" />
+    <Compile Include="Areas\Common\Controllers\OrderController.cs" />
+    <Compile Include="Areas\Common\Controllers\OrderTagController.cs" />
+    <Compile Include="Areas\Common\Controllers\PermissionController.cs" />
+    <Compile Include="Areas\Common\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Common\Controllers\ShipViaController.cs" />
+    <Compile Include="Areas\Common\Controllers\SizeController.cs" />
+    <Compile Include="Areas\Common\Controllers\SubCategoryController.cs" />
+    <Compile Include="Areas\Common\Controllers\TermController.cs" />
+    <Compile Include="Areas\Common\Controllers\UserController.cs" />
+    <Compile Include="Areas\Common\Models\CustomerSalesRecord.cs" />
+    <Compile Include="Areas\Common\Models\DisplayOrder.cs" />
+    <Compile Include="Areas\Common\Models\DropDownList.cs" />
+    <Compile Include="Areas\Common\Models\InventoryReport.cs" />
+    <Compile Include="Areas\Common\Models\OrdersModel.cs" />
+    <Compile Include="Areas\Common\Models\PermissionModel.cs" />
+    <Compile Include="Areas\Common\Models\ProcessOrderModel.cs" />
+    <Compile Include="Areas\Common\Models\Product.cs" />
+    <Compile Include="Areas\Common\Models\QuickBookItems.cs" />
+    <Compile Include="Areas\Common\Models\RolePermissions.cs" />
+    <Compile Include="Areas\Common\Models\RolePermissionsWithName.cs" />
+    <Compile Include="Areas\Common\Models\Roles.cs" />
+    <Compile Include="Areas\Common\Models\RolesContainerClass.cs" />
+    <Compile Include="Areas\Common\Models\SalesByCustomerReport.cs" />
+    <Compile Include="Areas\Common\Models\SizeAdminModel.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SyncController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="DB\Account.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Address.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\AddressType.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\BackgroundPicture.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Bag.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Box.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Brand.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Category.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Cloth.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\ClothesImage.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\ClothesScale.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\ClothesScaleSize.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Communication.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Company.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CreditCardDetail.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CustomerItemPrice.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CustomerOptionalInfo.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CustomerOptionalInfo1.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CustomerSalesPerson.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CustomerUser.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\ExtraPermission.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Fit.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Inseam.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\LoginLog.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\NewsLetterSignUp.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Order.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\OrderLog.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\OrderScale.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\OrderSize.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\OrderStatu.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\OrderTag.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Permission.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\PlatiniDB.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PlatiniDB.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\PlatiniDB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\PlatiniDB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PlatiniDB.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="DB\QuickBookFailureRecord.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\RelatedClothe.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\RelatedColor.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Role.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\RolesPermission.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\ScaleSizeQuantity.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\ShipVia.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\ShowRoomImage.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Size.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\SizeGroup.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\sysdiagram.cs" />
+    <Compile Include="DB\TableToDelete.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\TagMapping.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Term.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Track.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Transaction.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\VisitorLog.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\WebsiteSetting.cs">
+      <DependentUpon>PlatiniDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AdminAreas.cs" />
+    <Compile Include="Models\APIModels.cs" />
+    <Compile Include="Models\Cryptography.cs" />
+    <Compile Include="Models\EmailManager.cs" />
+    <Compile Include="Models\Extensions.cs" />
+    <Compile Include="Models\Paging\IPagedList.cs" />
+    <Compile Include="Models\Paging\PagedList.cs" />
+    <Compile Include="Models\Paging\Pager.cs" />
+    <Compile Include="Models\Paging\PagingExtensions.cs" />
+    <Compile Include="Models\Password.cs" />
+    <Compile Include="Models\PaypalOps.cs" />
+    <Compile Include="Models\Platini.cs" />
+    <Compile Include="Models\PlatiniWebService.cs" />
+    <Compile Include="Models\SiteConfiguration.cs" />
+    <Compile Include="Models\SiteIdentity.cs" />
+    <Compile Include="Models\Social.cs" />
+    <Compile Include="Models\SqlHelper.cs" />
+    <Compile Include="Models\UPSRequest.cs" />
+    <Compile Include="Models\Utility.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Common\Views\OrderTag\.svn\all-wcprops" />
+    <Content Include="Areas\Common\Views\OrderTag\.svn\entries" />
+    <Content Include="Areas\Common\Views\OrderTag\.svn\text-base\CreateOrEdit.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\OrderTag\.svn\text-base\Index.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\OrderTag\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\OrderTag\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\ConfirmBox.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\DetailPartial.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\Index.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\Index2.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\OrderHeader.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\PackagingList.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\ProcessOrder.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\ProcessOrder2.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\UpsDetail.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\UpsFinal.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Order\.svn\text-base\UpsShip.cshtml.svn-base" />
+    <Content Include="Areas\Common\Views\Permission\Edit.cshtml" />
+    <Content Include="Areas\Common\Views\Permission\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Permission\_PermissionsTable.cshtml" />
+    <Content Include="Areas\Common\Views\Report\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Report\ReportGrid.cshtml" />
+    <Content Include="Areas\Common\Views\Report\ReportGrid2.cshtml" />
+    <Content Include="Areas\Common\Views\Report\ReportGrid3.cshtml" />
+    <Content Include="Areas\Common\Views\Report\Report_SalesByCustomer.cshtml" />
+    <Content Include="Areas\Common\Views\Report\Report_SalesByInventory.cshtml" />
+    <Content Include="Areas\Common\Views\Report\Report_SalesByProduct.cshtml" />
+    <Content Include="Areas\Common\Views\Report\Report_SalesByTag.cshtml" />
+    <Content Include="Areas\Common\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Common\Views\Shared\_Layout1.cshtml" />
+    <Content Include="Areas\Common\Views\Shared\_Layout2.cshtml" />
+    <Content Include="Areas\Common\Views\ShipVia\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\ShipVia\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Size\Index.cshtml" />
+    <Content Include="Areas\Common\Views\SubCategory\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\SubCategory\Index.cshtml" />
+    <Content Include="Areas\Common\Views\Term\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\Term\Index.cshtml" />
+    <Content Include="Areas\Common\Views\User\CreateOrEdit.cshtml" />
+    <Content Include="Areas\Common\Views\User\Index.cshtml" />
+    <Content Include="ckeditor\CHANGES.md" />
+    <Content Include="ckeditor\LICENSE.md" />
+    <Content Include="ckeditor\plugins\scayt\LICENSE.md" />
+    <Content Include="ckeditor\plugins\scayt\README.md" />
+    <Content Include="ckeditor\plugins\wsc\LICENSE.md" />
+    <Content Include="ckeditor\plugins\wsc\README.md" />
+    <Content Include="ckeditor\README.md" />
+    <Content Include="ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
+    <Content Include="ckeditor\skins\moono\readme.md" />
+    <None Include="packages.config" />
+    <Content Include="Screenshot\0386ae4c-1689-4e29-a840-d75cdf01e4df.pdf" />
+    <Content Include="Screenshot\03d07309-ce48-4d1e-83f4-4a7c7bef201e.pdf" />
+    <Content Include="Screenshot\0b1cda52-4cf5-4be9-af30-c91c639e4311.pdf" />
+    <Content Include="Screenshot\0bd77fd7-a20f-40d3-b286-387fbf1247f4.pdf" />
+    <Content Include="Screenshot\197ecb04-8ede-4689-830d-3235d0087be7.pdf" />
+    <Content Include="Screenshot\1c85f0de-0d54-46e9-987a-4e939c647332.pdf" />
+    <Content Include="Screenshot\1cc2e970-5910-45e0-b8a7-9b84ac309566.pdf" />
+    <Content Include="Screenshot\25433f08-0298-4317-aa05-13268345b55b.pdf" />
+    <Content Include="Screenshot\27c1397c-8dc7-4fef-8fc6-e0cfd59af8cc.pdf" />
+    <Content Include="Screenshot\2ae2258e-9d8c-4395-ae97-c2cc14d759ce.pdf" />
+    <Content Include="Screenshot\34cfbe31-d908-425b-be0d-cccca7dc6b15.pdf" />
+    <Content Include="Screenshot\3b56ca77-b00f-4907-ae14-150e33f7898c.pdf" />
+    <Content Include="Screenshot\3e9a8589-93af-4170-882a-821d7e477e24.pdf" />
+    <Content Include="Screenshot\419369c2-c1e9-4366-b87f-99774be9dcb9.pdf" />
+    <Content Include="Screenshot\46845d8a-d236-4ff2-ade2-b16fb74c2bb6.pdf" />
+    <Content Include="Screenshot\566d8a2b-cd6c-43b1-9987-c7478dfff1b4.pdf" />
+    <Content Include="Screenshot\56e8ed4f-1edc-4629-b1d7-8505698f73f1.pdf" />
+    <Content Include="Screenshot\5a1f0d25-3eea-4f0f-b091-cfc4a162e075.pdf" />
+    <Content Include="Screenshot\5b158203-3a9a-4333-83a8-a9b7a9851d8b.pdf" />
+    <Content Include="Screenshot\60b089a6-bc59-4827-aed5-f59ee970be74.pdf" />
+    <Content Include="Screenshot\60b3dea6-ad1d-4114-9885-1e71624c54b0.pdf" />
+    <Content Include="Screenshot\6151288e-6426-4fed-9de6-36bbb906a1c8.pdf" />
+    <Content Include="Screenshot\6fe214d8-662c-4d9f-9677-45e99710872a.pdf" />
+    <Content Include="Screenshot\7279937d-afa2-4f27-96e2-2c44165affe8.pdf" />
+    <Content Include="Screenshot\7ada2688-baa2-4417-b673-3438fa6b6ac8.pdf" />
+    <Content Include="Screenshot\7ba80e8a-fb4a-4125-8a3c-8159c8ff950f.pdf" />
+    <Content Include="Screenshot\7bcf6587-38b4-418a-893f-a45f300138c8.pdf" />
+    <Content Include="Screenshot\853afbc9-4ef0-439e-bda4-f38627aa7e97.pdf" />
+    <Content Include="Screenshot\8e39a0f5-8354-48c1-bafb-97a685bc433a.pdf" />
+    <Content Include="Screenshot\8e4e3699-59ab-4683-bbf1-33913247ec11.pdf" />
+    <Content Include="Screenshot\96d5a349-6b6f-4f74-af77-25131c34f231.pdf" />
+    <Content Include="Screenshot\9e235e9f-5ca4-4ecc-bb67-aa4deb775d54.pdf" />
+    <Content Include="Screenshot\a131b460-d237-4984-94e2-1240778c2fa1.pdf" />
+    <Content Include="Screenshot\a220dd9a-085e-43e7-821f-746f13637d64.pdf" />
+    <Content Include="Screenshot\a6315506-763d-4cbe-9ed8-ba9d00cc574b.pdf" />
+    <Content Include="Screenshot\a9d2b556-5e7d-4bf7-b868-f80e4944193c.pdf" />
+    <Content Include="Screenshot\aabc579b-eade-4720-b36b-8b3d5ce12fa0.pdf" />
+    <Content Include="Screenshot\b3b47855-6206-4bab-b9f0-8d26ce97b82f.pdf" />
+    <Content Include="Screenshot\b58c4103-e470-45d7-8b8f-9f72c13bf417.pdf" />
+    <Content Include="Screenshot\ba0ca962-b052-4ac6-be9e-71578fc2362c.pdf" />
+    <Content Include="Screenshot\ba1b0ff8-a053-4048-9782-3de1c867229e.pdf" />
+    <Content Include="Screenshot\bc89ab1b-b620-4af7-87b3-accf6a3dccd3.pdf" />
+    <Content Include="Screenshot\be2d04f4-380a-4f5e-9249-3880b6408d39.pdf" />
+    <Content Include="Screenshot\c14aec06-d3c3-449a-804d-d689e3dd0362.pdf" />
+    <Content Include="Screenshot\c6c27cb3-2f81-46ed-9172-0b543823d1c1.pdf" />
+    <Content Include="Screenshot\ce468952-b861-46ba-80a4-823b7c2ca1db.pdf" />
+    <Content Include="Screenshot\d9f195f3-a7e6-4e09-9d26-6e8abe34b755.pdf" />
+    <Content Include="Screenshot\debe9e75-9862-4c58-90fb-60399ca6bfc4.pdf" />
+    <Content Include="Screenshot\e1aee21d-015b-4ded-b103-856302a1e3bb.pdf" />
+    <Content Include="Screenshot\ec3bfe68-2808-40e7-9dac-e0d5a2c64741.pdf" />
+    <Content Include="Screenshot\f1fb3049-975e-4285-9051-87084704d0b6.pdf" />
+    <Content Include="Screenshot\f87ced33-d70f-4d80-b0cd-8b5fc0418c76.pdf" />
+    <Content Include="Screenshot\fb67a58b-719e-4a52-a49e-8d24cc672437.pdf" />
+    <Content Include="Screenshot\HiQPdf.dep" />
+    <Content Include="Screenshot\PaltiniJeans_0_03262014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_0_04112014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_0_05032014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_0_05192014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10284_02112015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10339_02162015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10436_02232015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10473_02252015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10473_03032015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10473_03062015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10597_03032015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10647_03042015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10682_03052015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10755_03102015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10894_04212015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10918_03202015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10918_04142015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10920_03202015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_10935_03232015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11068_03312015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11101_04022015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_111_01192015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11234_04112015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11444_04222015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11444_04232015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11677_05062015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11702_05062015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11734_05072015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11734_05082015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11739_05072015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11764_05122015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_11851_05152015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_12020_05302015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_12020_05312015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_12091_06052015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_14204_02032013.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_14205_02042013.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_15_12052013.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_162_02242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_02192014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_02202014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_03252014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_58_635218048044423828_b68eba72.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_75_635273770603701172_2a807b5d.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_75_635456129529033203_22b0f194.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_75_635456130518017578_d355d28a.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_75_635456131800839844_667c8c20.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635215008557998046_190b03a3.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635215546410039062_839b92db.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635216157956015625_79c2c748.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635216161406943359_a6914d8c.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635216284837421875_783cc882.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635217920118115234_84b1912a.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635217921081142578_0e14a250.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635237053240419921_0fa5913d.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635453613148144531_bf1bbe26.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_7_635454041319560546_13fdb7a4.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_8_635218039852236328_9bce0e9c.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_1_8_635403346214599609_64be10fd.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2029_05222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2030_05222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2033_05222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2033_05282014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2034_05222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2035_05222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2036_05222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2057_05222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2057_05272014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2085_05222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2087_05222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2097_05232014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2097_05272014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2097_05282014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2098_05232014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2098_05272014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2099_05232014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2099_05272014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2100_05232014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2100_05272014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2115_05232014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2157_05272014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2157_05282014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2164_05272014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2164_05282014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2173_05272014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2196_05282014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2205_05282014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2207_05282014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2232_05292014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2237_05292014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2237_06042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2259_05302014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2305_06022014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2343_06042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2346_06042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2354_06042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2354_06052014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2365_06042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2367_06042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2368_06042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2378_06052014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2379_06052014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2379_06102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2384_06052014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2385_06052014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2399_06062014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2449_06092014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2449_06112014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2455_06092014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2459_06102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2475_06102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2478_06102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2480_06102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2495_06112014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2502_06112014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2503_06112014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2505_06112014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2517_06122014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2539_06122014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2539_06182014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2542_06132014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2548_06182014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2563_06162014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2568_06162014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2576_06162014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2587_06172014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2591_06172014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2608_06192014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2608_06232014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2610_06182014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2628_06192014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2640_06202014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2641_06202014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2643_06202014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2672_06232014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2679_06232014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2694_06232014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2705_06242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2713_06242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2717_06242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2778_07072014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2833_07072014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2885_07112014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2885_07142014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2907_07142014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2957_07182014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2957_07192014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2986_07172014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2986_07192014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_2989_07172014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_3000_07182014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_3055_07222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_3149_07282014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_33_02272014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_33_03032014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4237_09242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4332_08112014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4423_08182014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4563_09032014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4_45_635217922374687500_4e1dc565.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4_45_635218040341123046_ceb92067.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4_45_635218049306416015_3d0a542e.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4_45_635218050417304687_955750c3.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4_45_635218059015107421_834aafa3.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_4_45_635218062142822265_151f77f3.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_5605_09082014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_5661_10042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_5684_09122014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_5822_10042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_5841_09222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_5849_09222014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_590_04092014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_5910_09242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_5918_09242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_5929_09242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_6128_10042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_6195_10072014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_6240_11052014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_6540_11212014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_660_02182014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_6627_10292014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_689_02242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_6_55_635218068715527343_6120129b.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_6_55_635218069440009765_4cdfc0b9.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_702_02242014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_7051_12042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_7146_11252014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_7434_12152014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_750_03032014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_7543_12202014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_758_03042014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_764_03052014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_783_03112014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_796_03122014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8709_01082015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8709_01122015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8712_01122015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8771_01122015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8815_01192015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8820_01152015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8827_01152015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8832_01152015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_888_04012014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8900_01202015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8931_01222015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8933_01222015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_8935_01222015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_9018_02032015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_9166_02032015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_9273_02112015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_929_04102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_939_04092014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_940_04092014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_941_04102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_942_04092014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_943_04092014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_944_04102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_945_04102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_946_04102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_947_04102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_948_04102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_949_04102014.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_kids_shirts_01032013_83c636c7.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_kids_shirt_01032013_a1e5d1e4.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_blazers_01032013_6a5d0751.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_blazers_12282012_d8a5b1cb.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_cologne_01032013_8c978205.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_hoodies_01032013_8368133a.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_jackets_01042013_7aebe87c.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_jackets_01042013_88374874.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_jackets_12282012_07e6ffb6.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_jackets_12282012_3cfb7fc8.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_jeans_01032013_404e35d7.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_jeans_12262012_957ff1f9.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_shirt_01032013_348759a9.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_shirt_01032013_4d2869ef.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_shirt_01032013_4e6df3c1.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_shirt_01032013_93de9a90.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_shirt_12272012_57e4e89e.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_mens_vest_01032013_d294b593.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Customer_635363956657617188.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Customer_635363957129921875.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Customer_635363979856181640.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Customer_635363981923359375.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Customer_635364136090332031.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Customer_635364137149804688.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Inventory_635363986872753906.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Inventory_635363988064541015.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Product_635363974659111328.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_Sales_By_Product_635363976640966797.pdf" />
+    <Content Include="Screenshot\PaltiniJeans_womens_shirts_03082013_90c991f5.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635232723086155625_2b40bd8d.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635232723460472031_40d72f96.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635232723685843125_aef9f8b6.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635232723848020859_c80267bb.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233431955996093_848a3943.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233432681923828_f1b725ff.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233432867783203_9e78d26b.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233433345166015_3be0c970.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233433441416015_1d1ac162.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233433606152343_21f304e5.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233516050439453_13f66373.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233520386582031_3d09764a.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233524798603515_276a5fdf.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635233530925273437_77db6221.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234304018847656_1bbcc702.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234334558085937_e4f12559.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234335278818359_6db898f6.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234335652070312_b63e6dfb.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234336004853515_fc7d61c3.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234337135029296_84df6659.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234403647548828_a771daf4.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234404082802734_dea42527.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234405383535156_a2dbfcbd.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635234406207714843_e5814cb8.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635237052209814453_6f09a6bf.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635237052531425781_58fd8596.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635249160053457031_053300bf.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635293911007412109_525061f9.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635300003588886719_4fe721f4.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635312686685576172_9693282d.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635312686999179688_2c5900f9.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635312687526347656_677ff06e.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635368465045576172_323d0bb1.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635401127345195312_b221cf03.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635403933772460938_eeab5085.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635416179874599610_773e018c.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635416181790107422_d603fa71.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635416182159453125_4f25bb87.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635416182366376954_f8b36a81.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635542718059521485_3788e4f8.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635543210169365235_c66ba872.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635578826285410156_853be9d2.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635640640869931640_d1db51bc.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635640645262050781_ab5c23b7.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635649247463398437_9d1c2e02.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635649248415996093_39e278a2.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635654225740449219_65f102d0.pdf" />
+    <Content Include="Screenshot\PaltiniJeans___635654227049726563_6f6baf9a.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10274_02112015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10295_02122015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10295_02162015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10295_03172015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10295_04092015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10334_02162015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10339_02172015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10358_02232015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10387_02202015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10396_02202015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10396_02232015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10442_02232015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10442_02242015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10473_02262015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10473_03032015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10540_03022015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10598_03042015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10651_03062015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10651_03092015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10701_03092015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10750_03112015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10755_03182015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10755_04142015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10796_03112015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10796_04212015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10819_03132015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10830_03162015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10832_03172015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10894_04142015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10918_03202015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10918_04062015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10931_03252015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10935_03252015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_10968_04012015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11121_04142015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11130_04132015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11204_04092015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11204_04132015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11204_04212015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11267_04272015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11304_04152015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11354_04212015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11444_04242015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11465_04282015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11500_04242015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11500_05062015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11604_05042015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11641_05112015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11702_05062015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11718_05062015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11718_05072015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11734_05112015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11734_05202015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11764_05202015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11812_05182015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11904_05262015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_11954_06012015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_12038_06082015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_12091_06082015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2207_09192014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2207_09212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2207_09232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2207_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2237_02052015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2343_09212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2343_09232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2343_09242014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2343_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2368_09232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2368_09242014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2368_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2368_09302014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2379_11142014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2614_08052014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2833_07202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2957_07192014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2957_07202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2986_07192014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2986_07202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_2996_07202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_3000_07202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_3000_07212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_3111_07252014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_3124_07282014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4332_08112014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4332_08122014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4338_08142014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4439_08202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4439_10162014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4448_12102014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4455_10162014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4456_09082014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4484_08262014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4484_09232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4509_09022014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4541_09152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4566_10102014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_4590_09052014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5605_09082014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5605_09092014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5605_09122014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5612_09182014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5612_10012014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5619_09232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5661_09112014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5669_09112014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5684_09122014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5685_09122014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5686_09122014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5686_10302014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5687_09122014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5691_09122014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5715_09202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5718_09152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5722_09152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5726_09212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5726_09222014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5733_09152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5733_09162014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5744_09172014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5744_09222014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5760_09182014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5763_09182014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5766_09182014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5775_09192014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5775_09212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5775_09242014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5777_09192014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5778_09192014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5778_09212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5822_09232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5822_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5841_09222014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5841_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5872_10152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5899_09232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5910_09232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5910_09242014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5938_09252014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5941_09252014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_5941_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6019_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6020_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6021_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6021_09302014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6022_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6024_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6026_09292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6069_09302014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6069_10032014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6077_09302014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6079_09302014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6081_09302014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6081_10092014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6088_10032014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6103_10032014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6104_10072014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6104_10152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6128_10212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6149_10062014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6149_10092014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6159_10062014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6194_10072014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6194_10092014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6199_10072014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6201_10152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6207_10072014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6207_10092014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6217_10092014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6221_10152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6240_10222014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6251_10092014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6261_10092014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6261_10152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6270_10102014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6273_10132014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6273_10152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6279_10102014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6280_10102014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6306_10162014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6309_10132014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6309_10142014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6330_10142014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6330_10152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6331_10142014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6331_10152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6344_10152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6344_10162014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6365_10202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6365_10222014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6387_10162014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6387_10172014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6387_10232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6412_10202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6412_10222014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6412_11102014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6424_10202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6436_10272014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6455_10212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6455_12102014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6492_10292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6540_10292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6540_11242014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6566_10272014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6571_11172014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6574_10272014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6574_10292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6585_10272014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6585_11032014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6585_11042014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6589_10292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6626_10292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6668_12152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6771_11172014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6861_01072015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6861_11132014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6907_11202014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6916_11172014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6916_11182014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6943_11192014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_6990_11212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7014_12232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7017_11212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7025_11212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7051_11212014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7129_11252014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7164_11262014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7164_12032014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7164_12112014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7171_12012014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7207_12042014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7323_12082014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7367_12112014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7386_12152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7398_12152014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7507_12232014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7507_12242014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7583_01022015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7583_01072015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7583_12292014.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_7648_01072015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8698_01072015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8698_01082015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8709_01092015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8712_01082015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8718_01092015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8718_01222015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8738_01092015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8746_01192015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8761_01212015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8791_01132015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8799_01152015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8799_01222015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8799_01262015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8799_03192015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8808_01142015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8815_01152015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8822_01152015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8822_01192015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8822_01202015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8874_01262015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8912_01222015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8931_01222015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8933_01222015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8940_01222015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8968_01232015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8968_01262015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_8997_02042015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9018_02022015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9050_01282015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9050_01292015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9082_02042015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9092_01302015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9092_02032015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9095_02042015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9102_02032015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9102_03052015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9111_02022015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9111_02032015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9111_02042015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9166_02172015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9166_02232015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9184_02042015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9205_02042015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9223_02062015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9228_02062015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9256_02092015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9256_03132015.pdf" />
+    <Content Include="Screenshot\PlatiniJeans_9273_02112015.pdf" />
+    <Content Include="Styles\fonts\fontawesome-webfont.eot" />
+    <Content Include="Styles\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Styles\fonts\fontawesome-webfont.woff" />
+    <Content Include="Styles\fonts\FontAwesome.otf" />
+    <Content Include="Styles\fonts\helveticaltstd-bold-webfont.eot" />
+    <Content Include="Styles\fonts\helveticaltstd-bold-webfont.ttf" />
+    <Content Include="Styles\fonts\helveticaltstd-bold-webfont.woff" />
+    <Content Include="Styles\fonts\helveticaltstd-roman-webfont.eot" />
+    <Content Include="Styles\fonts\helveticaltstd-roman-webfont.ttf" />
+    <Content Include="Styles\fonts\helveticaltstd-roman-webfont.woff" />
+    <Content Include="Styles\fonts\myriadpro-bold_0-webfont.eot" />
+    <Content Include="Styles\fonts\myriadpro-bold_0-webfont.ttf" />
+    <Content Include="Styles\fonts\myriadpro-bold_0-webfont.woff" />
+    <Content Include="Styles\fonts\myriadpro-light-webfont.eot" />
+    <Content Include="Styles\fonts\myriadpro-light-webfont.ttf" />
+    <Content Include="Styles\fonts\myriadpro-light-webfont.woff" />
+    <Content Include="Styles\fonts\myriadpro-regular_0-webfont.eot" />
+    <Content Include="Styles\fonts\myriadpro-regular_0-webfont.ttf" />
+    <Content Include="Styles\fonts\myriadpro-regular_0-webfont.woff" />
+    <Content Include="Styles\fonts\myriadpro-semibold_0-webfont.eot" />
+    <Content Include="Styles\fonts\myriadpro-semibold_0-webfont.ttf" />
+    <Content Include="Styles\fonts\myriadpro-semibold_0-webfont.woff" />
+    <Content Include="Styles\fonts\ROBOTO-BLACK.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-BLACKITALIC.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-BOLD.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-BOLDITALIC.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-ITALIC.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-LIGHT.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-LIGHTITALIC.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-MEDIUM.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-MEDIUMITALIC.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-REGULAR.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-THIN.TTF" />
+    <Content Include="Styles\fonts\ROBOTO-THINITALIC.TTF" />
+    <Content Include="Styles\fonts\ROBOTOCONDENSED-BOLD.TTF" />
+    <Content Include="Styles\fonts\ROBOTOCONDENSED-BOLDITALIC.TTF" />
+    <Content Include="Styles\fonts\ROBOTOCONDENSED-ITALIC.TTF" />
+    <Content Include="Styles\fonts\ROBOTOCONDENSED-LIGHT.TTF" />
+    <Content Include="Styles\fonts\ROBOTOCONDENSED-LIGHTITALIC.TTF" />
+    <Content Include="Styles\fonts\ROBOTOCONDENSED-REGULAR.TTF" />
+    <Content Include="Styles\image\Thumbs.db" />
+    <Content Include="Views\Home\AddNewScale.cshtml" />
+    <Content Include="Views\Home\Billing.cshtml" />
+    <Content Include="Views\Home\Cart.cshtml" />
+    <Content Include="Views\Home\CartNew.cshtml" />
+    <Content Include="Views\Home\CartRetail.cshtml" />
+    <Content Include="Views\Home\ClothListViewPartial.cshtml" />
+    <Content Include="Views\Home\Detail.cshtml" />
+    <Content Include="Views\Home\ForgotPassword.cshtml" />
+    <Content Include="Views\Home\ImportExcel.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\LineSheet.cshtml" />
+    <Content Include="Views\Home\LineSheetPartial.cshtml" />
+    <Content Include="Views\Home\LineSheetRetail.cshtml" />
+    <Content Include="Views\Home\LineSheetTemplatePartial.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Home\MassUploadImages.cshtml" />
+    <Content Include="Views\Home\Registration.cshtml" />
+    <Content Include="Views\Home\SeeAll.cshtml" />
+    <Content Include="Views\Home\Settings.cshtml" />
+    <Content Include="Views\Home\Success.cshtml" />
+    <Content Include="Views\LineSheetPartial.cshtml" />
+    <Content Include="Views\Shared\ClothesPartialNew.cshtml" />
+    <Content Include="Views\Shared\Dashboard.cshtml" />
+    <Content Include="Views\Shared\DetailPartial.cshtml" />
+    <Content Include="Views\Shared\DetailPartialNew.cshtml" />
+    <Content Include="Views\Shared\DetailPartialRetail.cshtml" />
+    <Content Include="Views\Shared\LoginPartial.cshtml" />
+    <Content Include="Views\Shared\MassClothPartial.cshtml" />
+    <Content Include="Views\Shared\PrintCart.cshtml" />
+    <Content Include="Views\Shared\Receipt.cshtml" />
+    <Content Include="Views\Shared\RegistrationPartial.cshtml" />
+    <Content Include="Views\Shared\RelatedProduct.cshtml" />
+    <Content Include="Views\Shared\UploadImages.cshtml" />
+    <Content Include="Views\Shared\UploadMulti.cshtml" />
+    <Content Include="Views\Shared\WholesaleRegistration.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_Layout2.cshtml" />
+    <Content Include="Views\Shared\_Layout3.cshtml" />
+    <Content Include="Views\Shared\_Template.cshtml" />
+    <Content Include="Views\Web.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Areas\Common\Views\Customer\.svn\prop-base\" />
+    <Folder Include="Areas\Common\Views\Customer\.svn\props\" />
+    <Folder Include="Areas\Common\Views\Customer\.svn\text-base\" />
+    <Folder Include="Areas\Common\Views\Customer\.svn\tmp\prop-base\" />
+    <Folder Include="Areas\Common\Views\Customer\.svn\tmp\props\" />
+    <Folder Include="Areas\Common\Views\Customer\.svn\tmp\text-base\" />
+    <Folder Include="Areas\Common\Views\OrderTag\.svn\prop-base\" />
+    <Folder Include="Areas\Common\Views\OrderTag\.svn\props\" />
+    <Folder Include="Areas\Common\Views\OrderTag\.svn\tmp\prop-base\" />
+    <Folder Include="Areas\Common\Views\OrderTag\.svn\tmp\props\" />
+    <Folder Include="Areas\Common\Views\OrderTag\.svn\tmp\text-base\" />
+    <Folder Include="Areas\Common\Views\Order\.svn\prop-base\" />
+    <Folder Include="Areas\Common\Views\Order\.svn\props\" />
+    <Folder Include="Areas\Common\Views\Order\.svn\tmp\prop-base\" />
+    <Folder Include="Areas\Common\Views\Order\.svn\tmp\props\" />
+    <Folder Include="Areas\Common\Views\Order\.svn\tmp\text-base\" />
+    <Folder Include="Template\ActivationEmail_files\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="App_Resources\Resources.resx" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>58685</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:58688/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

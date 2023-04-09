@@ -1,0 +1,61 @@
+﻿@using Platini.Models
+@model WebsiteSettingModel
+@{
+    bool EditMode = SiteConfiguration.Mode.ToLower() == ModeEnum.Edit.ToString().ToLower();
+    bool OrderMode = SiteConfiguration.Mode.ToLower() == ModeEnum.Order.ToString().ToLower();
+}
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="text-center">
+            <p>
+                Hide ‘Zero’ Inventory Products
+                <input type="checkbox" name="my-checkbox" id="my-checkbox" checked=@Model.CheckKey>
+            </p>
+        </div>
+    </div>    
+</div>
+
+<script type="text/javascript">
+    $("[name='my-checkbox']").bootstrapSwitch();
+
+    $('input[name="my-checkbox"]').on('switchChange.bootstrapSwitch', function (event, state) {
+
+        var Type = $('#CtypeId').val();
+        if (state == true) {
+            var dialog = $('<p>"Are you sure you want to hide ‘Zero’ inventory products on?</p>').dialog({
+                title: "Warning!",
+                buttons: {
+                    "Yes": function () {
+                        $.post('@Url.Action("AutoDeactivateAllClothes")', { check: state }).done(function (data) {
+                            window.location = window.location.href;
+                        });                       
+                       },
+                    "Cancel": function () {
+                        dialog.dialog('close');
+                    }
+                }
+            });            
+        }
+        else {
+            var dialog = $('<p>"Are you sure you want to hide ‘Zero’ inventory products off?</p>').dialog({
+                title: "Warning!",
+                buttons: {
+                    "Yes": function () {
+                        $.post('@Url.Action("AutoDeactivateAllClothes")', { check: state }).done(function (data) {
+                            window.location = window.location.href;
+                        });
+                    },
+                    "Cancel": function () {
+                        dialog.dialog('close');
+                    }
+                }
+            });           
+        }
+    });
+</script>

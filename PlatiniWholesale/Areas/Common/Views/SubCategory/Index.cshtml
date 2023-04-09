@@ -1,0 +1,118 @@
+﻿@using MvcPaging;
+@using Platini.Models;
+@model IPagedList<Platini.Models.CategoryClass>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-6 col-lg-6 col-sm-6">
+    @*<strong>Categories</strong>*@
+    @using (Html.BeginForm("Index", "SubCategory", new { area = "Common" }, FormMethod.Get))
+    {         
+        <div class="filter-block">
+            <div class="formblock">
+                <div class="block">
+                    <div class="formrow">
+                        Search by Name
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            @Html.TextBox("searchString")
+                        </div>
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+
+                            <input id="searchBtn" class="cobtn" value="GO" type="submit" style="height: 22px;" onclick="@Url.Action("Index", "SubCategory", new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, @searchString = ViewBag.searchStringParam, @CatId = ViewBag.CatId })" />
+                            <span style="float: left;">&nbsp;&nbsp;</span><input id="clearSearchBtn" class="cobtn" value="Clear" type="button" style="height: 22px;" onclick="javascript: window.location = window.location.href.split('?')[0] + '?' + location.search.split('&')[1];" />
+                            @Html.Hidden("CatId", new { @CatId = ViewBag.CatId })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+    }
+</div>
+<div class="col-md-6 col-lg-6 col-sm-6">
+    <div class="navigationlist">
+        <ul>
+            @if (ViewBag.CatId != null)
+            {
+                <li>
+                    <a href="@Url.Action("Index", "Category")" id="mSearch" class="filtertab">
+                        <img src="@Url.Content("~/Styles/images/filterIcon.png")" />Back to Category</a>
+                </li>
+            }
+            @{                
+                if (SiteConfiguration.Mode.ToLower() == "edit")
+                {
+                <li>
+                    <a ID="Addbtn" href="@Url.Action("Create", "SubCategory", new { @CatId = ViewBag.CatId })" class="addlisting">
+                        <img id="addIcon" src="@Url.Content("~/Styles/images/addlistIcon.png")" />Add New</a>
+                </li>
+                }
+            }
+            <li>
+                <a href="@Url.Action("Index", "SubCategory", new { @CatId = ViewBag.CatId })" id="resetsearch">
+                    <img src="@Url.Content("~/Styles/images/listIcon.png")" alt="">Refresh</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="minContainer">
+        <div class="listmanager">
+            <div class="head">
+                Sub Category List
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        <td>#</td>
+                        <td class="col-lg-3">@Html.ActionLink("Name", "Index", "SubCategory", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "Name", searchString = ViewBag.searchStringParam, @CatId = ViewBag.CatId }, null)</td>
+                        <td class="col-lg-5">@Html.ActionLink("Category", "Index", "SubCategory", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "ParentId", searchString = ViewBag.searchStringParam, @CatId = ViewBag.CatId }, null)</td>
+                        <td class="col-lg-1" style="text-align: center;">@Html.ActionLink("Sort Order", "Index", "SubCategory", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "SortOrder", searchString = ViewBag.searchStringParam, @CatId = ViewBag.CatId }, null)</td>
+                        <td class="col-lg-1" style="text-align: center;">@Html.ActionLink("Active", "Index", "SubCategory", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "IsActive", searchString = ViewBag.searchStringParam, @CatId = ViewBag.CatId }, null)</td>
+                        <td style="text-align: right;">#</td>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {                       
+                        <tr>
+                            <td>
+                                    <a href="@Url.Action("Edit", "SubCategory", new { Id = item.CategoryId, @CatId = ViewBag.CatId })">Edit</a>
+                                
+
+                            </td>
+                            <td class="col-lg-3">
+                                <a href="@Url.Action("Index", "CategoryType", new { @CatId = item.CategoryId })">@item.Name</a>
+                            </td>
+                            <td class="col-lg-3">
+                                @Html.Action("GetParents", "SubCategory", new { Id = item.ParentId })
+                            </td>
+                            <td class="col-lg-1" style="text-align: center;">
+                                @Html.DisplayFor(modelItem => item.SortOrder)
+                            </td>
+                            <td class="col-lg-1" style="text-align: center;">
+                                @Html.CheckBox("check", item.IsActive, new { @disabled = "disabled" })
+                            </td>
+                            <td style="text-align: right;">
+                                @if (SiteConfiguration.Mode.ToLower() == "edit")
+                                {
+                                    <a href="@Url.Action("Delete", "SubCategory", new { Id = item.CategoryId, @CatId = ViewBag.CatId })" onclick = "return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                }
+                                <a href="@Url.Action("Edit", "SubCategory", new { Id = item.CategoryId, @CatId = ViewBag.CatId })">Edit</a>
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+                <div class="pagingContainer"></div>
+
+                @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, searchString = ViewBag.searchStringParam, @CatId = ViewBag.CatId })
+            </div>
+        </div>
+    </div>
+</div>
+

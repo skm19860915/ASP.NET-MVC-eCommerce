@@ -1,0 +1,122 @@
+﻿@model List<Platini.Areas.Common.Models.PermissionModel>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //Select all checkbox
+        $('th input:checkbox').click(function () {
+            if (this.checked) { // check select status
+                $('tr input:checkbox').each(function () {
+                    this.checked = true;
+                });
+            } else {
+                $('tr input:checkbox').each(function () {
+                    this.checked = false;
+                });
+            }
+        });
+
+        //onclick defination of save button
+        $('#savebttn_Click').click(function () {
+
+            var checkBoxListVal = null;
+            var unchecked = null;
+            checkBoxListVal = [];
+            unchecked = [];
+
+            $('#tblPermission tr td input:checkbox:checked').each(function () {
+                checkBoxListVal.push($(this).attr('value'));
+            });
+
+            $('#tblPermission tr td input:checkbox:not(:checked)').each(function () {
+                unchecked.push($(this).attr('value'));
+            });
+
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("Studentl", "Permission")',
+                data: { Check: checkBoxListVal, Uncheck: unchecked },
+                datatype: "json",
+                traditional: true,
+                success: function (data) {
+                    var url = '@Url.Action("Index", "Permission")';
+                    window.location.href = url;
+                }
+            });
+
+        });
+
+        $("#cancelbttn_Click").click(function () {
+            var url = '@Url.Action("Index", "Permission")';
+            window.location.href = url;
+        });
+    });
+</script>
+@if(Model.Count() > 0)
+{
+<table id="tblPermission" style="background-color: #e5e5e5;border: 1px solid #ccc;" class="fl div-permision width">
+    <tr class="title-pannel" style="font-size: 13px; font-weight: bold; background: #e6e6e6; margin-bottom: 10px;">
+        <th style="text-align: center; width:5%;">@Html.CheckBox("SelectAll")</th>
+        <th style="width:50%;">Permission
+        </th>
+        <th style="width:15%;">Can View
+        </th>
+        <th style="width:15%;">Can Edit
+        </th>
+        <th style="width:15%;">Can Order
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="width:5%;">&nbsp;</td>
+            <td style="width:50%;">
+                @item.PermissionPage
+            </td>
+            <td style="width:15%;">
+                @if(item.RolePermission != null)
+                {
+                    @Html.CheckBox("CanView", item.RolePermission.CanView.Value, new { Value = item.RolePermission.RoleId + "-" + 1 + "-" + item.PermissionId })
+                }
+                else
+                {
+                    @Html.CheckBox("CanView", false, new { Value = item.RoleId + "-" + 1 + "-" + item.PermissionId })
+                }
+            </td>
+            <td style="width:15%;">
+                @if(item.RolePermission != null)
+                {
+                    @Html.CheckBox("CanEdit", item.RolePermission.CanEdit.Value, new { Value = item.RolePermission.RoleId + "-" + 2 + "-" + item.PermissionId })
+                }
+                else
+                {
+                    @Html.CheckBox("CanEdit", false, new { Value = item.RoleId + "-" + 2 + "-" + item.PermissionId })
+                }
+            </td>
+            <td style="width:15%;">
+                @if(item.RolePermission != null)
+                {
+                    @Html.CheckBox("CanOrder", item.RolePermission.CanOrder.Value, new { Value = item.RolePermission.RoleId + "-" + 3 + "-" + item.PermissionId })
+                }
+                else
+                {
+                    @Html.CheckBox("CanOrder", false, new { Value = item.RoleId + "-" + 3 + "-" + item.PermissionId })
+                }
+            </td>
+        </tr>
+    }
+    <tr>
+        <td style="width:5%;">&nbsp;</td>
+        <td style="width:50%;">
+            &nbsp;
+        </td>
+        <td id="buttonDiv" class="save-cancel" colspan="3">
+            <input type="submit" id="savebttn_Click" name="saveButton" value="Save" class="save-btn" />&nbsp;
+            <input type="button" id="cancelbttn_Click" name="cancelButton" value="Cancel" class="save-btn" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5" style="height:10px;">&nbsp;</td>
+    </tr>
+</table>
+}

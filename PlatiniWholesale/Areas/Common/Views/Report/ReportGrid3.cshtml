@@ -1,0 +1,64 @@
+﻿@using Platini.Models
+@model List<InvRept>
+@if (ViewBag.PrintMode)
+{
+    <link type="text/css" rel="stylesheet" href="~/Styles/style.css" />
+    <link type="text/css" rel="stylesheet" href="~/Styles/admin.css" />
+    <link type="text/css" rel="stylesheet" href="~/Styles/bootstrap.min.css">
+}
+<div class="main-listing-box">
+    <table style="border: 0; width: 100%; text-align: center;">
+        <tr class="title-pannel">
+            <td>Style #</td>
+            <td>Qty. sold per style</td>
+            <td>$ Amt. Sold per style</td>
+            <td>Qty. On Hand</td>
+            <td>$ Amt. Of Qty. On Hand</td>
+            <td>% of qty. sold</td>
+            <td>$ Cost</td>
+            <td>$ Profit</td>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a href="@Url.Action("Detail", "Home", new { area = "", id = item.Id })" target="_blank">@item.Style</a>
+                </td>
+                <td>
+                    @item.sQty
+                </td>
+                <td>
+                    @item.Amount.ToString("F2")
+                </td>
+                <td>
+                    @item.cQty
+                </td>
+                <td>
+                    @item.Total.ToString("F2")
+                </td>
+                <td>
+                    @item.pQty.ToString("F1")
+                </td>
+                <td>
+                    @item.Cost.ToString("F2")
+                </td>
+                <td>
+                    @item.Profit.ToString("F2")
+                </td>
+            </tr>
+        }
+        <tr class="title-pannel">
+            <td></td>
+            <td>@Model.Sum(x => x.sQty)</td>
+            <td>@Model.Sum(x => x.Amount).ToString("F2")</td>
+            <td>@Model.Sum(x => x.cQty)</td>
+            <td>@Model.Sum(x => x.Total).ToString("F2")</td>
+            <td></td>
+            <td>@Model.Sum(x => x.Cost).ToString("F2")</td>
+            <td>@Model.Sum(x => x.Profit).ToString("F2")</td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div style="min-height: 5em;">
+</div>

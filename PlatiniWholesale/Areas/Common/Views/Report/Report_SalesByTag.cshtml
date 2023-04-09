@@ -1,0 +1,343 @@
+﻿@using Platini.Models
+@model SBTModel
+@{
+    ViewBag.Title = "Report_SalesByProduct";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .page-title {
+        /*background: none repeat scroll 0 0 #424240;
+        color: #D7D7D7;*/
+        background: linear-gradient(to bottom, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        font-size: 15px;
+        height: 48px;
+        /*top: 140px;*/
+        position: relative;
+        text-align: left;
+        width: 1094px;
+        z-index: -1;
+    }
+
+        .page-title h3 {
+            font-size: 15px;
+            /*padding-left: 10px;
+            padding-top: 10px;*/
+        }
+
+    .drpdwn {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+        background: none repeat scroll 0 0 #eeeeee;
+    }
+
+    .txtbox {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnDialog").click(function () {
+            $("#dialog").dialog({
+                width: '25%'
+            });
+            $('body').css("overflow", "hidden");
+        });
+        $('div#dialog').bind('dialogclose', function (event) {
+            $('body').css("overflow", "auto");
+        });
+
+        $(".forList").change(function () {
+            $(".list2").empty();
+            $(".list2").append($('<option></option>'));
+            var pId = parseInt($("#ddlPerson").val());
+            var sId = parseInt($("#ddlStatus").val());
+            var tId = parseInt($("#ddlTag").val());
+            var updateHolder = $("[name = 'SelectionList1']");
+            var from = $(".clndrFrom").val();
+            var to = $(".clndrTo").val();
+            if (isNaN(pId))
+                pId = 0;
+            if (isNaN(sId))
+                sId = 0;
+            if (isNaN(tId))
+                tId = 0;
+            if (tId > 0) {
+                $.post('@Url.Action("GetList", "Report", new { area = "Common" })', { pId: pId, sId: sId, tId: tId, from: from, to: to }).done(function (data) {
+                if (data != null && data.length > 0) {
+                    updateHolder.html('');
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Id).html(option.Value));
+                    });
+                }
+            });
+        }
+        });
+
+        $("#left").bind("click", function () {
+            var options = $(".list2 option:selected");
+            for (var i = 0; i < options.length; i++) {
+                var opt = $(options[i]).clone();
+                $(options[i]).remove();
+                $(".list1").append(opt);
+            }
+        });
+        $("#right").bind("click", function () {
+            var options = $(".list1 option:selected");
+            for (var i = 0; i < options.length; i++) {
+                var opt = $(options[i]).clone();
+                $(options[i]).remove();
+                $(".list2").append(opt);
+            }
+        });
+
+        $("#btnListSubmit").click(function () {
+            $("#dialog").dialog('close');
+        });
+
+        $("#btnClear").click(function () {
+            $("#ddlPerson").val("");
+            $("#ddlStatus").val("");
+            $("#ddlTag").val("");
+            $(".list1").empty();
+            $(".list2").empty();
+            $(".list2").append($('<option></option>'));
+            $("#records_table tr td").remove();
+            $("#grid").hide();
+            $("#dialog").dialog("close");
+        });
+
+        $("#btnSubmit").click(function () {
+            var selectedIndices = [];
+
+            var options = $(".list2 option");
+            for (var i = 0; i < options.length; i++) {
+                selectedIndices.push($(options[i]).val());
+            }
+            var fromDate = $(".clndrFrom").val();
+            var toDate = $(".clndrTo").val();
+            if (fromDate != "" && toDate != "") {
+                var Ids = '';
+                var pId = parseInt($("#ddlPerson").val());
+                var sId = parseInt($("#ddlStatus").val());
+                var tId = parseInt($("#ddlTag").val());
+                var updateHolder = $("[name = 'SelectionList1']");
+                var from = $(".clndrFrom").val();
+                var to = $(".clndrTo").val();
+                if (isNaN(pId))
+                    pId = 0;
+                if (isNaN(sId))
+                    sId = 0;
+                if (isNaN(tId))
+                    tId = 0;
+                if (selectedIndices.length > 1) {
+                    Ids = selectedIndices.join(',');
+                }
+
+                if (tId > 0) {
+                    $("#btnSubmit").parent().addClass("bgClass3");
+                    $.post('@Url.Action("TagRecords", "Report", new { area = "Common" })', { pId: pId, sId: sId, tId: tId, from: from, to: to, Ids: Ids }).done(function (data) {
+                        $("#grid").empty().html(data).show();
+                        $("#btnSubmit").parent().removeClass("bgClass3");
+                    });
+                }
+
+            }
+            else {
+                if ((fromDate == null || fromDate == "") && (toDate == null || toDate == "")) {
+                    alert("-Please enter the from date\n -Please enter the to date");
+                }
+                else {
+                    if (fromDate == null || fromDate == "") {
+                        alert("-Please enter the from date");
+                    }
+                    else {
+                        alert("-Please enter the to date");
+                    }
+                }
+            }
+        });
+
+        $(".clndrFrom").datepicker({
+            changeMonth: true,
+            numberOfMonths: 2,
+            onClose: function (selectedDate) {
+                $(".clndrTo").datepicker("option", "minDate", selectedDate);
+            }
+        });
+
+        $(".clndrTo").datepicker({
+            changeMonth: true,
+            numberOfMonths: 2,
+            onClose: function (selectedDate) {
+                $(".clndrFrom").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+        $("#btnPrint").click(function () {
+            var selectedIndices = [];
+
+            var options = $(".list2 option");
+            for (var i = 0; i < options.length; i++) {
+                selectedIndices.push($(options[i]).val());
+            }
+            var fromDate = $(".clndrFrom").val();
+            var toDate = $(".clndrTo").val();
+            var url = [];
+            if (fromDate != "" && toDate != "") {
+                var Ids = '';
+                var pId = parseInt($("#ddlPerson").val());
+                var sId = parseInt($("#ddlStatus").val());
+                var tId = parseInt($("#ddlTag").val());
+                var updateHolder = $("[name = 'SelectionList1']");
+                var from = $(".clndrFrom").val();
+                var to = $(".clndrTo").val();
+                if (isNaN(pId))
+                    pId = 0;
+                if (isNaN(sId))
+                    sId = 0;
+                if (isNaN(tId))
+                    tId = 0;
+                if (selectedIndices.length > 1) {
+                    Ids = selectedIndices.join(';');
+                }
+
+                if (tId > 0) {
+                    url.push("TagRecords");
+                    url.push("pId=" + pId);
+                    url.push("sId=" + sId);
+                    url.push("tId=" + tId);
+                    url.push("to=" + toDate);
+                    url.push("from=" + fromDate);
+                    url.push("Ids=" + Ids);
+                }
+            }
+            if (url.length > 0)
+                $("#btnPrint").attr("href", "@Url.Action("PrintMe", "Report", new { area = "Common" })" + "?url=" + url);
+        });
+
+    });
+</script>
+
+<div style="margin-left: 100px;">
+    <div>
+        <div class="page-title nameheadingbg" style="border: 1px solid #ccc;">
+            <h3>Report - Sales By Product</h3>
+        </div>
+    </div>
+    <table id="main" style="width: 83.55%; border: 1px solid #ccc;">
+        <tr>
+            <td style="height: 20px;" colspan="5"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Date From : </td>
+            <td>@Html.TextBox("txtDateFrom", DateTime.Now.AddDays(-30).Date.ToString("MM/dd/yyyy"), new { @class = "clndrFrom txtbox" })</td>
+            <td>Date To : </td>
+            <td>@Html.TextBox("txtDateTo", DateTime.Now.Date.ToString("MM/dd/yyyy"), new { @class = "clndrTo txtbox" })</td>
+        </tr>
+        <tr>
+            <td style="height: 20px;" colspan="5"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Sales Persons : </td>
+            <td>@Html.DropDownList("ddlPerson", new SelectList(Model.SalesPersons, "Id", "Value"), "---All---", new { @id = "ddlPerson", @class = "drpdwn" })</td>
+            <td>Order Status : </td>
+            <td>@Html.DropDownList("ddlStatus", new SelectList(Model.OrderStatuses, "Id", "Value"), "---All---", new { @id = "ddlStatus", @class = "drpdwn" })</td>
+        </tr>
+        <tr>
+            <td style="height: 20px;" colspan="5"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Tags: </td>
+            <td>@Html.DropDownList("ddlTag", new SelectList(Model.OrderTags, "Id", "Value"), "---Select---", new { @id = "ddlTag", @class = "drpdwn forList" })</td>
+            <td>Select Product : </td>
+            <td>
+                <input id="btnDialog" type="reset" value=" Open Dialog for List " />&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="height: 40px;" colspan="5"></td>
+        </tr>
+        <tr>
+            <td colspan="2">&nbsp;</td>
+            <td>
+                <input type="submit" id="btnSubmit" name="Submit" value=" Submit " class="save-btn" />
+
+                <input id="btnClear" type="reset" name="Clear" value=" Clear " class="save-btn" />
+
+                <a id="btnPrint" href="javascript:void(0);" target="_blank" class="save-btn">Print</a>
+            </td>
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="height: 20px;" colspan="5"></td>
+        </tr>
+    </table>
+</div>
+<div id="dialog" style="width: 400px;" hidden="hidden">
+    <table>
+        <tr>
+            <td colspan="5">Select Products/Service Name</td>
+        </tr>
+        <tr>
+            <td colspan="5">Select from List:
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.ListBox("SelectionList1", new SelectList(new[] { "" }), new { @name = "SelectionList1", @size = "10", @class = "list1" })
+            </td>
+            <td>&nbsp;
+            </td>
+            <td style="vertical-align: middle;">
+                <table>
+                    <tr>
+                        <td>
+                            <input id="right" type="submit" value=" > " /></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="left" type="submit" value=" < " /></td>
+                    </tr>
+                </table>
+            </td>
+            <td>&nbsp;
+            </td>
+            <td>@Html.ListBox("SelectionList2", new SelectList(new[] { "" }), new { @name = "SelectionList2", @size = "10", @class = "list2" })
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">&nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" style="text-align: center;">
+                <input id="btnListSubmit" type="submit" name="submit" value=" Submit " />
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="grid" class="main-listing-box" style="width: 1095px; margin-left: 100px;" hidden="hidden">
+    <table id="records_table" border="1">
+        <tr class="title-pannel">
+            <th class="col-lg-2" style="text-align: center">Style Number</th>
+            <th class="col-lg-2" style="text-align: center">Color</th>
+            <th class="col-lg-2" style="text-align: center">Price</th>
+            <th class="col-lg-2" style="text-align: center">Description</th>
+            <th class="col-lg-2" style="text-align: center">Clearance</th>
+            <th class="col-lg-2" style="text-align: center">Product Cost</th>
+            <th class="col-lg-2" style="text-align: center">Original Quantity</th>
+            <th class="col-lg-2" style="text-align: center">MSRP</th>
+        </tr>
+    </table>
+</div>

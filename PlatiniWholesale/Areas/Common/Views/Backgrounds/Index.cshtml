@@ -1,0 +1,136 @@
+﻿@using MvcPaging;
+@using Platini.Models;
+@model IPagedList<Platini.Models.CommonClass>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-6 col-lg-6 col-sm-6">
+    @*<strong>Categories</strong>*@
+    @*@using (Html.BeginForm("Index", "Category", new { area = "Admin" }, FormMethod.Post))
+        {
+            <div class="filter-block">
+                <div class="formblock">
+                    <div class="block">
+                        <div class="formrow">
+                            Search by Name
+                        </div>
+                        <div class="formrow">
+                            <div class="feild">
+                                @Html.TextBox("searchString")
+                            </div>
+                        </div>
+                        <div class="formrow">
+                            <div class="feild">
+                                <input id="searchBtn" class="cobtn" value="GO" type="submit" style="height: 22px;" onclick="@Url.Action("Index", "Category", new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, @searchString = ViewBag.searchStringParam })" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }*@
+</div>
+<div class="col-md-6 col-lg-6 col-sm-6">
+    <div class="navigationlist">
+        <ul>
+            <li>
+                <a id="Addbtn" href="@Url.Action("Create", "Backgrounds")" class="addlisting">
+                    <img id="addIcon" src="@Url.Content("~/Styles/images/addlistIcon.png")" />Add New
+                </a>
+            </li>
+
+            <li>
+                <a href="@Url.Action("Index", "Backgrounds")" id="resetsearch">
+                    <img src="@Url.Content("~/Styles/images/listIcon.png")" alt="">Refresh
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="minContainer">
+        <div class="listmanager">
+            <div class="head">
+                Background Pictures List
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        <td>#</td>
+                        <td class="col-lg-3">Name</td>
+                        <td class="col-lg-3">Image</td>
+                        <td class="col-lg-2" style="text-align: center;">@Html.ActionLink("Sort Order", "Index", "Backgrounds", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "SortOrder", searchString = ViewBag.searchStringParam }, null)</td>
+                        <td class="col-lg-2" style="text-align: center;">@Html.ActionLink("Active", "Index", "Backgrounds", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "IsActive", searchString = ViewBag.searchStringParam }, null)</td>
+                        <td style="text-align: right;">#</td>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+
+                                <a href="@Url.Action("Edit", "Backgrounds", new { Id = item.Id })">Edit</a>
+
+                            </td>
+                            <td class="col-lg-3">
+
+                                <a href="@Url.Action("Edit", "Backgrounds", new { Id = item.Id })">@item.Name</a>
+
+
+                            </td>
+                            <td class="col-lg-3">
+                                @if (!string.IsNullOrEmpty(item.Name))
+                                {
+                                    <a href="/Library/Backgrounds/@item.Name" target="_blank">
+                                        <img src="/Library/Backgrounds/@item.Name" width="50" alt="@item.Name" title="@item.Name" />
+                                    </a>
+                                }
+                            </td>
+                            <td class="col-lg-2" style="text-align: center;">
+                                @Html.DisplayFor(modelItem => item.SortOrder)
+                            </td>
+                            <td class="col-lg-2" style="text-align: center;">
+                                @Html.CheckBox("check", item.IsActive, new { @id = "chkActive", @value = item.Id })
+                            </td>
+                            <td style="text-align: right;">
+                                @if (SiteConfiguration.Mode.ToLower() == "edit")
+                                {
+                                    <a href="@Url.Action("Delete", "Backgrounds", new { Id = item.Id })" onclick="return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+                <div class="pagingContainer"></div>
+
+                @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, searchString = ViewBag.searchStringParam })
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("input[name='check']:checkbox").change(function () {
+        var id = $(this).val();
+        if ($(this).is(":checked")) {
+            $.post('@Url.Action("UpdateVisibility", "Backgrounds", new { @area = "common" })', { Id: id, state: true }, function (data) {
+                if (data.Response == "Success")
+                    window.location = window.location.href;
+                else
+                    alert("Error");
+            });
+        }
+        else
+        {
+            $.post('@Url.Action("UpdateVisibility", "Backgrounds", new { @area = "common" })', { Id: id, state: false }, function (data) {
+                if (data.Response == "Success")
+                    window.location = window.location.href;
+                else
+                    alert("Error");
+            });
+        }
+    });
+</script>

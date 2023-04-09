@@ -1,0 +1,81 @@
+﻿@using Platini.Models;
+@using MvcPaging;
+@model IPagedList<SelectedListValues>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-6 col-lg-6 col-sm-6">
+    @using (Html.BeginForm("NewsLetterSignUps", "Home", new { area = "Common" }, FormMethod.Post))
+    {         
+        <div class="filter-block">
+            <div class="formblock">
+                <div class="block">
+                    <div class="formrow">
+                        Search
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            @Html.TextBox("searchString")
+                        </div>
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            <input id="searchBtn" class="cobtn" value="GO" type="submit" style="height: 22px;" onclick="@Url.Action("NewsLetterSignUps", "Home", new { @searchString = ViewBag.searchStringParam })"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+    }
+</div>
+<div class="col-md-6 col-lg-6 col-sm-6">
+    <div class="navigationlist">
+        <ul>
+            <li>
+                <a href="@Url.Action("Export", "Home")" id="export">
+                    <img src="@Url.Content("~/Styles/images/listIcon.png")" alt="">Export</a>
+            </li>
+            <li>
+                <a href="@Url.Action("NewsLetterSignUps", "Home")" id="resetsearch">
+                    <img src="@Url.Content("~/Styles/images/listIcon.png")" alt="">Refresh</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="minContainer">
+        <div class="listmanager">
+            <div class="head">
+                Email List
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        @if (SiteConfiguration.Mode.ToLower() == ModeEnum.Order.ToString().ToLower())
+                        {
+                            <td style="width:40px;">&nbsp;</td>
+                        }
+                        <td>Email</td>
+                    </tr>
+                    @foreach (var item in Model)
+                    {                       
+                        <tr>
+                            @if (SiteConfiguration.Mode.ToLower() == ModeEnum.Order.ToString().ToLower())
+                            {
+                                <td style="width:40px;">&nbsp;</td>
+                            }
+                            <td>
+                                @item.Value
+                            </td>
+                        </tr>
+                    }
+                </table>
+                <div class="pagingContainer"></div>
+
+                @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { searchString = ViewBag.searchStringParam })
+            </div>
+        </div>
+    </div>
+</div>

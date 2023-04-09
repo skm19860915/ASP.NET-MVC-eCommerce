@@ -1,0 +1,399 @@
+﻿@model Platini.Areas.Common.Models.SalesByCustomerReport
+@{
+    ViewBag.Title = "Report-Sales By Customer";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .page-title {
+        background: linear-gradient(to bottom, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        font-size: 12px;
+        font-weight: bold;
+        height: 48px;
+        position: relative;
+        text-align: left;
+        width: 1094px;
+        z-index: -1;
+    }
+
+        .page-title h3 {
+            font-size: 15px;
+        }
+
+    .drpdwn {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+        background: none repeat scroll 0 0 #eeeeee;
+    }
+
+    .txtbox {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 3px;
+        width: 330px;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnDialog").click(function () {
+            $("#dialog").dialog();
+            $('body').css("overflow", "hidden");
+        });
+        $('div#dialog').bind('dialogclose', function (event) {
+            $('body').css("overflow", "auto");
+        });
+
+        $("#left").bind("click", function () {
+            var options = $(".list2 option:selected");
+            for (var i = 0; i < options.length; i++) {
+                var opt = $(options[i]).clone();
+                $(options[i]).remove();
+                $(".list1").append(opt);
+            }
+        });
+
+        $("#right").bind("click", function () {
+            var options = $(".list1 option:selected");
+            for (var i = 0; i < options.length; i++) {
+                var opt = $(options[i]).clone();
+                $(options[i]).remove();
+                $(".list2").append(opt);
+            }
+        });
+
+        $("#btnCancel").click(function () {
+            $(".list2 option").attr("selected", "selected");
+            var options = $(".list2 option:selected");
+            for (var i = 1; i < options.length; i++) {
+                var opt = $(options[i]).clone();
+                $(options[i]).remove();
+                $(".list1").append(opt);
+            }
+            $("#dialog").dialog('close');
+        });
+
+        $("#btnListSubmit").click(function () {
+            $("#dialog").dialog('close');
+        });
+
+        $("#btnClear").click(function () {
+            $(".salesperson").val("");
+            $(".orderstatus").val("");
+            $(".list1").empty();
+            $(".list2").empty();
+            $(".txtbox").val("");
+            $("#records_table tr td").remove();
+            $("#grid").hide();
+        });
+
+        $(".clndrFrom").datepicker({
+            changeMonth: true,
+            numberOfMonths: 2,
+            onClose: function (selectedDate) {
+                $(".clndrTo").datepicker("option", "minDate", selectedDate);
+            }
+        });
+
+        $(".clndrTo").datepicker({
+            changeMonth: true,
+            numberOfMonths: 2,
+            onClose: function (selectedDate) {
+                $(".clndrFrom").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+
+        $(".salesperson").change(function () {
+            $(".list2").empty();
+            $(".list2").append($('<option></option>'));
+            var selectedItem = parseInt($(this).val());
+            if (isNaN(selectedItem))
+                selectedItem = 0;
+            var updateHolder = $("[name = 'SelectionList1']");
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetCustomerBySalesPerson", "Report", new { area = "Common" }))",
+                data: { "salesPersonId": selectedItem },
+                success: function (data) {
+                    updateHolder.html('');
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Id).html(option.Value));
+                    });
+                },
+                error: function () { }
+            });
+        });
+
+        $("#btnSubmit").click(function () {
+            var selectedDates = [];
+            var fromDate = $(".clndrFrom").val();
+            var toDate = $(".clndrTo").val();
+            if (fromDate != "" && toDate != "") {
+                var spid = parseInt($(".salesperson").val());
+                if (isNaN(spid))
+                    spid = 0;
+                var sId = parseInt($(".orderstatus").val());
+                var Ids = '';
+                if ($(".list2 option").length > 0) {
+                    $(".list2 option").each(function () {
+                        if ($(this).val() != '') {
+                            Ids += "," + $(this).val();
+                        }
+                    });
+                }
+                $("#btnSubmit").parent().addClass("bgClass3");
+                $.get("@Url.Action("GetSalesData")", { to: toDate, From: fromDate, StatusId: sId, SPId: spid, Ids: Ids }).done(function (data) {
+                    $("#grid").empty().append(data);
+                    $("#btnSubmit").parent().removeClass("bgClass3");
+                });
+            }
+            else {
+                if ((fromDate == null || fromDate == "") && (toDate == null || toDate == "")) {
+                    confirm("-Please enter the from date\n -Please enter the to date");
+                }
+                else {
+                    if (fromDate == null || fromDate == "") {
+                        confirm("-Please enter the from date");
+                    }
+                    else {
+                        confirm("-Please enter the to date");
+                    }
+
+                }
+            }
+        });
+
+        //Draw records table
+        function drawTable(data) {
+            for (var i = 0; i < data.length; i++) {
+                drawRow(data[i]);
+            }
+        }
+
+        // Append row data into the table
+        function drawRow(rowData) {
+            var row = $("<tr />")
+            $("#records_table").append(row);
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.OrderId + "</td>"));
+            row.append($("<td style=" + "text-align:center;" + ">" + rowData.CustomerName + "</td>"));
+
+            if (rowData.CreatedOn != null) {
+                row.append($("<td style=" + "text-align:center;" + ">" + rowData.CreatedOn + "</td>"));
+            }
+            else {
+
+                row.append($("<td>" + " " + "</td>"));
+            }
+            if (rowData.SubmittedOn != null) {
+                row.append($("<td style=" + "text-align:center;" + ">" + rowData.SubmittedOn + "</td>"));
+            }
+            else {
+
+                row.append($("<td>" + " " + "</td>"));
+            }
+            if (rowData.PackedOn != null) {
+                row.append($("<td style=" + "text-align:center;" + ">" + rowData.PackedOn + "</td>"));
+            }
+            else {
+
+                row.append($("<td>" + " " + "</td>"));
+            }
+            if (rowData.ShippedOn != null) {
+                row.append($("<td style=" + "text-align:center;" + ">" + rowData.ShippedOn + "</td>"));
+            }
+            else {
+
+                row.append($("<td>" + " " + "</td>"));
+            }
+            if (rowData.GrandTotal != null) {
+                row.append($("<td style=" + "text-align:center;" + ">" + rowData.GrandTotal + "</td>"));
+            }
+            else {
+
+                row.append($("<td>" + " " + "</td>"));
+            }
+            if (rowData.Discount != null) {
+                row.append($("<td style=" + "text-align:center;" + ">" + rowData.Discount + "</td>"));
+            }
+            else {
+
+                row.append($("<td>" + " " + "</td>"));
+            }
+            if (rowData.FinalAmount != null) {
+                row.append($("<td style=" + "text-align:center;" + ">" + rowData.FinalAmount + "</td>"));
+            }
+            else {
+
+                row.append($("<td>" + " " + "</td>"));
+            }
+            if (rowData.OriginalQuantity != null) {
+                row.append($("<td style=" + "text-align:center;" + ">" + rowData.OriginalQuantity + "</td>"));
+            }
+            else {
+
+                row.append($("<td>" + " " + "</td>"));
+            }
+            if (rowData.PackedQuantity != null) {
+                row.append($("<td style=" + "text-align:center;" + ">" + rowData.PackedQuantity + "</td>"));
+            }
+            else {
+
+                row.append($("<td>" + " " + "</td>"));
+            }
+        }
+
+        $("#btnPrint").click(function () {
+            var selectedDates = [];
+            var fromDate = $(".clndrFrom").val();
+            var toDate = $(".clndrTo").val();
+            if (fromDate != "" && toDate != "") {
+                var spid = parseInt($(".salesperson").val());
+                if (isNaN(spid))
+                    spid = 0;
+                var sId = parseInt($(".orderstatus").val());
+                var Ids = '';
+                if ($(".list2 option").length > 0) {
+                    $(".list2 option").each(function () {
+                        if ($(this).val() != '') {
+                            Ids += ";" + $(this).val();
+                        }
+                    });
+                }
+
+                var url = [];
+                url.push("GetSalesData");
+                url.push("to=" + toDate);
+                url.push("From=" + fromDate);
+                url.push("StatusId=" + sId);
+                url.push("SPId=" + spid);
+                url.push("Ids=" + Ids);
+                $("#btnPrint").attr("href", "@Url.Action("PrintMe", "Report", new { area = "Common" })" + "?url=" + url);
+
+            }
+            else {
+                if ((fromDate == null || fromDate == "") && (toDate == null || toDate == "")) {
+                    confirm("-Please enter the from date\n -Please enter the to date");
+                }
+                else {
+                    if (fromDate == null || fromDate == "") {
+                        confirm("-Please enter the from date");
+                    }
+                    else {
+                        confirm("-Please enter the to date");
+                    }
+
+                }
+            }
+        });
+
+    });
+</script>
+
+<div>
+    <div style="margin-left: 0px;">
+        <div class="page-title nameheadingbg" style="border: 1px solid #ccc;">
+            <h3>Report - Sales By Customer</h3>
+        </div>
+
+    </div>
+    <table id="main" style="width: 77.65%; border: 1px solid #ccc;">
+        <tr>
+            <td style="height: 20px;" colspan="5"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Date From : </td>
+            <td>@Html.TextBox("txtDateFrom", "", new { @class = "clndrFrom txtbox" })</td>
+            <td>Date To : </td>
+            <td>@Html.TextBox("txtDateTo", "", new { @class = "clndrTo txtbox" })</td>
+        </tr>
+        <tr>
+            <td style="height: 20px;" colspan="5"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Sales Person : </td>
+            <td>@Html.DropDownListFor(m => m.SalesPersonId, new SelectList(Model.SalesPersonList, "Id", "Name"), "--All--", new { @class = "drpdwn salesperson" })</td>
+            <td>Order Status : </td>
+            <td>@Html.DropDownListFor(m => m.OrderStatusId, new SelectList(Model.OrderSatusList, "Id", "Value"), new { @class = "drpdwn orderstatus" })</td>
+        </tr>
+        <tr>
+            <td style="height: 20px;" colspan="5"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Select Customer : </td>
+            <td>
+                <input type="reset" id="btnDialog" name="Dialog Button" value=" Open Customer List " /></td>
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="height: 40px;" colspan="5"></td>
+        </tr>
+        <tr>
+            <td colspan="2">&nbsp;</td>
+            <td>
+                <input type="submit" id="btnSubmit" name="Submit" value=" Submit " class="save-btn" />
+
+                <input id="btnClear" type="reset" name="Clear" class="save-btn" value=" Clear "/>
+
+                <a id="btnPrint" href="javascript:void(0);" target="_blank" class="save-btn">Print</a></td>
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="height: 20px;" colspan="5"></td>
+        </tr>
+    </table>
+
+</div>
+<div id="dialog" style="width: 400px;" hidden="hidden">
+    <table>
+        <tr>
+            <td colspan="5">Select Products/Service Name</td>
+        </tr>
+        <tr>
+            <td colspan="5">Select from List:
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.ListBox("SelectionList1", new SelectList(Model.Accounts, "Id", "Value"), new { @name = "SelectionList1", @size = "10", @class = "list1" })
+            </td>
+            <td>&nbsp;
+            </td>
+            <td style="vertical-align: middle;">
+                <table>
+                    <tr>
+                        <td>
+                            <input id="right" type="submit" value=" > " /></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="left" type="submit" value=" < " /></td>
+                    </tr>
+                </table>
+            </td>
+            <td>&nbsp;
+            </td>
+            <td>@Html.ListBox("SelectionList2", new SelectList(new[] { "" }), new { @name = "SelectionList2", @size = "10", @class = "list2" })
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">&nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" style="text-align: center;">
+                <input id="btnListSubmit" type="submit" name="submit" value=" Submit " />
+                &nbsp;
+                <input id="btnCancel" type="reset" name="Cancel" value=" Cancel " />
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="grid" class="main-listing-box" style="width: 1095px;">
+</div>

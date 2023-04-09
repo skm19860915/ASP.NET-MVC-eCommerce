@@ -1,0 +1,51 @@
+﻿@using Platini.Models
+@model List<SBCRept>
+@if (ViewBag.PrintMode)
+{
+    <link type="text/css" rel="stylesheet" href="~/Styles/style.css" />
+    <link type="text/css" rel="stylesheet" href="~/Styles/admin.css" />
+    <link type="text/css" rel="stylesheet" href="~/Styles/bootstrap.min.css">
+}
+<div class="main-listing-box">
+    <table style="border: 0; width: 100%; text-align: center;">
+        <tr class="title-pannel">
+            <td>Submitted On</td>
+            <td>Customer Name</td>
+            <td>Sales Person Name</td>
+            <td>$ Amount</td>
+            <td>$ Cost</td>
+            <td>$ Profit</td>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.iDate.ToShortDateString()
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.SalesPerson
+                </td>
+                <td>
+                    @item.Amount.ToString("F2")
+                </td>
+                <td>
+                    @item.Cost.ToString("F2")
+                </td>
+                <td>
+                    @item.Profit.ToString("F2")
+                </td>
+            </tr>
+        }
+        <tr class="title-pannel">
+            <td colspan="3"></td>
+            <td>@Model.Sum(x => x.Amount).ToString("F2")</td>
+            <td>@Model.Sum(x => x.Cost).ToString("F2")</td>
+            <td id="totProf">@Model.Sum(x => x.Profit).ToString("F2")</td>
+        </tr>
+    </table>
+</div>
+<div style="min-height: 5em;">
+</div>

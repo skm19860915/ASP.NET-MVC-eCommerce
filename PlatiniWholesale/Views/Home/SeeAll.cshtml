@@ -1,0 +1,247 @@
+﻿@using Platini.Models;
+@model Menu
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+
+@{
+    bool EditMode = (SiteIdentity.IsAdmin.ToLower() == bool.TrueString.ToLower()) && (SiteConfiguration.Mode.ToLower() == ModeEnum.Edit.ToString().ToLower()) && Model.Id > 0;
+}
+@if (Model.Id > 0)
+{
+    List<CategoryClass> sideMenulist = SiteConfiguration.Types(Model.Id);
+    <div class="click-nav1 ">
+        <ul class="no-js">
+            <li>
+                <a class="clicker1">Filter <b class="caret"></b></a>
+                <ul>
+                    @if (sideMenulist.Any())
+                    {
+                        foreach (var item in sideMenulist)
+                        {
+                    <li>
+                        @Ajax.ActionLink(item.Name, "GetClothesByIdOrMode", "Home", new { id = item.CategoryId, @level = item.CategoryId, isEdit = (EditMode ? "1" : "") },
+                                new AjaxOptions
+                                {
+                                    UpdateTargetId = "Gridtable",
+                                    LoadingElementId = "bigLoader",
+                                    InsertionMode = InsertionMode.Replace,
+                                    HttpMethod = "GET",
+                                    OnSuccess="enableUnveil()"
+                                }, new { @dataUrl = Url.Action("Linesheet", "Home", new { TypeId = item.CategoryId }) })
+                    </li>
+                        }
+                    }
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="leftDropM">
+        <a href="@Url.Action("SeeAll", "Home", new { Id = Model.Id })" rel="tooltip" title="See this page in Grid View">
+            <img src="@Url.Content("~/Styles/images/vm_2.png")" />
+        </a>
+        <a id="lineSheet" href="@Url.Action("Linesheet", "Home", new { TypeId = (sideMenulist.FirstOrDefault().CategoryId) })" rel="tooltip" title="See this page in Linesheet View">
+            <img src="@Url.Content("~/Styles/images/vm_1.png")" />
+        </a>
+        @if (EditMode)
+        {
+            <a href="javascript:void(0);" id="saveSeeAllSort">Save Sort</a>
+        }
+    </div>
+}
+else if (!string.IsNullOrEmpty(Model.Value))
+{
+    List<CategoryClass> sideMenulist = SiteConfiguration.Types(Model.Id);
+    if (Model.Value.ToLower() == "d" || Model.Value.ToLower() == "f")
+    {
+        <div style="margin: 2em; text-align: left;">
+            @if (Model.Value.ToLower() == "d")
+            {
+                <a href="@Url.Action("Linesheet", "Home", new { @deactive = "1" })" rel="tooltip" title="List View">
+                    <img src="@Url.Content("~/Styles/images/vm_1.png")" />
+                </a>
+
+                <a href="@Url.Action("DeactivatedProducts", "Home", new { area = "common"})" rel=" tooltip" title="Admin View">
+                    <img src="@Url.Content("~/Styles/images/vm_2.png")" />
+                </a>
+                <div style="display:inline-block">
+                    @if (Model.Value.ToLower() == "f")
+                    {
+                        using (Ajax.BeginForm("SearchDeactivated", "Home", new AjaxOptions()
+                        {
+                            HttpMethod = "POST",
+                            UpdateTargetId = "Gridtable",
+                            LoadingElementId = "bigLoader",
+                            InsertionMode = InsertionMode.Replace,
+                            OnSuccess = "enableUnveil()"
+                        }))
+                        {
+                            <input type="text" name="search" value="@ViewBag.Search" />
+                            <input type="submit" id="sBtn" value="Search" class="topBarButton" />
+                        }
+                    }
+                    else
+                    {
+                        using (Html.BeginForm("LineSheetS", "Home", FormMethod.Post))
+                        {
+                            <input type="text" name="search" value="@ViewBag.Search" />
+                            @Html.Hidden("deactive", "1")
+                            <input type="submit" id="sBtn" value="Search" class="topBarButton" />
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <a href="@Url.Action("Linesheet", "Home", new { @future = "1" })" rel="tooltip" title="List View">
+                    <img src="@Url.Content("~/Styles/images/vm_1.png")" />
+                </a>
+                <a href="@Url.Action("FutureDeliveries", "Home", new { area = "common" })" rel="tooltip" title="Admin View">
+                    <img src="@Url.Content("~/Styles/images/vm_2.png")" />
+                </a>
+            }
+        </div>
+    }
+}
+
+<div id="Gridtable" class="col-md-12 col-lg-12 col-sm-12@(EditMode ? " sortClass" : "")">
+    @if (Model.Id > 0)
+    {
+        @Html.Action("GetClothesByIdOrMode", "Home", new { id = Model.Id, isEdit = (EditMode ? "1" : "") })
+    }
+    else
+    {
+        @Html.Action("GetClothesByIdOrMode", "Home", new { id = Model.Value })
+    }
+</div>
+<div id="bigLoader" class="loadcontent" style="display: none;">
+    <img style="" src="@Url.Content("~/Styles/image/platinipreloader.gif")">
+</div>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unveil.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/PlatiniScroll.js")"></script>
+<script>
+    $(document).ready(function () {
+        if (window.location.hash) {
+            //bind to scroll function
+            $(document).scroll(function () {
+                var hash = window.location.hash
+                var hashName = hash.substring(1, hash.length);
+                var element;
+
+                //if element has this id then scroll to it
+                if ($(hash).length != 0) {
+                    element = $(hash);
+                }
+                    //catch cases of links that use anchor name
+                else if ($('a[name="' + hashName + '"]').length != 0) {
+                    //just use the first one in case there are multiples
+                    element = $('a[name="' + hashName + '"]:first');
+                }
+
+                //if we have a target then go to it
+                if (element != undefined) {
+                    window.scrollTo(0, element.position().top);
+                }
+                //unbind the scroll event
+                $(document).unbind("scroll");
+            });
+        }
+
+    });
+
+    $(function () {
+        $(".vso").click(function () {
+            var Id = $(this).attr("data-id");
+            $("#loaderDiv" + Id).show();
+            //var scrollPos = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;            
+            $.get("@Url.Action("DetailPartial", "Home", new { area = "" })", { Id: Id }).done(function (data) {
+                $("#loaderDiv" + Id).hide();
+                $("#pCont").nextAll().remove();
+                $("#pCont").after(data);
+                $("#modalTrigger").click();
+                //$('body').css('overflow', 'hidden').on('touchmove', function (e) {
+                //    e.preventDefault();
+                //});
+                //$('body').css('overflow', 'auto').off('touchmove');
+                //$('body').css('overflow', 'Auto');
+                //$('body').css('position', 'fixed');
+                //$("html").scrollTop(scrollPos);
+                //$(window).scrollTop(scrollPos);
+                //window.scrollTo(scrollPos, 0);                
+            });
+        });
+        $(".sortClass").sortable({
+            appendTo: '.sortClass',
+            helper: 'clone',
+            placeHolder: 'span4',
+            start: function (e, ui) {
+                $(".sortClass").css({ "overflow": "auto" });
+            },
+            stop: function (e, ui) {
+                $(".sortClass").css({ "overflow-y": "hidden" });
+            }
+        });
+        $(".sortClass").disableSelection();
+        $("#saveSeeAllSort").click(function () {
+
+            var arr = [];
+            $(".sortClass .imghover").each(function (i, v) {
+                var item = {};
+                item.id = $(v).data('id');
+                item.so = i + 1;
+                arr.push(item);
+            });
+            $("#bigLoader").show();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: '@Url.Action("SaveClothesSort", "Home")',
+                data: JSON.stringify(arr),
+                dataType: "json",
+                success: function () {
+                    $("#bigLoader").hide();
+                }
+            });
+
+        });
+        //$(window).scroll(function () {
+        //    if ($("#searchcred").length && !$("#deactEnd").is(":visible")) {
+        //        if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+        //            getDisabled($("#deactContainer").data("id"));
+        //        }
+        //    }
+        //});
+    });
+
+    enableUnveil();
+
+    @*function getDisabled(num) {
+        if ($("#searchcred").length) {
+            if (isNaN(num) || $("#deactRow").length <= 0)
+                num = 0;
+            $("#deactEnd").show();
+            $.get("@Url.Action("SearchDeactivated", "Home")", { searchcred: $("#searchcred").text(), page: num }).
+            done(function (data) {
+                $("#deactEnd").hide();
+                if (data.indexOf("No Product Found") < 0) {
+                    if (num == 0) {
+                        var elm = $("<div>").addClass("row").attr("id", "deactRow").
+                            append($("<h2>").text("DeactivatedProducts"), $("<hr>").addClass("dividerHR"));
+                        $("#deactContainer").before(elm);
+                    }
+                    $("#deactContainer").append(data);
+                    $("#deactContainer").data("id", num + 1);
+                }
+                else
+                    $("#searchcred").remove();
+            });
+        }
+    }*@
+
+    $("a[data-ajax='true']").click(function () { successMethod($(this).attr("dataUrl")); });
+    function successMethod(i) {
+        $("#lineSheet").attr("href", i);
+    }
+</script>

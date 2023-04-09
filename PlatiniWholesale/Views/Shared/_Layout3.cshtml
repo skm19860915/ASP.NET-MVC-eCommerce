@@ -1,0 +1,1065 @@
+﻿@{
+    Layout = null;
+}
+@using Platini.Models
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="FBId" content="@System.Configuration.ConfigurationManager.AppSettings["FacebookAppId"]">
+    <meta name="gi" content="@System.Configuration.ConfigurationManager.AppSettings["GoogleClientId"]">
+    <meta name="Chapo shirts" content="Chapo Sirts - Platini">
+    <meta name="chapo camisas" content="chapo camisas - Platini">
+    <meta name="el chapo shirts" content="el chapo shirts - Platini">
+    <meta name="el chapo camisas" content="el chapo camisas - Platini">
+    <meta name="paisley shirts" content="paisley shirts - Platini">
+    <meta name="camisas paisley" content="camisas paisley - Platini">
+
+
+    <title>Platini Cougar Jeans</title>
+    @*<link href="www.platinijeans.com" rel="canonical">*@
+    <link href="~/Styles/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Styles/bootstrap-switch.css" rel="stylesheet">
+    <link href="~/Styles/full-slide.css" rel="stylesheet">
+    <link href="~/Styles/fonts.css" rel="stylesheet">
+    <link href="~/Styles/component.css" rel="stylesheet">
+    <link href="~/Styles/jquery-ui.css" rel="stylesheet">
+    <link href="~/Styles/font-awesome.css" rel="stylesheet">
+    <link href="~/Styles/style.css" rel="stylesheet">
+    <link href="~/Styles/paneltool.css" rel="stylesheet">
+
+    <link href="~/Styles/BootMerge.css" rel="stylesheet">
+    <link href="~/Styles/newdesign.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="~/Styles/colorbox.css">
+    <script type="text/javascript" src="~/Scripts/jquery-1.8.3.min.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/bootstrap.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-ui.js"></script>
+    <script type="text/javascript" src="~/Scripts/elements.js"></script>
+    <script type="text/javascript" src="~/Scripts/responsivemobilemenu.js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.colorbox.js")"></script>
+    @*<script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/common_002.js"></script>
+    <script type="text/javascript" src="~/Scripts/FacebookAction.js"></script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=startApp"></script>
+    <script type="text/javascript" src="~/Scripts/GoogleAction.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-switch.js"></script>
+
+    <script type="text/javascript">
+        function updateMode(val) {
+            $.post('@Url.Action("UpdateMode", "Home", new { area = "" })', { Type: val }, function (data) {
+                if (data.Response == "Success")
+                    window.location = window.location.href;
+                else
+                    alert("Error");
+            });
+        };
+        $(function () {
+
+            $('.click-nav > ul').toggleClass('no-js js');
+            $('.click-nav .js ul').hide();
+            $('.click-nav .js').click(function (e) {
+                $('.click-nav .js ul').slideToggle(200);
+                $('.clicker').toggleClass('active');
+                e.stopPropagation();
+            });
+            $(document).click(function () {
+                if ($('.click-nav .js ul').is(':visible')) {
+                    $('.click-nav .js ul', this).slideUp();
+                    $('.clicker').removeClass('active');
+                }
+            });
+            $('.click-nav1 > ul').toggleClass('no-js js');
+            $('.click-nav1 .js ul').hide();
+            $('.click-nav1 .js').click(function (e) {
+                $('.click-nav1 .js ul').slideToggle(200);
+                $('.clicker1').toggleClass('active');
+                // e.stopPropagation();
+            });
+
+            $("#adminpassDialog").dialog({
+                autoOpen: false,
+                modal: true,
+                width: '30%',
+                close: function () {
+                }
+            });
+            $(".paneltool1 .panelbutton1").click(function () {
+                if (!$(this).parent().hasClass("active"))
+                    $(this).parent().addClass("active");
+                else
+                    $(this).parent().removeClass("active");
+            });
+            $(".paneltool2 .panelbutton2").click(function () {
+                $(this).parent().toggleClass("active");
+
+            });
+            $("#pagemessage").click();
+
+            $("#cartSuccess").click();
+            $("[rel=tooltip]").tooltip();
+            var docHeight = $(window).height();
+            var footerHeight = $('#foter').height();
+            var footerTop = $('#foter').position().top + footerHeight;
+
+            if (footerTop < docHeight) {
+                $('#foter').css('margin-top', 10 + (docHeight - footerTop) + 'px');
+            }
+
+            startApp();
+
+            $("#toggleMenu").click(function (e) {
+                console.log($("#toggleLink"));
+                $("#toggleLink").toggle();
+                e.stopPropagation();
+            });
+            $("#openSignUp").click(function () {
+                $("#logCloseBtn").click();
+                $("#modal-Reg").addClass("md-show");
+            });
+
+            $("#openCart").click(function () {
+                $('#closeConfirm').click();
+                if ($("#cartUl").length)
+                    $("#cartUl").click();
+                else
+                    $("#cartSuccess").click();
+            });
+
+            $("#packBreak").click(function () {
+                var id = $(this).attr("data-id");
+                var cid = $("#hdnClothes").attr("data-id");
+                $.post('@Url.Action("BreakPack", "Home")', { id: id }).done(function (data) {
+                    if (data == null) {
+                        $("#confirmMsg1").text("There are no more available prepacks to break.");
+                        $(".closeBox ").click();
+                        $("#confirmmessage1").click();
+                        $.get("@Url.Action("DetailPartial", "Home", new { area = "" })", { Id: cid }).done(function (data) {
+                            $("#pCont").nextAll().remove();
+                            $("#pCont").after(data);
+                            $("#modal-confirm").hide();
+                            $("#modalTrigger").click();
+                        });
+                    }
+                    else if (data == "success") {
+                        $.get("@Url.Action("DetailPartial", "Home", new { area = "" })", { Id: cid }).done(function (data) {
+                            $("#pCont").nextAll().remove();
+                            $("#pCont").after(data);
+                            $("#modal-confirm").hide();
+                            $("#modalTrigger").click();
+                        });
+                        // window.location = window.location.href;
+                    }
+                    else {
+                        alert(data);
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            if ($("#HCartId").val()) {
+                if ($("#cartUl").length)
+                    $("#cartUl").click();
+            }
+        });
+    </script>
+</head>
+<body>
+    @if (SiteIdentity.RoleId() == (int)RolesEnum.Admin || SiteIdentity.RoleId() == (int)RolesEnum.SuperAdmin)
+    {
+
+    }
+    else
+    {
+        <script type="text/javascript">
+            var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+            (function () {
+                var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+                s1.async = true;
+                s1.src = '@System.Configuration.ConfigurationManager.AppSettings["Tawk"]';
+                s1.charset = 'UTF-8';
+                s1.setAttribute('crossorigin', '*');
+                s0.parentNode.insertBefore(s1, s0);
+            })();
+        </script>
+    }
+    @{int roleId = SiteIdentity.RoleId();
+    bool wasButtonShown = false;
+    }
+    <section id="page" class="offcanvas-pusher topheders" role="main">
+        <div class="main-page">
+            <input type="hidden" id="HCartId" name="HCart" value="@ViewBag.CartHidden">
+            <section id="header-top" class="header-top-v4 navbar navbar-fixed-top">
+                <section style="" id="topbar" class="topbar-v1">
+                    <div class="container">
+                        <div class="row">
+                            <div class="show-desktop col-xs-12">
+                                <div class="quick-action pull-right hidden-part-ms hidden-part-msd accoutbox">
+
+                                    @*<!-- Single button -->*@
+                                    <div class="btn-group hidden-part acmb">
+                                        <div id="toggleMenu" class="dropdown-toggle btn-theme-normal">
+                                            <i class="fa fa-user"></i><span class="text-label">Account</span>
+                                            <span class="fa fa-angle-down"></span>
+                                        </div>
+                                        <div id="toggleLink" class="quick-setting dropdown-menu tree-menu">
+                                            <ul class="links">
+                                                @*<li><a href="#" id="wishlist-total">Wish  List (0)</a></li>*@
+
+                                                @*<li><a href="#">ShoppingCart</a></li>*@
+                                                @*<li><a href="#">Checkout</a></li>*@
+                                                @if (string.IsNullOrEmpty(SiteIdentity.UserId))
+                                                {
+                                                    <li class="hidden-part"><a href="javascript:void(0);" class="md-trigger md-setperspective" data-modal="modal-Log">login</a></li>
+
+                                                    <li class="hidden-part"><a href="javascript:void(0);" id="modal-reg" class="md-trigger md-setperspective" data-modal="modal-Reg"> Register</a></li>
+                                                }
+                                                else
+                                                {
+                                                    <li><a href="@Url.Action("Home", "Index", new {@area="common" })">My Account</a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 inner hidden-part-images hidden-part-ms">
+                                    <div id="logo-theme" class="logo-store hidden-part-ms hidden-part-images">
+                                        <a href="@Url.Action("Index", "Home", new { @area = "" })">
+                                            <img src="~/Styles/images/logo-theme-white.png" title="Platini" alt="Platini">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12 hidden-part-ms paddingright mb">
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="topsearch">
+                                            @using (Html.BeginForm("SeachStyleNumber", "Home", new { @area = "" }, FormMethod.Get, null))
+                                            {
+                                                <div class="searchinput">
+                                                    <input id="tbSearch" name="styleNumber" type="text" placeholder="Search by Style Number, Category, or Keyword" style="height:44px!important">
+                                                </div>
+                                                <div class="searchbtn">
+                                                    <input type="submit" id="styleForm" value="go" />
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-3 col-xs-12 paddingright">
+                                        @if (string.IsNullOrEmpty(SiteIdentity.UserId))
+                                        {
+                                            <div class="login hidden-part-ms padding0 text-align">
+                                                <a href="javascript:void(0);" class="md-trigger md-setperspective" data-modal="modal-Log">Login </a>or<a href="javascript:void(0);" id="modal-reg" class="md-trigger md-setperspective" data-modal="modal-Reg"> Register</a>
+                                                <div class="clr"></div>
+                                                <a href="javascript:void(0);" class="md-trigger md-setperspective" data-modal="modal-WReg">Whole Registration</a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="popup_info" class="popBox">
+                                                <div class="arrow-up"></div>
+                                                <div id="logo-theme" class="logo-store hidden-part-ms hidden-part-images">
+                                                    <img src="~/Styles/images/logo-theme-white.png" title="Platini" alt="Platini">
+                                                </div>
+                                                @{string CompanyName = SiteConfiguration.CompanyName(SiteIdentity.UserName, roleId);
+                                                var ret = SiteConfiguration.Address(SiteIdentity.UserName, roleId);
+                                                var address = string.Empty;
+                                                if (ret != null)
+                                                {
+                                                    if (!string.IsNullOrEmpty(ret.City)) { address += ret.City; }
+                                                    if (!string.IsNullOrEmpty(ret.State)) { address += ", " + ret.State; }
+                                                    if (!string.IsNullOrEmpty(ret.Country)) { address += ", " + ret.Country; }
+                                                    if (!string.IsNullOrEmpty(ret.Pincode)) { address += ", " + ret.Pincode; }
+                                                }
+                                                }
+                                                <h2>@CompanyName.ToUpper()</h2><h2>@address</h2>
+                                                <ul class="usernamep">
+                                                    <li>
+
+                                                    </li>
+                                                    <li>
+                                                        User Name : <a href="@Url.Action("Account", "Home", new {@area="Common" })"> @SiteIdentity.Name </a>
+                                                    </li>
+                                                </ul>
+
+                                                <ul class="popLi">
+                                                    @if (!String.IsNullOrEmpty(SiteIdentity.UserId))
+                                                    {
+
+                                                        SiteConfiguration.CanEdit = true;
+                                                        SiteConfiguration.CanOrder = true;
+                                                        SiteConfiguration.CanView = true;
+                                                        string strUrl = Request.Url.AbsolutePath.ToLower();
+                                                        List<PermissionClass> permList = SiteConfiguration.AllRolePermissions(roleId);
+                                                        if (roleId > 0)
+                                                        {
+                                                            {
+                                                                PermissionClass perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageBackgroundPage").SingleOrDefault();
+                                                                @*if (perm != null)
+                                                                                {
+                                                                                    if (strUrl.Contains("/common/backgrounds"))
+                                                                                    {
+                                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                    }
+                                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                    {
+                                                                    <li><a href="~/Common/Backgrounds/">Backgrounds</a></li>
+                                                                                    }
+                                                                                }*@
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageBrandPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/brand"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/Brand/">Brand Admin</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageCategoryAdminPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/category"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/Category/">Category Admin</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageEmployeesPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/employee"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/Employee/">Employees</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageFitCategoryPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/fit"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/Fit/">Fit Category</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageInseamAdminPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/inseam"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/Inseam/">Inseam Admin</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageTagsPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/ordertag"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/OrderTag/">Order Tags Admin</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManagePermissionPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/permission"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/Permission/">Permissions</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageMapping").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/clothes/tagmaps"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/Clothes/TagMaps">Search Mapping</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageSetting").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/Home/Settings"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Home/Settings/">Settings</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageShipViaPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/shipvia"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/ShipVia/">ShipVia Admin</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageSizeAdminPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/size"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/Size/">Size Admin</a></li>
+                                                                    }
+                                                                }
+                                                                perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageTermsPage").SingleOrDefault();
+                                                                if (perm != null)
+                                                                {
+                                                                    if (strUrl.Contains("/common/term"))
+                                                                    {
+                                                                        SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                        SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                        SiteConfiguration.CanView = perm.CanView.Value;
+                                                                    }
+                                                                    if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                    {
+                                                                        <li><a href="~/Common/Term/">Terms Admin</a></li>
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+                                            <div class="login hidden-part-ms text-align" style="padding-top:4px;font-size:12px;">
+                                                Hello<a href="@Url.Action("Account", "Home", new {@area="Common" })"> @SiteIdentity.Name </a>
+                                                <br />
+                                                <div class="login hidden-part-ms text-align" style="padding-top:1px;font-size:12px;">
+                                                    @if (roleId == (int)RolesEnum.Admin || roleId == (int)RolesEnum.SuperAdmin || roleId == (int)RolesEnum.Warehouse || roleId == (int)RolesEnum.SalesPerson)
+                                                    {<a id="popBoxInfoId" href="javascript:void(0);" class="popBoxInfo" data-popbox="popup_info">Company Settings</a>}
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="quick-action pull-right hidden-part">
+                                    <div class="btn-group search-focus">
+                                        <div class="dropdown-toggle btn-theme-normal"><span class="text-label">SEARCH</span> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="main-menu mainnav-v4">
+                    <div class="container">
+                        <div class="row">
+                            <div id="pav-mainnav" class="col-md-12">
+                                <div class="pull-leftMenu">
+                                    <div class="pav-megamenu">
+                                        <div class="navbar navbar-default">
+                                            <div id="mainmenutop" class="megamenu" role="navigation">
+                                                <div class="navbar-header">
+                                                    <a class="navbar-toggle hidden-part-ms" data-toggle="collapse"><span class="fa fa-bars"></span></a>
+                                                    <div class=" navbar-collapse navbar-ex1-collapse hidden-part-ms">
+                                                        <ul class="nav navbar-nav megamenu">
+                                                            @{
+                                                                List<CategoryClass> myClass = SiteConfiguration.Categories();
+                                                                var rootCategories = myClass.Where(i => i.ParentId == 0);
+                                                                foreach (CategoryClass p in rootCategories)
+                                                                {
+                                                                    <li class="full-width parent dropdown addactivecls " lang="test">
+                                                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="menu-title drop">@p.Name</span><b class="caret"></b></a>
+                                                                        @{var childCategories = myClass.Where(i => i.ParentId == p.CategoryId);
+                                                                        }
+                                                                        @if (childCategories != null && childCategories.Count() > 0)
+                                                                        {
+                                                                            <div class="dropdown-menu dropmenubox maxwidth">
+                                                                                <div class="dropdown-menu-inner">
+                                                                                    <div class="row">
+                                                                                        <div class="mega-col col-xs-12 col-sm-12 col-md-2 ">
+                                                                                            <div class="mega-col-inner">
+                                                                                                <div class="pavo-widget" id="pavowid-9">
+                                                                                                    @* <h3 class="widget-title"><span>Category</span></h3>*@
+                                                                                                    <div class="widget-html">
+                                                                                                        <div class="widget-inner">
+                                                                                                            <ul>
+                                                                                                                @foreach (CategoryClass c in childCategories)
+                                                                                                                {
+                                                                                                                    <li><a href="@Url.Action("SeeAll", "Home", new { id = c.CategoryId, area = string.Empty })">@c.Name</a></li>
+                                                                                                                }
+                                                                                                            </ul>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                    </li>
+                                                                }
+                                                            }
+                                                            <li class="addactivecls"><a href="~/Home/SeeAll/n"><span class="menu-title">New Arrivals</span></a></li>
+                                                            <li class="addactivecls"><a href="~/Home/SeeAll/c"><span class="menu-title">Clearance </span></a></li>
+                                                            @if (!String.IsNullOrEmpty(SiteIdentity.UserId))
+                                                            {
+
+                                                                SiteConfiguration.CanEdit = true;
+                                                                SiteConfiguration.CanOrder = true;
+                                                                SiteConfiguration.CanView = true;
+                                                                string strUrl = Request.Url.AbsolutePath.ToLower();
+                                                                List<PermissionClass> permList = SiteConfiguration.AllRolePermissions(roleId);
+                                                                if (roleId > 0)
+                                                                {
+                                                                    <li class="full-width parent dropdown addactivecls " lang="test">
+                                                                        <a href="~/Common/Home/" class="dropdown-toggle" data-toggle="dropdown">
+                                                                            @if (SiteIdentity.Roles == RolesEnum.SuperAdmin.ToString() || SiteIdentity.Roles == RolesEnum.Admin.ToString())
+                                                                            {
+                                                                                <span class="menu-title drop">ADMIN</span>
+                                                                            }
+                                                                            else if (SiteIdentity.Roles == RolesEnum.Warehouse.ToString() || SiteIdentity.Roles == RolesEnum.SalesPerson.ToString())
+                                                                            {
+                                                                                <span class="menu-title drop">Control Panel</span>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <span class="menu-title drop">Menu</span>
+                                                                            }
+                                                                            <b class="caret"></b>
+                                                                        </a>
+                                                                        <div class="dropdown-menu dropmenubox maxwidth">
+                                                                            <div class="dropdown-menu-inner">
+                                                                                <div class="row">
+                                                                                    <div class="mega-col col-xs-12 col-sm-12 col-md-2 ">
+                                                                                        <div class="mega-col-inner">
+                                                                                            <div class="pavo-widget" id="pavowid-0">
+                                                                                                <div class="widget-html">
+                                                                                                    <div class="widget-inner">
+                                                                                                        <ul>
+                                                                                                            <li><a href="~/Common/Home/">Home</a></li>
+                                                                                                            @*<li><a href="~/Common/Home/Account">My Account</a></li>*@
+                                                                                                            @{PermissionClass perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageCustomersPage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/common/customer"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanEdit == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Common/Customer/Create">Add Customer</a></li>
+                                                                                                                }
+                                                                                                                if (perm.CanEdit == true || perm.CanView == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Common/Customer/">Customers</a></li>
+                                                                                                                }
+                                                                                                            }
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageOrdersPage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/common/order"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li style="border-bottom: 1px dashed #808080;"><a href="~/Common/Order/">Orders</a></li>
+                                                                                                                }
+                                                                                                            }
+
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageAddProductPage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/common/clothes"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Common/Clothes/MassUpload">Add Products</a></li>
+                                                                                                                }
+                                                                                                            }
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageFailurePage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/common/failure"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Common/Failure/">Failure</a></li>
+                                                                                                                }
+                                                                                                            }
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManagePermissionPage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/common/permission"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Common/Permission/">Permissions</a></li>
+                                                                                                                }
+                                                                                                            }
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageFutureAdminPage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/home/futuredeliveries"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Home/SeeAll/f">Future Deliveries</a></li>
+                                                                                                                }
+                                                                                                            }
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageDeactivatedProductsPage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/home/deactivatedproducts"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Home/SeeAll/d">Deactivated Products</a></li>
+                                                                                                                }
+                                                                                                            }
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageLineSheetPage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/home/linesheet"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li style="border-bottom: 1px dashed #808080;"><a href="~/Home/LineSheet/">Line Sheet</a></li>
+                                                                                                                }
+                                                                                                            }
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageBackgroundPage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/common/backgrounds"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Common/Backgrounds/">Backgrounds</a></li>
+                                                                                                                }
+                                                                                                            }
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageMapping").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/common/clothes/tagmaps"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Common/Clothes/TagMaps">Search Mapping</a></li>
+                                                                                                                }
+                                                                                                            }
+                                                                                                            perm = permList.Where(x => x.RoleId == roleId && x.PermissionName == "ManageReportsPage").SingleOrDefault();
+                                                                                                            if (perm != null)
+                                                                                                            {
+                                                                                                                if (strUrl.Contains("/common/report"))
+                                                                                                                {
+                                                                                                                    SiteConfiguration.CanEdit = perm.CanEdit.Value;
+                                                                                                                    SiteConfiguration.CanOrder = perm.CanOrder.Value;
+                                                                                                                    SiteConfiguration.CanView = perm.CanView.Value;
+                                                                                                                    if (!SiteConfiguration.CanEdit && !SiteConfiguration.CanOrder && !SiteConfiguration.CanView)
+                                                                                                                    {
+                                                                                                                        Response.Redirect("~/Common/Home/Index");
+                                                                                                                    }
+                                                                                                                }
+                                                                                                                if (perm.CanView == true || perm.CanEdit == true || perm.CanOrder == true)
+                                                                                                                {
+                                                                                                                    <li><a href="~/Common/Report/">Reports</a></li>
+                                                                                                                }
+                                                                                                            }
+
+                                                                                                            if ((strUrl.Contains("/common/") || strUrl.Contains("/home/futuredeliveries") || strUrl.Contains("/home/linesheet") || strUrl.Contains("/home/deactivatedproducts")) && !strUrl.Contains("/common/home") && !SiteConfiguration.CanEdit && !SiteConfiguration.CanOrder && !SiteConfiguration.CanView)
+                                                                                                            {
+                                                                                                                Response.Redirect("~/Common/Home/Index");
+                                                                                                            }
+                                                                                                            if (SiteConfiguration.Mode == ModeEnum.Edit.ToString() && !SiteConfiguration.CanEdit)
+                                                                                                            {
+                                                                                                                if (SiteConfiguration.CanView)
+                                                                                                                { SiteConfiguration.Mode = ModeEnum.View.ToString(); }
+                                                                                                                else
+                                                                                                                { SiteConfiguration.Mode = ModeEnum.Order.ToString(); }
+                                                                                                                Response.Redirect(strUrl);
+                                                                                                            }
+                                                                                                            }
+                                                                                                        </ul>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                }
+                                                                <li class="full-width parent dropdown addactivecls"><a href="~/Home/Logout"><span class="menu-title">Logout</span></a></li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+                <div class="nav-search visible">
+                    <div class="input-group">
+                        @using (Html.BeginForm("SeachStyleNumber", "Home", new { @area = "" }, FormMethod.Get, null))
+                        {
+                            <input name="styleNumber" placeholder="Search..." class="form-control search-control" type="text">
+                        }
+                        <span class="input-group-addon button-close"><span class="fa fa-times"></span></span>
+                    </div>
+                </div>
+            </section>
+            <section id="columns" class="offcanvas-siderbars">
+                <div class="container">
+                    <div class="row">
+                        <section class="col-md-12">
+                            @RenderBody()
+                        </section>
+                        <div class="clr"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="platiniFooter" id="foter">
+            <div class="col-lg-12 col-sm-12 col-md-12 blackfooter">
+                <div class="col-lg-5 col-sm-5 col-md-5">
+                    <i class="fa fa-envelope-o"></i><span class="signt">Sign up for our newsletter</span>
+                    @using (Html.BeginForm("SignUpLetter", "Home", FormMethod.Post, new { @class = "signForm" }))
+                    {
+                        <input type="text" class="emailad" title="Sign up for our newsletter" rel="tooltip" id="newsletter" name="signUpEmail" placeholder="enter email address">
+                        <button class="newsbutton" title="Submit" type="submit"><span><span><i class="fa fa-chevron-right"></i></span></span></button>
+                    }
+                </div>
+                <div class="col-lg-2 col-sm-2 col-md-2">
+                    <ul class="social-media">
+                        <li>
+                            <h3>Follow Us</h3>
+                        </li>
+                        <li><a target="_blank" href="https://www.facebook.com/platini.jeans" rel="tooltip" title="Facebook" class="twitter"><em class="fa fa-facebook-square"></em></a></li>
+                        <li><a target="_blank" href="https://instagram.com/PLATINI.JEANS" title="Instagram" class="pinterest" rel="tooltip"><em class="fa fa-instagram"></em></a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-5 col-sm-5 col-md-5">
+                    <!-- <div class="free-ship"><a href="#" title=""><em class="fa fa-truck"></em><span>Free Shipping above $200</span></a></div>
+                    -->
+                    <div class="free-ship">Ghacham Inc. 7340 Alondra Blvd. Paramount, CA 90723 -- 562 602 0400 --</div>
+                </div>
+
+            </div>
+        </div>
+        <div id="top"><a style="display: none;" class="scrollup" href="#"><i class="fa fa-angle-up"></i>Top</a></div>
+
+        <div id="adminpassDialog" style="display: none;">
+            @using (Html.BeginForm("ConfirmPass", "Home", new { @area = "" }, FormMethod.Post, null))
+            {
+                <div style="background: none repeat scroll 0 0 #fff; border: 1px solid #000; border-radius: 5px; box-shadow: 0 2px 27px #e7e7e8; padding: 5px; text-align: center;">
+                    <div style="margin: 0 auto;">
+                        <h4>Authentication Required</h4>
+                        <span style="display: block;">Please enter admin password</span>
+                    </div>
+                    <div style="margin-top: 5px;">
+                        <input type="password" id="pwd" name="pwd" class="popPass" />
+                    </div>
+                    <div>
+                        <input type="submit" value="Authenticate" class="popSubmit" />
+                    </div>
+                </div>
+            }
+        </div>
+        @if (wasButtonShown)
+        {
+            if (SiteIdentity.RoleId() == (int)RolesEnum.Admin || SiteIdentity.RoleId() == (int)RolesEnum.SuperAdmin || SiteIdentity.RoleId() == (int)RolesEnum.Warehouse)
+            {
+                <div class="md-modal md-effect-1" style="width: 98%; max-width: 98%;height : 100%" id="modal-cart">
+                    <div class="md-content popupCOntainer" style="height : 100%">
+                        <div class="topRor">
+                            <div class="md-close" style="text-align: right;">
+                                <img src="~/Styles/images/cross.png" alt="">
+                            </div>
+                        </div>
+                        @Html.Action("Cart", "Home", new { @area = "", @from = "1" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="md-modal md-effect-1" style="width:98%; max-width: 98%;height : 100%" id="modal-cart">
+                    <div class="md-content popupCOntainer" style="height : 96%">
+                        <div class="topRor">
+                            <div class="md-close" style="text-align: right;">
+
+                                <img src="~/Styles/images/cross.png" alt="">
+                            </div>
+                        </div>
+                        <div id="model-pop">
+                            @Html.Action("Cart", "Home", new { @area = "", @from = "1" })
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        @if (!string.IsNullOrEmpty(ViewBag.PageMessage))
+        {
+            <span class="md-trigger md-setperspective" id="pagemessage" data-modal="modal-msg">&nbsp;</span>
+            <div class="md-modal md-effect-7" id="modal-msg">
+                <div class="md-content popupCOntainer">
+                    <div class="topRor">
+                        <div class="md-close" style="text-align: right;">
+                            <img src="~/Styles/images/cross.png" alt="">
+                        </div>
+                    </div>
+                    <div class="popinner">
+                        @ViewBag.PageMessage
+                    </div>
+                </div>
+            </div>
+        }
+
+        <button type="button" id="modalTrigger" class="md-trigger md-setperspective" data-modal="modal-qv" style="display: none;">ABC</button>
+        <div class="md-modal md-effect-1" style="width: 60%; max-width: 54%;" id="modal-qv">
+            <div class="md-content popupCOntainer">
+                <div class="topRor" id="pCont">
+                    Available Open Sizes
+                    <div class="closeBox md-close">
+                        <img src="~/Styles/images/cross.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <span class="md-trigger md-setperspective" id="confirmmessage1" data-modal="modal-msg">&nbsp;</span>
+        <div class="md-modal md-effect-7" id="modal-msg">
+            <div class="md-content popupCOntainer">
+                <div class="topRor">
+                    <div class="md-close" style="text-align: right;">
+                        <img src="~/Styles/images/cross.png" alt="">
+                    </div>
+                </div>
+                <p id="confirmMsg1" style="text-align: center;font-size:18px;">
+
+                </p>
+            </div>
+        </div>
+
+        <span class="md-trigger md-setperspective" id="confirmmessage" data-modal="modal-confirm">&nbsp;</span>
+        <div class="md-modal md-effect-1" id="modal-confirm">
+            <div class="md-content popupCOntainer">
+                <div class="topRor">
+                    <div id="closeConfirm" class="md-close" style="text-align: right;">
+
+                        <img src="~/Styles/images/cross.png" alt="">
+                    </div>
+                </div>
+                <div class="popinner">
+                    <p id="confirmMsg">
+
+                    </p>
+                    <div style="text-align: center;">
+                        <button id="openCart" type="button" class="btnOrder" style="width: 50px;display:none;">
+                            Yes
+                        </button>
+                        <button id="packBreak" type="button" class="btnOrder" style="width: 50px;display:none;">
+                            Yes
+                        </button>
+                        <button class="btnOrder" type="button" onclick="$('#closeConfirm').click();" style="width: 50px;">
+                            No
+                        </button>
+                        <input type="hidden" id="hdnClothes" class="btnOrder" name="" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (string.IsNullOrEmpty(SiteIdentity.UserId))
+        {
+            <div class="md-modal md-effect-1" id="modal-Log">
+                <div class="md-content popupCOntainer">
+                    <div class="topRor">
+                        Login or Create an Account<div id="logCloseBtn" class="closeBox md-close">
+                            <img src="~/Styles/images/cross.png" alt="">
+                        </div>
+                    </div>
+                    @Html.Action("LoginPartial", "Home", new { ReturnUrl = Request.Url, @area = "" })
+                </div>
+            </div>
+            <div class="md-modal md-effect-1" id="modal-WReg">
+                <div class="md-content popupCOntainer">
+                    <div class="topRor">
+                        Wholesale Registration<div class="closeBox md-close">
+                            <img src="~/Styles/images/cross.png" alt="">
+                        </div>
+                    </div>
+                    @Html.Action("WholesaleRegistration", "Home", new { @area = "", @from = "1" })
+                </div>
+            </div>
+            <div class="md-modal md-effect-1" id="modal-Reg">
+                <div class="md-content popupCOntainer">
+                    <div class="topRor">
+                        Registration<div class="closeBox md-close">
+                            <img src="~/Styles/images/cross.png" alt="">
+                        </div>
+                    </div>
+                    @Html.Action("Registration", "Home", new { @area = "", @from = "1" })
+                </div>
+            </div>
+        }
+        <div class="md-overlay"></div>
+    </section>
+    <script type="text/javascript" src="~/Scripts/modernizr.custom.js"></script>
+    <script type="text/javascript" src="~/Scripts/classie.js"></script>
+    <script type="text/javascript" src="~/Scripts/modalEffects.js"></script>
+    <script type="text/javascript">
+        var moveLeft = 0;
+        var moveRight = 0;
+        $('.popBoxInfo').hover(function () {
+            var target = '#' + ($(this).attr('data-popBox'));
+            $(target).show();
+            moveLeft = $(this).outerWidth();
+            moveRight = ($(target).outerHeight() / 2);
+        }, function () {
+            var target = '#' + ($(this).attr('data-popBox'));
+            if (!($(".popBoxInfo").hasClass("show"))) {
+                $(target).hide();
+            }
+        });
+
+        $('.popBox').hover(
+           function () {
+               $(this).show();
+           }, function () {
+               $(this).hide();
+           });
+
+        $('.popBoxInfo').mouseover(function (e) {
+            var target = '#' + ($(this).attr('data-popBox'));
+            leftD = e.pageX + parseInt(moveLeft);
+            maxRight = leftD + $(target).outerWidth();
+            windowLeft = $(window).width - 40;
+            windowRight = 0;
+            maxLeft = e.pageX - (parseInt(moveLeft) + $(target).outerWidth + 20);
+
+            if (maxLeft > windowLeft && maxRight > windowRight) {
+                leftD = maxLeft;
+            }
+
+            topD = e.pageY - parseInt(moveDown);
+            maxBottom = parseInt(e.pageY + parseInt(moveDown) + 20);
+            windowBottom = parseInt(parseInt($(document).scrollTop()) + parseInt($(window).height()));
+            maxTop = topD;
+            windowTop = parseInt($(document).scrollTop());
+            if (maxBottom > windowBottom) {
+                topD = windowBottom - $(target).outerHeight() - 20;
+            } else if (maxTop < windowTop) {
+                topD = windowTop + 20;
+            }
+            $(target).css('top', topD).css('left', leftD);
+        });
+
+        $("#cartSuccess").click(function () {
+            setTimeout(function () { $("#getStyles").focus(); }, 3000);
+
+        });
+    </script>
+    <div id="fb-root"></div>
+</body>
+</html>

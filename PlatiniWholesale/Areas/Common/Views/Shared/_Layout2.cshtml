@@ -1,0 +1,487 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+@using Platini.Models;
+
+<link type="text/css" rel="stylesheet" href="~/Styles/admin.css" />
+<script type="text/javascript">
+    //-------------------------------------------------- For Size Admin Page Starts Here-------------------------------------------------------
+    // These functions should be used only for Size Admin Edit Page , for View functions like justGetSubCategories() should be called.
+    $(function getSubCategories() {
+        $("#ddlCategories").change(function () {
+            var selectedItem = $(this).val();
+            var updateHolder = $("#ddlSubCategories");
+
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetSubCategoryByCategoryId", "Size"))",
+                data: { "categoryId": selectedItem },
+                success: function (data) {
+                    updateHolder.html('');
+                    updateHolder.append($('<option>Select</option>'));
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                    });
+                    $("#ddlCategoryTypes").html('');
+                    $("#ddlCategoryTypes").append($('<option>Select</option>'));
+                    $("#ddlSizeGroups").html('');
+                    $("#ddlSizeGroups").append($('<option>Select</option>'));
+                },
+                error: function () { }
+            });
+        });
+    });
+
+    $(function getCategoryTypes() {
+        $("#ddlSubCategories").change(function () {
+            var selectedItem = $(this).val();
+            var updateHolder = $("#ddlCategoryTypes");
+
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetSubCategoryTypeBySubCategoryId", "Size"))",
+                data: { "subCategoryId": selectedItem },
+                success: function (data) {
+                    updateHolder.html('');
+                    updateHolder.append($('<option>Select</option>'));
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                    });
+                    $("#ddlSizeGroups").html('');
+                    $("#ddlSizeGroups").append($('<option>Select</option>'));
+                },
+                error: function () { }
+            });
+        });
+    });
+
+    $(function getSizeGroups() {
+        $("#ddlCategoryTypes").change(function () {
+            var selectedItem = $(this).val();
+            var updateHolder = $("#ddlSizeGroups");
+
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetSizeGroupBySubCategoryTypeId", "Size"))",
+                data: { "subCategoryTypeId": selectedItem },
+                success: function (data) {
+                    //$("#sizeList").html('');
+                    //addField();
+                    //$("#addSizeDiv").html('');
+                    //$("#addSizeDivHead").html('New SizeGroup');
+                    //$("#addSizeDiv").html('<input type="text" id="AddSizeGroupValue"/><button onclick="addSizeGroup()" id="addSizeGroup">Add New</button>');
+                    updateHolder.html('');
+                    updateHolder.append($('<option>Select</option>'));
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                    });
+                },
+                error: function () { }
+            });
+        });
+    });
+
+    $(function getSizes() {
+        $("#sizeGroupId").change(function () {
+            var selectedItem = $(this).val();
+            var updateHolder = $("#sizeList");
+            $("#addSizeDiv").html('');
+            $("#addSizeDivHead").html('');
+            if (selectedItem == 0) {
+                $("#addSizeDivHead").html('New SizeGroup');
+                $("#addSizeDiv").html('<input type="text" id="AddSizeGroupValue"/><button onclick="addSizeGroup()" id="addSizeGroup">Add New</button>');
+            }
+            else {
+                if ($("#addSizeDiv").length) {
+                    $("#addNew").html('Add New');
+                    $("#addSizeDiv").html('<button id="deleteSizeGroup" onclick="deleteSizeGroup()">Delete</button>');
+                }
+            }
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetSizesBySizeGroupId", "Size"))",
+                data: { "sizeGroupId": selectedItem },
+                success: function (result) {
+                    updateHolder.html('');
+                    addField();
+                    var table = updateHolder.append($('<tr><th>Sizes</th><th></th><th></th></tr>'));
+                    $.each(result, function (id, option) {
+                        if ($("#addSizeDiv").length) {
+                            table += "<tr>";
+                            table += "<td id=Size" + option.Id + ">" + option.Name + "</td>";
+                            table += "<td><button id=" + option.Id + " onclick='editSize(this.id)'>Edit</button></td>";
+                            table += "<td><button id=" + option.Id + " onclick='deleteSize(this.id)'>Delete</button></td>"
+                            table += "</tr>";
+                        }
+                        else {
+                            updateHolder.append($('<tr><td></td></tr>').html(option.Name));
+                        }
+                    });
+                    if ($("#addSizeDiv").length) {
+                        updateHolder.html(table);
+                    }
+                },
+                error: function () { }
+            });
+        });
+    });
+
+    function addSizeGroup() {
+        var selectedName = $("#AddSizeGroupValue").val();
+        var subCategoryTypeId = $("#subCategoryTypeId").val();
+
+        $.ajax({
+            type: "POST",
+            url: "@(Url.Action("AddSizeGroup", "Size"))",
+            data: { "Id": 0, "Name": selectedName, "subCategoryTypesId": subCategoryTypeId, "IsActive": true },
+            success: function (result) {
+                $("#AddSizeGroupValue").val('');
+
+                var selectedItem = $("#subCategoryTypeId").val();
+                var updateHolder = $("#sizeGroupId");
+
+                $.ajax({
+                    type: "GET",
+                    url: "@(Url.Action("GetSizeGroupBySubCategoryTypeId", "Size"))",
+                        data: { "subCategoryTypeId": selectedItem },
+                        success: function (data) {
+                            $("#sizeList").html('');
+                            addField();
+                            $("#addSizeDiv").html('');
+                            $("#addSizeDivHead").html('New SizeGroup');
+                            $("#addSizeDiv").html('<input type="text" id="AddSizeGroupValue"/><button onclick="addSizeGroup()" id="addSizeGroup">Add New</button>');
+                            updateHolder.html('');
+                            if (data == null || data == "") { updateHolder.append($('<option id="addNew">Add New</option>')); }
+                            else {
+                                updateHolder.append($('<option id="addNew" value="0">Select</option>'));
+                            }
+                            $.each(data, function (id, option) {
+                                updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                            });
+                        },
+                        error: function () { }
+                    });
+                },
+            error: function () {
+            }
+        });
+        }
+
+        function deleteSizeGroup() {
+            var selectedItem = $("#sizeGroupId").val();
+            $.ajax({
+                type: "POST",
+                url: "@(Url.Action("DeleteSizeGroup", "Size"))",
+                data: { "sizeGroupId": selectedItem },
+                success: function () {
+                    $("#AddSizeGroupValue").val('');
+
+                    var selectedItem = $("#subCategoryTypeId").val();
+                    var updateHolder = $("#sizeGroupId");
+
+                    $.ajax({
+                        type: "GET",
+                        url: "@(Url.Action("GetSizeGroupBySubCategoryTypeId", "Size"))",
+                        data: { "subCategoryTypeId": selectedItem },
+                        success: function (data) {
+                            $("#sizeList").html('');
+                            addField();
+                            $("#addSizeDiv").html('');
+                            $("#addSizeDivHead").html('New SizeGroup');
+                            $("#addSizeDiv").html('<input type="text" id="AddSizeGroupValue"/><button onclick="addSizeGroup()" id="addSizeGroup">Add New</button>');
+                            updateHolder.html('');
+                            if (data == null || data == "") { updateHolder.append($('<option id="addNew">Add New</option>')); }
+                            else {
+                                updateHolder.append($('<option id="addNew" value="0">Select</option>'));
+                            }
+                            $.each(data, function (id, option) {
+                                updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                            });
+                        },
+                        error: function () { }
+                    });
+                },
+                error: function () { }
+            });
+        }
+
+        function addSize() {
+            var selectedItem = $("#AddSizeValue").val();
+            var subCategoryTypeId = $("#subCategoryTypeId").val();
+            var sizeGroupId = $("#sizeGroupId").val();
+            var updateHolder = $("#sizeList");
+            $.ajax({
+                type: "POST",
+                url: "@(Url.Action("AddSize", "Size"))",
+                data: { "Name": selectedItem, "SubCategoryTypesId": subCategoryTypeId, "SizeGroupId": sizeGroupId },
+                success: function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "@(Url.Action("GetSizesBySizeGroupId", "Size"))",
+                    data: { "sizeGroupId": sizeGroupId },
+                    success: function (data) {
+                        updateHolder.html('');
+                        addField();
+                        var table = updateHolder.append($('<tr><th>Sizes</th><th></th><th></th></tr>'));
+                        $.each(data, function (id, option) {
+                            if ($("#addSizeDiv").length) {
+                                table += "<tr>";
+                                table += "<td id=Size" + option.Id + ">" + option.Name + "</td>";
+                                table += "<td><button id=" + option.Id + " onclick='editSize(this.id)'>Edit</button></td>";
+                                table += "<td><button id=" + option.Id + " onclick='deleteSize(this.id)'>Delete</button></td>"
+                                table += "</tr>";
+                            }
+                            else {
+                                updateHolder.append($('<tr><td></td></tr>').html(option.Name));
+                            }
+                            if ($("#addSizeDiv").length) {
+                                updateHolder.html(table);
+                            }
+                        });
+                    },
+                    error: function () { }
+                });
+            },
+                error: function () { }
+            });
+    }
+
+    var eID, n, sc, sg;
+
+    function editSize(e) {
+        eID = e;
+        sc = $("#subCategoryTypeId").val();
+        sg = $("#sizeGroupId").val();
+        n = $("#Size" + e).html();
+        $("#addField").html('');
+        $("#addField").append($('<tr><th>Size</th><th><input type="text" id="EditSizeValue" /></th><th><button id="editButton" onclick="saveEditSize()">Save</button><button id="cancelEdit" onclick="cancelEditSize()">Cancel</button></th></tr>'));
+        $("#EditSizeValue").attr("value", n);
+    }
+
+    function cancelEditSize() {
+        $("#addField").html('');
+        addField();
+    }
+
+
+    function saveEditSize() {
+        n = $("#EditSizeValue").val();
+        var id = eID;
+        var subCategoryTypeId = sc;
+        var sizeGroupId = sg;
+        var name = n;
+        $.ajax({
+            type: "POST",
+            url: "@(Url.Action("EditSizeName", "Size"))",
+            data: { "Id": id, "Name": name, "SubCategoryTypesId": subCategoryTypeId, "SizeGroupId": sizeGroupId },
+            success: function () {
+                addField();
+                var selectedItem = $("#sizeGroupId").val();
+                var updateHolder = $("#sizeList");
+                $.ajax({
+                    type: "GET",
+                    url: "@(Url.Action("GetSizesBySizeGroupId", "Size"))",
+                    data: { "sizeGroupId": selectedItem },
+                    success: function (result) {
+                        updateHolder.html('');
+                        addField();
+                        var table = updateHolder.append($('<tr><th>Sizes</th><th></th><th></th></tr>'));
+                        $.each(result, function (id, option) {
+                            if ($("#addSizeDiv").length) {
+                                table += "<tr>";
+                                table += "<td id=Size" + option.Id + ">" + option.Name + "</td>";
+                                table += "<td><button id=" + option.Id + " onclick='editSize(this.id)'>Edit</button></td>";
+                                table += "<td><button id=" + option.Id + " onclick='deleteSize(this.id)'>Delete</button></td>"
+                                table += "</tr>";
+                            }
+                            else {
+                                updateHolder.append($('<tr><td></td></tr>').html(option.Name));
+                            }
+                            if ($("#addSizeDiv").length) {
+                                updateHolder.html(table);
+                            }
+                        });
+                    },
+                    error: function () { }
+                });
+            },
+            error: function () { alert('error'); }
+        });
+    }
+
+    function deleteSize(e) {
+        $.ajax({
+            type: "POST",
+            url: "@(Url.Action("DeleteSize", "Size"))",
+            data: { "sizeId": e },
+            success: function (result) {
+                var selectedItem = $("#sizeGroupId").val();
+                var updateHolder = $("#sizeList");
+                $.ajax({
+                    type: "GET",
+                    url: "@(Url.Action("GetSizesBySizeGroupId", "Size"))",
+                    data: { "sizeGroupId": selectedItem },
+                    success: function (result) {
+                        updateHolder.html('');
+                        addField();
+                        var table = updateHolder.append($('<tr><th>Sizes</th><th></th><th></th></tr>'));
+                        $.each(result, function (id, option) {
+                            if ($("#addSizeDiv").length) {
+                                table += "<tr>";
+                                table += "<td id=Size" + option.Id + ">" + option.Name + "</td>";
+                                table += "<td><button id=" + option.Id + " onclick='editSize(this.id)'>Edit</button></td>";
+                                table += "<td><button id=" + option.Id + " onclick='deleteSize(this.id)'>Delete</button></td>"
+                                table += "</tr>";
+                            }
+                            else {
+                                updateHolder.append($('<tr><td></td></tr>').html(option.Name));
+                            }
+                            if ($("#addSizeDiv").length) {
+                                updateHolder.html(table);
+                            }
+                        });
+                    },
+                    error: function () { }
+                });
+            },
+            error: function () { }
+        });
+    }
+
+    function addField() {
+        $("#addField").html('');
+        $("#addField").append($('<tr><th>Size</th><th><input type="text" id="AddSizeValue" /></th><th><button id="addButton" onclick="addSize()">Add</button></th></tr>'));
+    }
+    //---------------------------------------------------------- Size Admin Page Ends Here--------------------------------------------------
+
+    //-----------------------------------------------------------Add Clothes Page Starts Here----------------------------------------------------
+    $(function justGetSubCategories() {
+        $("#CategoryId").change(function () {
+            var selectedItem = $(this).val();
+            var updateHolder = $("#SubCategoryId");
+
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetSubCategoryByCategoryId", "Home"))",
+                data: { "categoryId": selectedItem },
+                success: function (data) {
+                    updateHolder.html('');
+                    $("#SubCategoryTypeId").html('');
+                    $("#SubCategoryTypeId").append($('<option>Select</option>'));
+                    $("#SizeGroupId").html('');
+                    $("#SizeGroupId").append($('<option>Select</option>'));
+                    //ShowClothAttributeDiv('');
+                    updateHolder.append($('<option>Select</option>'));
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                    });
+                },
+                error: function () { }
+            });
+        });
+    });
+
+    $(function justGetTypes() {
+        $("#SubCategoryId").change(function () {
+            var selectedItem = $(this).val();
+            var updateHolder = $("#SubCategoryTypeId");
+
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetSubCategoryTypeBySubCategoryId", "Size"))",
+                data: { "subCategoryId": selectedItem },
+                success: function (data) {
+                    updateHolder.html('');
+                    $("#SizeGroupId").html('');
+                    $("#SizeGroupId").append($('<option>Select</option>'));
+                    updateHolder.append($('<option>Select</option>'));
+                    //ShowClothAttributeDiv('');
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                    });
+                },
+                error: function () { }
+            });
+        });
+    });
+
+    $(function justGetSizeGroups() {
+        $("#SubCategoryTypeId").change(function () {
+            var selectedItem = $(this).val();
+            var updateHolder = $("#SizeGroupId");
+
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetSizeGroupBySubCategoryTypeId", "Size"))",
+                data: { "subCategoryTypeId": selectedItem },
+                success: function (data) {
+                    updateHolder.html('');
+                    updateHolder.append($('<option>Select</option>'));
+                    $.each(data, function (id, option) {
+                        updateHolder.append($('<option></option>').val(option.Value).html(option.Text));
+                    });
+                },
+                error: function () { }
+            });
+            //ShowClothAttributeDiv(selectedItem);
+        });
+    });
+
+    // Other Functions
+    //function ShowClothAttributeDiv(element) {
+    //    if (element == "3" || element == "12" || element == "15") {
+    //        $("#clothAttributes").slideDown(300);
+    //    }
+    //    else { $("#clothAttributes").slideUp(300); }
+    //}
+
+    $(function () {
+        $("#FutureDeliveryDate").datepicker({ dateFormat: 'dd M yy' });
+    });
+    //--------------------------------------------------Functions for RelatedProduct--------------------------------------------------------
+    $(document).ready(function () {
+        $("#RelatedProductDialog").dialog({
+            autoOpen: false,
+            width: 800,
+            height: 500,
+            scrollable: true,
+            resizable: false,
+            close: function () { $(this).dialog('close'); }
+        });
+    });
+
+    $(function openRelatedProduct() {
+        $("#RelatedProductButton").on("click", function () {
+            var clothid = $("#ClothIdForRelatedProduct").val();
+            $("#RelatedProductDialog").dialog('open');
+            
+            $.ajax({
+                type: "GET",
+                url: "@(Url.Action("GetRelatedProducts", "Clothes"))",
+                data: { "clothId": clothid },
+                success: function (result) {
+                    $("#RelatedProductDialog").html('');
+                    $("#RelatedProductDialog").append(result);
+                },
+                error: function () { }
+            });
+        });
+    });
+    //------------------------------------------------Related Products Ends Here -----------------------------------------------------------
+    //------------------------------------------------AddClothesTwo Page Starts Here--------------------------------------------------------
+
+    $(function cancelAvailablePrePackRow() {
+        $('body').delegate("#CancelAvailablePrePackRowBtn", "click", function () {
+            $(this).parent().parent().remove();
+        });
+    });
+
+    //------------------------------------------------AddClothesTwo Page Ends Here---------------------------------------
+</script>
+@if (string.IsNullOrEmpty(SiteIdentity.UserId))
+{
+    Response.Redirect("~/Home/Index");
+}
+<div class="col-md-12 col-lg-12 col-sm-12">
+    @RenderBody()
+</div>

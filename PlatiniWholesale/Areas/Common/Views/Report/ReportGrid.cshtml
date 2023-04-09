@@ -1,0 +1,96 @@
+﻿@using Platini.Models
+@model List<InvRept>
+@{bool getImage = false;}
+@if (ViewBag.PrintMode)
+{
+    getImage = true;
+    <link type="text/css" rel="stylesheet" href="~/Styles/style.css" />
+    <link type="text/css" rel="stylesheet" href="~/Styles/admin.css" />
+    <link type="text/css" rel="stylesheet" href="~/Styles/bootstrap.min.css">
+}
+<div class="main-listing-box">
+    <table style="border: 0; width: 100%; text-align: center;">
+        <tr class="title-pannel">
+            <td>Picture</td>
+            <td>Style #</td>
+            <td>Date inventory was put in</td>
+            <td>Original qty</td>
+            <td>Qty. Adjusted</td>
+            <td>$ of Qty. Adjusted</td>
+            <td>qty. on hand (current qty.)</td>
+            <td>qty. sold (difference)</td>
+            <td>% of qty. sold</td>
+            <td>$ Cost</td>
+            <td>$ Amt. Sold</td>
+            <td>$ Profit</td>
+            <td>Days since inventory was entered</td>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a href="@Url.Action("Detail", "Home", new { area = "", id = item.Id })" target="_blank">
+                        @if (!getImage)
+                        {
+                            <img src="/Library/Uploads/WebThumb/@item.Pic" height="64" />
+                        }
+                        else
+                        {
+                            <img src="@Url.Action("Test", new { path = "/Library/Uploads/WebThumb/" + item.Pic })" />
+                        }
+                    </a>
+                </td>
+                <td>
+                    <a href="@Url.Action("Detail", "Home", new { area = "", id = item.Id })" target="_blank">@item.Style</a>
+                </td>
+                <td title="@(item.isFuture ? "Future Delivery Date" : "Product Added Date")">
+                    @item.iDate.ToShortDateString()
+                </td>
+                <td>
+                    @item.oQty
+                </td>
+                <td>
+                    @item.aQty
+                </td>
+                <td>
+                    @item.aCost
+                </td>
+                <td>
+                    @item.cQty
+                </td>
+                <td>
+                    @item.sQty
+                </td>
+                <td>
+                    @item.pQty.ToString("F1")
+                </td>
+                <td>
+                    @item.Cost.ToString("F2")
+                </td>
+                <td>
+                    @item.Amount.ToString("F2")
+                </td>
+                <td>
+                    @item.Profit.ToString("F2")
+                </td>
+                <td>
+                    @item.Days
+                </td>
+            </tr>
+        }
+        <tr class="title-pannel">
+            <td colspan="3"></td>
+            <td>@Model.Sum(x => x.oQty)</td>
+            <td colspan="2"></td>
+            <td>@Model.Sum(x => x.cQty)</td>
+            <td>@Model.Sum(x => x.sQty)</td>
+            <td></td>
+            <td>@Model.Sum(x => x.Cost).ToString("F2")</td>
+            <td>@Model.Sum(x => x.Amount).ToString("F2")</td>
+            <td>@Model.Sum(x => x.Profit).ToString("F2")</td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div style="min-height: 5em;">
+</div>

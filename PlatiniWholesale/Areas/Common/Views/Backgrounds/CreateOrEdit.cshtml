@@ -1,0 +1,147 @@
+﻿@model Platini.Models.BackgroundClass
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div id="errorMsgName" class="box_error" style="display: none;">
+        <label id="errormsg"></label>
+    </div>
+    <div class="deshboardpanal">
+        <div class="adminright_panal">
+            <div class="nameheadingbg">
+                <span class="sucmsghead">
+                    <h1>Background Picture</h1>
+                </span><span class="sucmsg"></span>
+            </div>
+            <div class="admincontent">
+                <div class="registration">
+                    @Html.ValidationSummary(true)
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            Web Background <span class="forStar">*</span>
+                        </label>
+                        <div class="field">
+                            <input type="file" name="fUpBackGround" id="fileUpload" title="Upload Image (.jpg/.png/.gif/.bmp)" style="display: inline-block;" />
+                            @if (!string.IsNullOrEmpty(Model.MainPic))
+                            {
+                                <a href="/Library/Backgrounds/@Model.MainPic" target="_blank">
+                                    <img src="/Library/Backgrounds/@Model.MainPic" width="50" alt="Web Image" title="Web Image" style="display:inline-block;"/></a>
+                            }
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            Mobile Background <span class="forStar">*</span>
+                        </label>
+                        <div class="field">
+                            <input type="file" name="fMUpBackGround" multiple="multiple" id="fileMUpload" title="Upload All Images (.jpg/.png/.gif/.bmp)" />
+                            @if (Model.MobPics.Count > 0)
+                            {
+                                foreach (var item in Model.MobPics)
+                                {
+                                    if (!string.IsNullOrEmpty(item.Value))
+                                    {
+                                <a href="/Library/Backgrounds/@item.Value" target="_blank">
+                                    <img src="/Library/Backgrounds/@item.Value" width="50" alt="@item.Id" title="@item.Id" class="mobPics"/></a>
+                                    }
+                                }
+                            }
+                            <a href="javascript:void(0);" id="upInfo">Choose all relevant image sizes for this background. Click here to see all sizes required.
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            Sort Order <span class="forStar">*</span>
+                        </label>
+                        <div class="field">
+                            @Html.EditorFor(model => model.SortOrder)
+                            @Html.ValidationMessageFor(model => model.SortOrder)
+
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <label runat="server" class="fieldLabel" for="contact_name">
+                            Active</label>
+
+                        <div class="comn">
+                            @if (Model == null)
+                            {
+                                <div class="comn2" style="width: 90px">
+                                    @Html.RadioButtonFor(model => model.IsActive, "true", new { @checked = "checked" }) Yes
+                                </div>
+                                <div class="comn2" style="width: 90px">
+                                    @Html.RadioButtonFor(model => model.IsActive, "false") No
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="comn2" style="width: 90px">
+                                    @Html.RadioButtonFor(model => model.IsActive, "true") Yes
+                                </div>
+                                <div class="comn2" style="width: 90px">
+                                    @Html.RadioButtonFor(model => model.IsActive, "false") No
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="formRow">
+                        <label for="contact_name" class="fieldLabel forwidth">
+                            &nbsp;</label>
+                        <div class="field">
+                            @Html.HiddenFor(model => model.Id)
+                            <button id="updbtn" type="submit" class="save-btn" value="Save">Save</button>
+                            <button id="cncbtn" type="button" class="save-btn" value="Cancel" onclick="window.location.href='@Url.Action("Index", "Backgrounds")'">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="sizeDialog" title="Size List" style="display: none;">
+    <div style="margin: 0 auto; width: 20%">Width X Height</div>
+    <div style="padding: .2em" class="clearfix">
+        <div class="text-right col-lg-6 col-md-6 col-xs-6">iPhone 6:</div>
+        <div class="text-left col-lg-6 col-md-6 col-xs-6">750px × 1334px</div>
+    </div>
+    <div style="padding: .2em" class="clearfix">
+        <div class="text-right col-lg-6 col-md-6 col-xs-6">iPhone 6+:</div>
+        <div class="text-left col-lg-6 col-md-6 col-xs-6">1242px × 2208px</div>
+    </div>
+    <div style="padding: .2em" class="clearfix">
+        <div class="text-right col-lg-6 col-md-6 col-xs-6">iPad Non Retina(Portrait View):</div>
+        <div class="text-left col-lg-6 col-md-6 col-xs-6">768px × 1024px</div>
+    </div>
+    <div style="padding: .2em" class="clearfix">
+        <div class="text-right col-lg-6 col-md-6 col-xs-6">iPad Non Retina(Landscape View):</div>
+        <div class="text-left col-lg-6 col-md-6 col-xs-6">1024px x 768px</div>
+    </div>
+    <div style="padding: .2em" class="clearfix">
+        <div class="text-right col-lg-6 col-md-6 col-xs-6">iPad Retina(Portrait View):</div>
+        <div class="text-left col-lg-6 col-md-6 col-xs-6">1536px × 2048px</div>
+    </div>
+    <div style="padding: .2em" class="clearfix">
+        <div class="text-right col-lg-6 col-md-6 col-xs-6">iPad Retina(Landscape View):</div>
+        <div class="text-left col-lg-6 col-md-6 col-xs-6">2048px × 1536px</div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#sizeDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: '50%'
+        });
+    });
+    $("#upInfo").click(function () {
+        $("#sizeDialog").dialog("open");
+    });
+</script>

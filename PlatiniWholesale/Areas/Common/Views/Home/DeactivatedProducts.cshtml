@@ -1,0 +1,149 @@
+﻿@using MvcPaging;
+@using Platini.Models;
+@model IPagedList<Platini.Models.ClothListItem>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Common/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-6 col-lg-6 col-sm-6">
+    @using (Html.BeginForm("DeactivatedProducts", "Home", new { area = "Common" }, FormMethod.Post))
+    {
+        <div class="filter-block">
+            <div class="formblock">
+                <div class="block">
+                    <div class="formrow">
+                        Search by Style Number
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            @Html.TextBox("searchString")
+                        </div>
+                    </div>
+                    <div class="formrow">
+                        <div class="feild">
+                            <input id="searchBtn" class="cobtn" value="GO" type="submit" style="height: 22px;" onclick="@Url.Action("DeactivatedProducts", "Home", new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, @searchString = ViewBag.searchStringParam })" />
+                            <span style="float: left;">&nbsp;&nbsp;</span><input id="clearSearchBtn" class="cobtn" value="Clear" type="button" style="height: 22px;" onclick="javascript: window.location = window.location.href;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="col-md-6 col-lg-6 col-sm-6">
+    <div class="navigationlist">
+        <ul>
+            @if (SiteConfiguration.Mode.ToLower() == "edit")
+            {
+                <li>
+                    <a onclick="javascript:activateClothIds();">Activate</a>
+                </li>
+            }
+            <li>
+                <a href="~/Home/Index?mode=d">Preview</a>
+            </li>
+            <li>
+                <a href="@Url.Action("DeactivatedProducts", "Home")" id="resetsearch">
+                    <img src="@Url.Content("~/Styles/images/listIcon.png")" alt="">Refresh
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-12 col-lg-12 col-sm-12">
+
+    <div class="minContainer">
+        <div class="listmanager">
+            <div class="head">
+                Deactivated Products
+            </div>
+            <div class="main-listing-box">
+                <table style="border: 0; width: 100%">
+                    <tr class="title-pannel">
+                        <td class="col-lg-1" style="text-align: center">
+                            @if (SiteConfiguration.Mode.ToLower() == "edit")
+                            {
+                                @Html.CheckBox("masterDeactivatedProductCheckBox", new { onchange = "javascript:masterDeactivatedProductCheckBoxFunc();" })
+                            }
+                        </td>
+                        <td class="col-lg-5">@Html.ActionLink("Style Number", "DeactivatedProducts", "Home", new { @sortOrder = ViewBag.sortOrderParam, @sortColumn = "StyleNumber", searchString = ViewBag.searchStringParam }, null)</td>
+                        <td class="col-lg-6" style="text-align: center">
+                            @if (SiteConfiguration.Mode.ToLower() == "edit")
+                            {
+                                <span>Actions</span>
+                            }
+                        </td>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="col-lg-1" style="text-align: center">
+                                @if (SiteConfiguration.Mode.ToLower() == "edit")
+                                {
+                                    @Html.CheckBox("deactivateProductCheckBox", new { id = item.ClothesId })
+                                }
+                            </td>
+                            <td class="col-lg-5">
+                                @item.StyleNumber
+                            </td>
+                            <td class="col-lg-6" style="text-align: center">
+                                @if (SiteConfiguration.Mode.ToLower() == "edit")
+                                {
+                                    <a href="@Url.Action("Step1", "Clothes", new { Id = item.ClothesId })">Edit</a>
+                                    <a href="@Url.Action("DeleteCloth", "Clothes", new { Id = item.ClothesId })" onclick="return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+                <div class="pagingContainer"></div>
+                @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new { @sortOrder = ViewBag.currentOrderParam, @sortColumn = ViewBag.sortColumnParam, searchString = ViewBag.searchStringParam })
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var activateClothIds = function () {
+        var selectedClothIds = new Array();
+
+        $("input:checkbox[name=deactivateProductCheckBox]:checked").each(function () {
+            var id = $(this).attr('id');
+            selectedClothIds.push(id);
+        });
+        $.ajax({
+            type: "POST",
+            traditional: true,
+            async: false,
+            url: "@(Url.Action("ActivateClothes", "Home"))",
+            data: { "selectedClothIds": selectedClothIds },
+            success: function () {
+                $("input:checkbox[name=deactivateProductCheckBox]:checked").each(function () {
+                    $(this).prop('checked', false);
+                });
+                alert('Successfully Saved');
+                $("#masterDeactivatedProductCheckBox").prop('checked', false);
+            },
+            error: function () { alert('An error occured while saving.') }
+        });
+        location.reload();
+    }
+
+    var masterDeactivatedProductCheckBoxFunc = function () {
+        var checked = $("#masterDeactivatedProductCheckBox").is(':checked');
+        if (checked == true) {
+            $("input:checkbox[name=deactivateProductCheckBox]").each(function () {
+                var id = $(this).prop('checked', true);
+            });
+        }
+        else if (checked == false) {
+            $("input:checkbox[name=deactivateProductCheckBox]").each(function () {
+                var id = $(this).prop('checked', false);
+            });
+        }
+    }
+</script>
+
+

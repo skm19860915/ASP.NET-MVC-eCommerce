@@ -1,0 +1,62 @@
+﻿@using Platini.Models;
+@model Receipt
+<div class="thankuSection">
+    <div class="topTable">
+        <h2>Thank you for your order!<div class="prt"><a href="@Url.Action("PrintThisCart", "Home", new { Id = Model.OrderId })" target="_blank"><img src="@Url.Content("~/Styles/images/Imgprint.png")" alt=""></a></div></h2>
+        <ul>
+            <li>
+                <b>Summary for order #@Model.OrderNumber</b>
+            </li>
+            <li class="Heading_Box">
+                <div class="Box_Heading_1">
+                    Style#
+                </div>
+                <div class="Box_Heading_2">Quantity</div>
+                <div class="Box_Heading_3">Total</div>
+            </li>
+            @foreach (var item in Model.Items)
+            {
+                <li>
+                    <div class="Box_1">
+                        <a href="@Url.Action("Detail", "Home", new {Id=item.Style })">
+                            <img src="@Url.Content("~/Library/Uploads/WebThumb/"+item.Img)" height="64">
+                            @item.Style
+                        </a>
+                    </div>
+                    <div class="Box_2">@item.Qty</div>
+                    <div class="Box_3">@item.Total</div>
+                </li>
+            }
+        </ul>
+    </div>
+
+
+    <ul class="tankTable">
+        @if (!string.IsNullOrEmpty(Model.Discount))
+        {
+            <li>
+                <div class="box_l">Discount:</div>
+                <div class="box_r">@Model.Discount</div>
+            </li>
+        }
+        <li class="subT">
+            <div class="box_l"><b>SUBTOTAL</b></div>
+            <div class="box_r">@Model.SubTotal</div>
+        </li>
+        <li>
+            <div class="box_l">Ground Shipping:</div>
+            <div class="box_r">@Model.Shipping</div>
+        </li>
+    </ul>
+    <div class="TatalRow">
+        <ul>
+            <li> Total :  @Model.GrandTotal</li>
+            @if (!string.IsNullOrEmpty(Model.PaymentMethodImg))
+            {
+                <li><img src="@Url.Content("~/Styles/images/"+Model.PaymentMethodImg)" alt=""></li>}
+        </ul>
+    </div>
+    <div style="clear:both"></div>
+    <p>A copy of your detailed receipt has been sent to your email address.</p>
+    <p>Orders typically ship within 7-10 days of the order date.</p>
+</div>

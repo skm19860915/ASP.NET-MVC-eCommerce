@@ -1,0 +1,317 @@
+﻿@using Platini.Models
+@model UpsValidate
+<style>
+    fieldset {
+        border: 1px solid black;
+        font-size: 12px;
+        margin: 0 auto;
+    }
+
+        fieldset legend {
+            width: auto;
+            font-size: 14px;
+            margin: .5em 1.5em;
+        }
+
+    #detDiv table td {
+        vertical-align: middle;
+    }
+
+    .leftPad {
+        padding: .3em!important;
+    }
+</style>
+<fieldset class="emptyRev">
+    <legend>Shipping Address</legend>
+    <div id="shipaddressBox">
+        <span class="leftPad" style="display: inline-block; vertical-align: top;">Ship To:
+        </span>
+        <div style="display: inline-block; width: 65%;">
+            <div class="leftPad">
+                <span style="display: inline-block; width: 50%; text-align: right;">Address:</span>
+                <span style="display: inline-block; margin-left: 1em; text-align: left;">@Html.TextBoxFor(m => m.ShipToAddress.To, new { @class = "valCheck valAddr" })</span>
+            </div>
+            <div class="leftPad">
+                <span style="display: inline-block; width: 50%; text-align: right;">ZipCode:</span>
+                <span style="display: inline-block; margin-left: 1em; text-align: left;">@Html.TextBoxFor(m => m.ShipToAddress.ZipCode, new { @class = "valCheck valZip" })</span>
+            </div>
+            <div class="leftPad">
+                <span style="display: inline-block; width: 50%; text-align: right;">City:</span>
+                <span style="display: inline-block; margin-left: 1em; text-align: left;">@Html.TextBoxFor(m => m.ShipToAddress.Line1, new { @class = "valCheck valCity", @disabled = !string.IsNullOrEmpty(Model.ShipToAddress.Line1) ? "disabled" : "" })</span>
+            </div>
+            <div class="leftPad">
+                <span style="display: inline-block; width: 50%; text-align: right;">State:</span>
+                <span style="display: inline-block; margin-left: 1em; text-align: left;">@Html.TextBoxFor(m => m.ShipToAddress.Line2, new { @class = "valCheck valState", @disabled = !string.IsNullOrEmpty(Model.ShipToAddress.Line2) ? "disabled" : "" })</span>
+            </div>
+            <div id="shipDiv" style="padding: .5em; display: none;">
+                <span style="display: inline-block; width: 50%; text-align: right;">Select Option (City-State-ZipCode):</span>
+                <span style="display: inline-block; margin-left: 1em; text-align: left; vertical-align: top;">
+                    <select id="ddlShip" disabled="disabled">
+                    </select>
+                </span>
+            </div>
+            <div class="leftPad">
+                <span style="display: inline-block; width: 50%; text-align: right;"></span>
+                <span style="display: inline-block; text-align: left; width: 24%;">
+                    <a href="javascript:void(0);" id="valAddr" style="display: inline-block; background: #000; color: #fff; padding: .5em; border-radius: 5px; text-decoration: none; margin-left: 1em;">Validate</a>
+                </span>
+            </div>
+
+        </div>
+    </div>
+    <div id="validshipaddressBox" style="display: none;">
+        <span style="display: inline-block; vertical-align: top;" class="leftPad">Ship To:
+        </span>
+        <div style="display: inline-block; width: 65%;">
+            <div style="padding: 0 .5em;">
+                <span style="color: green;">Address Successfully Validated.
+                </span>
+            </div>
+            <div class="leftPad">
+                <span id="lblText"></span>
+            </div>
+        </div>
+    </div>
+    <div id="editLink" style="display: none; text-align: right;" class="leftPad">
+        <a id="editAddress" href="javascript:void(0);" style="text-decoration: none; color: #428bca;">Edit</a>
+    </div>
+</fieldset>
+<fieldset class="emptyRev">
+    <legend>Ship From Address</legend>
+    <div class="leftPad">
+        <span style="display: inline-block; text-align: right;">Ship From:</span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left;">@Model.ShipFrom</span>
+    </div>
+</fieldset>
+<fieldset class="emptyRev">
+    <legend>Ship Via</legend>
+    <div class="leftPad">
+        <span style="display: inline-block; text-align: right;">Ship Via:</span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left;">
+            <select disabled="disabled">
+                <option>UPS</option>
+            </select>
+        </span>
+    </div>
+    <div class="leftPad">
+        <span style="display: inline-block; text-align: right;">Additional Services:</span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left;">
+            <label>@Html.CheckBoxFor(m => m.satD, new { @style = "vertical-align: middle;" }) Deliver On Saturday</label>
+            <label style="padding-left: 1em;">@Html.CheckBoxFor(m => m.COD, new { @style = "vertical-align: middle;" }) C.O.D.</label>
+            @Html.HiddenFor(m => m.Verified, new { @class = "valVerified" })
+        </span>
+    </div>
+</fieldset>
+<fieldset class="emptyRev">
+    <legend>Boxes and Bags Details </legend>
+    <div class="leftPad">
+        <span id="bxC" style="display: inline-block; text-align: right;">No. Of Boxes: @Model.BoxCount</span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left; width: 30%;">
+            <input type="text" id="boxCount" style="width: 3.6em;" />
+            <a id="addBox" href="javascript:void(0);" style="background-color: #012233; border: medium none; color: white; margin-left: 1.91em; padding: .5em 1em; text-decoration: none;">Add Boxes</a>
+        </span>
+    </div>
+    @using (Ajax.BeginForm("SaveBagBox", "Order", new AjaxOptions() { LoadingElementId = "loader", InsertionMode = InsertionMode.Replace, UpdateTargetId = "detDiv" }, new { id = "bbForm" }))
+    {
+        <div class="leftPad" id="detDiv">
+            @if (Model.BoxCount > 0)
+            {
+                @Html.Action("DetailTable", "Order", new { @id = Model.OrderId })
+            }
+        </div>
+        <div id="loader" style="width: 10%; display: none;" class="bgClass3">
+            &nbsp;
+        </div>
+        @Html.Hidden("OrderId", Model.OrderId)
+        @Html.Hidden("Replace", "1")
+    }
+    <div class="leftPad">
+        <span style="display: inline-block; text-align: right;">
+            <a id="saveBox" href="javascript:void(0);" style="background-color: #012233; border: medium none; color: white; margin-left: 1.1em; padding: .5em 1em; text-decoration: none;">Save Box Details</a></span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left; width: 40%;">
+            <a id="getRates" href="javascript:void(0);" style="background-color: #012233; border: medium none; color: white; margin-left: 1.91em; padding: .5em 1em; text-decoration: none;">Get UPS Services And Rates</a>
+        </span>
+    </div>
+</fieldset >
+<fieldset id="upsFS" style="display: none;" class="emptyRev">
+    <legend>UPS Service</legend>
+    <div class="leftPad">
+        <span style="display: inline-block; text-align: right;">Ship Via:</span>
+        <span style="display: inline-block; margin-left: 1em; text-align: left;width: 75%;">
+            <select id="ddlRates">
+            </select>
+            <a id="submitRev" href="javascript:void(0);" style="background-color: goldenrod; border: medium none; color: white; margin-left: 1.91em; padding: .5em 1em; text-decoration: none;">Submit/Review</a>
+        </span>
+    </div>
+</fieldset>
+<div id="fillRev"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var verf = $(".valVerified").val();
+        if (verf == '' || verf.length == 0 || verf == null) {
+            $("#getRates").hide();
+        }
+    });
+    $(".valZip").change(function () {
+        $(this).addClass("bgClass3");
+        $(".valVerified").val('');
+        $("#getRates").hide();
+        var zip = $(this).val();
+        $(".valCity").val('');
+        $(".valState").val('');
+        if (zip != '' && zip.length == 5) {
+            $.post('@Url.Action("ValidateUpsAddress", "Order")', { zip: zip }).done(function (data) {
+                $(".valZip").removeClass("bgClass3");
+                if (data.length > 0 && data != null) {
+                    $(".valCity").val(data.City);
+                    $(".valState").val(data.State);
+                }
+            });
+        }
+        else {
+            alert("Please enter a valid zip code");
+        }
+    });
+    $("#valAddr").click(function () {
+        var errString = '';
+        $(".valVerified").val('');
+        if ($(".valAddr").val().length > 28) {
+            errString = 'Please enter a valid address.  It needs to be 28 characters or less.';
+        }
+        var err = 0;
+        $(".valCheck").each(function () {
+            if ($(this).val() == '')
+                err = 1;
+        });
+        if (err > 0)
+            errString += 'Field with * should not be empty !!';
+        if (errString != '') {
+            alert(errString);
+        }
+        else {
+            $("#valAddr").parent().addClass("bgClass3");
+            var addr = $(".valAddr").val();
+            var zip = $(".valZip").val();
+            var city = $(".valCity").val();
+            var state = $(".valState").val();
+            $.post('@Url.Action("ValidateUpsAddress", "Order")', { addr: addr, city: city, state: state, zip: zip }).done(function (data) {
+                $("#valAddr").parent().removeClass("bgClass3");
+                $("#ddlShip").prop("disabled", true);
+                $("#shipDiv").hide();
+                $("#validshipaddressBox,#editLink").hide();
+                if (data.length > 0 && data != null) {
+                    if (data == "Success") {
+                        addr = addr.replace(',', '');
+                        $("#lblText").text(addr + ', ' + city + ', ' + state + ', ' + zip);
+                        $("#validshipaddressBox,#editLink").show();
+                        $("#shipaddressBox").hide();
+                        $(".valVerified").val('success');
+                        $("#getRates").show();
+                    }
+                    else if (data == "Invalid Address Detail" || data == "failure") {
+                        alert("Address Validation Failed");
+                    }
+                    else {
+                        $("#ddlShip").empty();
+                        $("#ddlShip").prop("disabled", false);
+                        $.each(data, function (id, option) {
+                            $("#ddlShip").append($('<option></option>').val(option.Id).html(option.Value));
+                        });
+                        $("#shipDiv").show();
+                    }
+                }
+            });
+        }
+    });
+    $("#editAddress").click(function () {
+        $("#validshipaddressBox, #shipaddressBox").toggle();
+        if ($("#editAddress").text() == 'Edit') {
+            $("#editAddress").text('Hide');
+        }
+        else {
+            $("#editAddress").text('Edit');
+        }
+    });
+    $("#ddlShip").change(function () {
+        var val = $("#ddlShip").find("option:selected").text();
+        if (val != '') {
+            var arr = val.split('-');
+            if (arr.length > 2) {
+                $(".valZip").val(arr[2]);
+            }
+            if (arr.length > 1) {
+                $(".valState").val(arr[1]);
+            }
+            if (arr.length > 0) {
+                $(".valCity").val(arr[0]);
+            }
+        }
+    });
+    $("#addBox").click(function () {
+        var val = parseInt($("#boxCount").val());
+        if (val > 0) {
+            $("#addBox").parent().addClass("bgclass3");
+            $.get("@Url.Action("DetailTable")", { Id: '@Model.OrderId', BagCount: 0, BoxCount: val }).done(function (data) {
+                $("#detDiv").empty().append(data);
+                $("#addBox").parent().removeClass("bgclass3");
+                $("#boxCount").val('');
+                $("#bxC").text('No. Of Boxes: ' + (parseInt('@Model.BoxCount') + val));
+            });
+        }
+        else {
+            alert("Please enter the number of boxes");
+        }
+    });
+    $("#saveBox").click(function () {
+        $("#bbForm").submit();
+    });
+    $("#getRates").click(function () {
+        var zip = $(".valZip").val();
+        var isSatD = $("#satD").is(":checked");
+        var isCod = $("#COD").is(":checked");
+        $("#getRates").parent().addClass("bgClass3");
+        $("#upsFS").hide();
+        $("#ddlRates").empty();
+        var verf = $(".valVerified").val();
+        if (verf != '' && verf.length > 0) {
+            var boxcount = $("tr.itemBox").length;
+            if (boxcount > 0) {
+                $.get('@Url.Action("GetRates", "Order")', { OrderId: '@Model.OrderId', zip: zip, isCod: isCod, isSatD: isSatD }).done(function (data) {
+                    if (data.length > 0 && data != null) {
+                        $("#getRates").parent().removeClass("bgClass3");
+                        $.each(data, function (id, option) {
+                            $("#ddlRates").append($('<option></option>').val(option.Id).html(option.Value));
+                        });
+                        $("#upsFS").show();
+                    }
+                });
+            }
+            else {
+                alert("No package was entered to ship");
+            }
+        }
+        else
+            alert("Please verify your address first");
+    });
+    $("#submitRev").click(function () {
+        var verf = $(".valVerified").val();
+        var boxcount = $("tr.itemBox").length;
+        var shipText = $("#lblText").text();
+        var isSatD = $("#satD").is(":checked");
+        var isCod = $("#COD").is(":checked");
+        var sId = $("#ddlRates").val();
+        var sText = $("#ddlRates").find("option:selected").text();
+        if (verf != '' && verf.length > 0 && boxcount > 0 && shipText != '' && shipText.length > 0 && sId > 0 && sText != '' && sText.length > 0) {
+            $("#submitRev").parent().addClass("bgClass3");
+            $.post('@Url.Action("UpsShip", "Order")', { Id: '@Model.OrderId', address: shipText, sId: sId, sText: sText, isSatD: isSatD, isCOD: isCod }).done(function (data) {
+                if (data != null && data.length > 0) {
+                    $(".emptyRev").empty();
+                    $(".emptyRev").hide();
+                    $("#fillRev").html(data);
+                    $("#submitRev").parent().removeClass("bgClass3");
+                }
+            });
+        }
+    });
+</script>

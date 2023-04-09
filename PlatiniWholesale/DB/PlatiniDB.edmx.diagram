@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c76ea1ea146145ea896f1c5287a2460a" Name="Diagram1">
+        <EntityTypeShape EntityType="PlatiniModel.Account" Width="1.5" PointX="3" PointY="31" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Address" Width="1.5" PointX="8.25" PointY="32.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.AddressType" Width="1.5" PointX="6" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.BackgroundPicture" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Bag" Width="1.5" PointX="12.75" PointY="29.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Box" Width="1.5" PointX="12.75" PointY="33" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Brand" Width="1.5" PointX="11.25" PointY="15.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Category" Width="1.5" PointX="11.25" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Cloth" Width="1.5" PointX="13.5" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.ClothesImage" Width="1.5" PointX="15.75" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.ClothesScale" Width="1.5" PointX="11.25" PointY="47.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.ClothesScaleSize" Width="1.5" PointX="13.5" PointY="49.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Communication" Width="1.5" PointX="5.25" PointY="26.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Company" Width="1.5" PointX="5.25" PointY="30.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.CreditCardDetail" Width="1.5" PointX="5.25" PointY="34.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.CustomerItemPrice" Width="1.5" PointX="5.25" PointY="37.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.CustomerOptionalInfo" Width="1.5" PointX="8.25" PointY="27.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.CustomerSalesPerson" Width="1.5" PointX="5.25" PointY="45.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.CustomerUser" Width="1.5" PointX="5.25" PointY="49" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.ExtraPermission" Width="1.5" PointX="8.25" PointY="38" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Fit" Width="1.5" PointX="9" PointY="46.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Inseam" Width="1.5" PointX="9" PointY="49.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.LoginLog" Width="1.5" PointX="5.25" PointY="56.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.NewsLetterSignUp" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Order" Width="1.5" PointX="10.5" PointY="27.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.OrderLog" Width="1.5" PointX="5.25" PointY="59.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.OrderScale" Width="1.5" PointX="15.75" PointY="31" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.OrderSize" Width="1.5" PointX="15.75" PointY="26" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.OrderStatu" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.OrderTag" Width="1.5" PointX="8.25" PointY="23.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Permission" Width="1.5" PointX="0.75" PointY="25.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.QuickBookFailureRecord" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.RelatedClothe" Width="1.5" PointX="18.75" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.RelatedColor" Width="1.5" PointX="15.75" PointY="15.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Role" Width="1.5" PointX="0.75" PointY="33.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.RolesPermission" Width="1.5" PointX="3" PointY="26" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.ScaleSizeQuantity" Width="1.5" PointX="16.5" PointY="49.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.ShipVia" Width="1.5" PointX="6" PointY="22.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.ShowRoomImage" Width="1.5" PointX="5.25" PointY="61.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Size" Width="1.5" PointX="11.25" PointY="53.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.SizeGroup" Width="1.5" PointX="11.25" PointY="23.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.TableToDelete" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.TagMapping" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Term" Width="1.5" PointX="6" PointY="41.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Track" Width="1.5" PointX="8.25" PointY="42.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.Transaction" Width="1.5" PointX="15.75" PointY="36" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.VisitorLog" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.WebsiteSetting" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PlatiniModel.CustomerOptionalInfo1" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+        <AssociationConnector Association="PlatiniModel.FK__Account__RoleId__178D7CA5" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_AccountId_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Address_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Communication_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Company_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Customer_Account_CustomerId" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Customer_Account_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Customer_SalesPerson_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Customer_SalesPerson_SalesPersonId" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_CustomerItemPrice_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_CustomerOptionalInfo_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_LoginLog_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Order_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Order_Account2" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_OrderLog_UpdatedBy" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_ShowRoomImage_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Transactions_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_UserExtraPermission_Account" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Address_AddressType" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Order_Address" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Bag_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Box_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Clothes_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Clothes_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_RelatedClothes_CategoryId" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_RelatedColors_CategoryId" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Size_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_SizeGroup_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK__OrderScal__Cloth__3BCADD1B" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK__OrderSize__Cloth__3EA749C6" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Clothes_SizeGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_ClothesImage_Clothes" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_CustomerItemPrice_Clothes" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_RelatedClothes_Clothes" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_RelatedClothes_Clothes2" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_RelatedColors_Clothes" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_RelatedColors_Clothes2" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Scale_Clothes" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Order_Scale_ClothesScale" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Scale_Fit" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Scale_Inseam" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_ScaleSize_Scale" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_OrderSize_ClothesScaleSize" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_ScaleSize_Size" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Order_Communication" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_CustomerOptionalInfo_ShipVia" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_CustomerOptionalInfo_Terms" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_UserExtraPermission_Permission" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_ClothesScale_Fit" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_ClothesScale_Inseam" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK__Order__TermId__3335971A" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Order_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Order_OrderTag" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Order_Scale_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Order_ShipVia" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Order_Track" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_OrderSize_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Transactions_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_RolesPermission_Permission" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_RolesPermission_Roles" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_ClothesScale_Size" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.fk_Track_ShipVia" ManuallyRouted="false" />
+        <AssociationConnector Association="PlatiniModel.FK_Size_SizeGroup" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,407 @@
+﻿@model Platini.Models.StepOneClass
+@{
+    ViewBag.Title = "Add or Edit Clothes";
+    Layout = "~/Areas/Common/Views/Shared/_Layout1.cshtml";
+}
+<script type="text/javascript" src="@Url.Content("~/ckeditor/ckeditor.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/ckeditor/adapters/jquery.js")"></script>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{     
+    <div class="deshboardpanal">
+        <div class="adminright_panal">
+            <div class="nameheadingbg">
+                <h1>Step One</h1>
+            </div>
+            <div class="row">
+                <div class="registration">
+                    @Html.ValidationSummary(true)
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Style Number <span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.StyleNumber, new { @class = "inputText" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.StyleNumber)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Wholesale Price $<span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.Price, new { @class = "inputText" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.Price)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Product Cost $
+                                </label>
+                                <div class="field">
+
+                                    @Html.TextBoxFor(model => model.ProductCost, new { @class = "inputText" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.ProductCost)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    MSRP $<span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.MSRP, new { @class = "inputText" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.MSRP)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Discounted MSRP $
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.DiscountedMSRP, new { @class = "inputText" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.DiscountedMSRP)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Discounted Price $
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.DiscountedPrice, new { @class = "inputText" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.DiscountedPrice)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Color
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.Color, new { @class = "inputText" })
+
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Future Delivery Date
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.FutureDeliveryDate, "{0:dd MMM yyyy}", new { @class = "inputText" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Image 1 
+                                                               
+                                </label>
+                                <div class="field">
+                                    <input type="file" id="file1" name="file1" />
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Image1))
+                                {
+                                    <div class="field red">
+                                        <a href="/Library/Uploads/WebThumb/@Model.Image1" target="_blank">
+                                            <img src="/Library/Uploads/WebThumb/@Model.Image1" height="25" alt="" title="" />
+                                        </a>
+                                        <a href="@Url.Action("ClothesImageDelete", "Clothes", new { Id = Model.ClothesId, SId = 1 })" onclick="return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                        @Html.HiddenFor(model => model.Image1)
+                                    </div>
+                                }
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Image 2
+                                </label>
+                                <div class="field">
+                                    <input type="file" id="file2" name="file2" />
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Image2))
+                                {
+                                    <div class="field red">
+                                        <a href="/Library/Uploads/WebThumb/@Model.Image2" target="_blank">
+                                            <img src="/Library/Uploads/WebThumb/@Model.Image2" height="25" alt="" title="" />
+                                        </a>
+                                        <a href="@Url.Action("ClothesImageDelete", "Clothes", new { Id = Model.ClothesId, SId = 2 })" onclick="return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                        @Html.HiddenFor(model => model.Image2)
+                                    </div>
+                                }
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Image 3
+                                </label>
+                                <div class="field">
+                                    <input type="file" id="file3" name="file3" />
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Image3))
+                                {
+                                    <div class="field red">
+                                        <a href="/Library/Uploads/WebThumb/@Model.Image3" target="_blank">
+                                            <img src="/Library/Uploads/WebThumb/@Model.Image3" height="25" alt="" title="" />
+                                        </a>
+                                        <a href="@Url.Action("ClothesImageDelete", "Clothes", new { Id = Model.ClothesId, SId = 3 })" onclick="return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                        @Html.HiddenFor(model => model.Image3)
+                                    </div>
+                                }
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Image 4
+                                </label>
+                                <div class="field">
+                                    <input type="file" id="file4" name="file4" />
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Image4))
+                                {
+                                    <div class="field red">
+                                        <a href="/Library/Uploads/WebThumb/@Model.Image4" target="_blank">
+                                            <img src="/Library/Uploads/WebThumb/@Model.Image4" height="25" alt="" title="" />
+                                        </a>
+                                        <a href="@Url.Action("ClothesImageDelete", "Clothes", new { Id = Model.ClothesId, SId = 4 })" onclick="return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                        @Html.HiddenFor(model => model.Image4)
+                                    </div>
+                                }
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Image 5
+                                </label>
+                                <div class="field">
+                                    <input type="file" id="file5" name="file5" />
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Image5))
+                                {
+                                    <div class="field red">
+                                        <a href="/Library/Uploads/WebThumb/@Model.Image5" target="_blank">
+                                            <img src="/Library/Uploads/WebThumb/@Model.Image5" height="25" alt="" title="" />
+                                        </a>
+                                        <a href="@Url.Action("ClothesImageDelete", "Clothes", new { Id = Model.ClothesId, SId = 5 })" onclick="return confirm('Are you sure you wish to delete this item?');">Delete</a>
+                                        @Html.HiddenFor(model => model.Image5)
+                                    </div>
+                                }
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Category<span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.DropDownListFor(m => Model.CId, new SelectList(Model.Categories, "CategoryId", "Name", 0), "Select", new { onchange = "getSubCategories();", @id = "ddlCategories", @class = "dropDown" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.CategoryId)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    SubCategory<span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.DropDownListFor(m => Model.SId, new SelectList(Model.SubCategories, "CategoryId", "Name", 0), "Select", new { onchange = "getCategoryTypes();", @id = "ddlSubCategories", @class = "dropDown" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.SId)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Type<span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.DropDownListFor(m => Model.CategoryId, new SelectList(Model.CategoryTypes, "CategoryId", "Name", 0), "Select", new { onchange = "getSizeGroups();", @id = "ddlCategoryTypes", @class = "dropDown" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.CategoryId)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Size Group<span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.DropDownListFor(m => Model.SizeGroupId, new SelectList(Model.SizeGroups, "SizeGroupId", "Name", 0), "Select", new { @id = "ddlSizeGroups", @class = "dropDown" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.SizeGroupId)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Brand<span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.DropDownListFor(m => Model.BrandId, new SelectList(Model.Brands, "Id", "Name", 0), "Select", new { @id = "ddlBrands", @class = "dropDown" })
+                                    <div>
+                                        @Html.ValidationMessageFor(model => model.BrandId)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <div id="clothAttributes" style="border: 1px solid #ccc; border-radius: 8px; padding: 5px;">
+                                <div class="formRow">
+                                    <label for="contact_name" class="fieldLabel forwidth">
+                                        Fits
+                                    </label>
+                                    <div class="field">
+                                        @for (var i = 0; i < Model.ClothAttribute.FitList.Count(); i++)
+                                        {
+                                            @Html.CheckBoxFor(x => Model.ClothAttribute.FitList[i].IsSelected)@:&nbsp;
+                                            @Html.DisplayFor(x => Model.ClothAttribute.FitList[i].Value)@:&nbsp;&nbsp;
+                                            @Html.HiddenFor(x => Model.ClothAttribute.FitList[i].Id)                                                                                          
+                                        }
+                                    </div>
+                                </div>
+                                <div class="formRow">
+                                    <label for="contact_name" class="fieldLabel forwidth">
+                                        Inseam
+                                    </label>
+                                    <div class="field">
+                                        @for (var i = 0; i < Model.ClothAttribute.InseamList.Count(); i++)
+                                        {
+                                            @Html.CheckBoxFor(x => Model.ClothAttribute.InseamList[i].IsSelected)@:&nbsp;
+                                            @Html.DisplayFor(x => Model.ClothAttribute.InseamList[i].Value)@:&nbsp;&nbsp;
+                                            @Html.HiddenFor(x => Model.ClothAttribute.InseamList[i].Id);
+                                        }
+                                    </div>
+                                </div>
+                                <div class="formRow" >
+                                    <label for="contact_name" class="fieldLabel forwidth">
+                                    </label>
+                                    <div class="field" style="float: right;">
+                                        <div id="UpdateScaleMatrix" style="display: inline-block; height: 25px; width: 150px; background-color: black; padding-top: 4px; padding-left: 20px;">
+                                            @Ajax.ActionLink("Update Scale Matrix", "UpdateMatrix", new { id = Model.ClothesId, @mode = "matrix" }, new AjaxOptions { HttpMethod = "POST", OnBegin = "return confirm('This will delete all existing scale and size records.');" }, new { style = "color:white;" })
+                                        </div>
+                                        <div id="UpdateScaleMatrix1" style="display: inline-block; height: 25px; width: 165px; background-color: black; padding-top: 4px; padding-left: 20px;">
+                                            @Ajax.ActionLink("Reset Adjusted Quantity", "UpdateMatrix", new { id = Model.ClothesId, @mode = "adjust" }, new AjaxOptions { HttpMethod = "POST", OnBegin = "return confirm('This will reset adjusted quantity for this cloth.');", OnComplete = "window.location=window.location.href" }, new { style = "color:white;" })
+                                        </div>
+                                        <div id="UpdateScaleMatrix1" style="display: inline-block; height: 25px; width: 165px; background-color: black; padding-top: 4px; padding-left: 20px;">
+                                            @Ajax.ActionLink("Reset Current Quantity", "UpdateMatrix", new { id = Model.ClothesId, @mode = "currentqty" }, new AjaxOptions { HttpMethod = "POST", OnBegin = "return confirm('This will reset adjusted quantity for this cloth.');", OnComplete = "window.location=window.location.href" }, new { style = "color:white;" })
+                                        </div>
+                                        <span style="font-weight: 100; display: block">(Click here to update changes of "Product Attributes")</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Sort Order <span class="forStar">*</span>
+                                </label>
+                                <div class="field">
+                                    @Html.TextBoxFor(model => model.SortOrder, new { @style = "width:40px;float:left;margin-right:50px;" })
+
+                                    <label for="contact_name" class="fieldLabel">
+                                        Clearance: 
+                                    </label>
+                                    <div class="field">
+                                        @Html.CheckBoxFor(model => model.Clearance)
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="formRow">
+                                <label class="fieldLabel" for="contact_name">
+                                    Active</label>
+
+                                <div class="comn">
+                                    @if (Model == null)
+                                    {
+                                        <div class="comn2" style="width: 90px">
+                                            @Html.RadioButtonFor(model => model.IsActive, "true", new { @checked = "checked" }) Yes
+                                        </div>
+                                        <div class="comn2" style="width: 90px">
+                                            @Html.RadioButtonFor(model => model.IsActive, "false") No
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="comn2" style="width: 90px">
+                                            @Html.RadioButtonFor(model => model.IsActive, "true") Yes
+                                        </div>
+                                        <div class="comn2" style="width: 90px">
+                                            @Html.RadioButtonFor(model => model.IsActive, "false") No
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            @*<div class="formRow">
+                                <label for="contact_name" class="fieldLabel forwidth">
+                                    Clearance: 
+                                </label>
+                                <div class="field">
+                                    @Html.CheckBoxFor(model => model.Clearance)
+                                </div>
+                            </div>*@
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                Description: 
+                            </label>
+                            <div class="field">
+                                @Html.TextAreaFor(model => model.ClothesDescription, new { cols = "40", rows = "2", @class = "editMe" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                Tags: 
+                            </label>
+                            <div class="field col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                @Html.TextBoxFor(model => model.Tags, new { @style = "width:100%;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="formRow">
+                            <label for="contact_name" class="fieldLabel forwidth">
+                                &nbsp;</label>
+                            <div class="field">
+                                @Html.HiddenFor(model => model.ClothesId)
+                                <button id="updbtn" type="submit" class="blackBtn" value="Save">Save</button>
+                                <button id="cncbtn" type="button" class="blackBtn" value="Cancel" onclick="window.location.href='@Url.Action("Index", "Clothes")'">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<br />
+<br />
+<br />
+<script>
+    $(function () {
+        $('.editMe').ckeditor({
+            htmlEncodeOutput: true
+        });
+    });
+</script>
+
+
+
+

@@ -1,0 +1,33 @@
+﻿@model Platini.Models.ClothesScaleClass
+
+<div class="row" style="vertical-align: top; text-align: left; margin-bottom: 5px;">
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">@Html.TextBoxFor(x => Model.Name, new { style = "width:100%;", @class = "scaleText" })</div>
+    @if (Model.selectedFitId != 0)
+    { <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+        @Html.DropDownListFor(x => Model.selectedFitId, new SelectList(Model.FitList, "Id", "Value"), null, new { @class = "dropDown", style = "width:100%;height:30px;" })
+    </div> }
+    @if (Model.selectedInseamId != 0)
+    { <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+        @Html.DropDownListFor(x => Model.selectedInseamId, new SelectList(Model.InseamList, "Id", "Value"), null, new { @class = "dropDown", style = "width:100%;height:30px;" })
+    </div>}
+    @for (var j = 0; j < Model.ClothesScaleSizeClass.Count(); j++)
+    {
+        <div style="width: 45px; float: left; text-align: center;">
+            @Html.TextBoxFor(x => Model.ClothesScaleSizeClass[j].Quantity, new { @class = "scaleText" })
+        </div>     
+        @Html.HiddenFor(x => Model.ClothesScaleSizeClass[j].SizeId)
+        @Html.HiddenFor(x => Model.ClothesScaleSizeClass[j].ClothesScaleId)
+        @Html.HiddenFor(x => Model.ClothesScaleSizeClass[j].ClothesScaleSizeId)
+    }
+    @Html.HiddenFor(x => Model.ClothesId)
+    @Html.HiddenFor(x => Model.ClothesScaleId)
+    @Html.HiddenFor(x => Model.FitId)
+    @Html.HiddenFor(x => Model.InseamId)
+    @Html.HiddenFor(x => Model.IsOpenSize)
+    <div style="width: 45px; float: left; text-align: center;">@Html.TextBoxFor(x => Model.InvQty, new { @class = "scaleText" })</div>
+    <div style="float: left; text-align: center;">
+        @*<button type="button" class="blackBtn">Save</button>*@
+        <button id="CancelAvailablePrePackRowBtn" type="button" onclick="cancelAvailablePrePackRow()" class="blackBtn">Cancel</button>
+    </div>
+    <div id="scalediv"></div>
+</div>
